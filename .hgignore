@@ -1,0 +1,7 @@
+syntax: glob
+.settings
+.buildpath
+.project
+assets
+protected/runtime
+php_errors.log
