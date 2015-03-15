@@ -41,7 +41,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 </div><!-- search-form -->
 
 <?php 
-echo CHtml::beginForm(array('Buyer/admin'),'post', array('enctype'=>'multipart/form-data'));
+echo CHtml::beginForm(array('Order/print'),'post', array('enctype'=>'multipart/form-data'));
 
 $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'order-grid',
