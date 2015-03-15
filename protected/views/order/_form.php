@@ -1,0 +1,130 @@
+<?php
+/* @var $this OrderController */
+/* @var $model Order */
+/* @var $form CActiveForm */
+?>
+
+<div class="form">
+
+<?php $form=$this->beginWidget('CActiveForm', array(
+	'id'=>'order-form',
+	// Please note: When you enable ajax validation, make sure the corresponding
+	// controller action is handling ajax validation correctly.
+	// There is a call to performAjaxValidation() commented in generated controller code.
+	// See class documentation of CActiveForm for details on this.
+	'enableAjaxValidation'=>false,
+)); ?>
+
+	<p class="note">Fields with <span class="required">*</span> are required.</p>
+
+	<?php echo $form->errorSummary($model); ?>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'order_number'); ?>
+		<?php echo $form->textField($model,'order_number',array('size'=>15,'maxlength'=>15)); ?>
+		<?php echo $form->error($model,'order_number'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'order_date'); ?>
+		<?php echo $form->textField($model,'order_date'); ?>
+		<?php echo $form->error($model,'order_date'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'buyer_order_number'); ?>
+		<?php echo $form->textField($model,'buyer_order_number',array('size'=>50,'maxlength'=>50)); ?>
+		<?php echo $form->error($model,'buyer_order_number'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'buyer_comments'); ?>
+		<?php echo $form->textField($model,'buyer_comments',array('size'=>60,'maxlength'=>150)); ?>
+		<?php echo $form->error($model,'buyer_comments'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'order_reference'); ?>
+		<?php echo $form->textField($model,'order_reference',array('size'=>60,'maxlength'=>150)); ?>
+		<?php echo $form->error($model,'order_reference'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'order_term'); ?>
+		<?php echo $form->textField($model,'order_term',array('size'=>50,'maxlength'=>50)); ?>
+		<?php echo $form->error($model,'order_term'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'article_amount'); ?>
+		<?php echo $form->textField($model,'article_amount'); ?>
+		<?php echo $form->error($model,'article_amount'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'buyer_buyer_id'); ?>
+		<?php echo $form->textField($model,'buyer_buyer_id'); ?>
+		<?php echo $form->error($model,'buyer_buyer_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'broker_broker_id'); ?>
+		<?php echo $form->textField($model,'broker_broker_id'); ?>
+		<?php echo $form->error($model,'broker_broker_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'manufacturer_manufacturer_id'); ?>
+		<?php echo $form->textField($model,'manufacturer_manufacturer_id'); ?>
+		<?php echo $form->error($model,'manufacturer_manufacturer_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'leg_leg_id'); ?>
+		<?php echo $form->textField($model,'leg_leg_id'); ?>
+		<?php echo $form->error($model,'leg_leg_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'article_article_id'); ?>
+		<?php echo $form->textField($model,'article_article_id'); ?>
+		<?php echo $form->error($model,'article_article_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'textile_order'); ?>
+		<?php echo $form->textField($model,'textile_order'); ?>
+		<?php echo $form->error($model,'textile_order'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'printed_minilabel'); ?>
+		<?php echo $form->textField($model,'printed_minilabel'); ?>
+		<?php echo $form->error($model,'printed_minilabel'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'printed_shipping_label'); ?>
+		<?php echo $form->textField($model,'printed_shipping_label'); ?>
+		<?php echo $form->error($model,'printed_shipping_label'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'article_manufactured'); ?>
+		<?php echo $form->textField($model,'article_manufactured'); ?>
+		<?php echo $form->error($model,'article_manufactured'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'article_exported'); ?>
+		<?php echo $form->textField($model,'article_exported'); ?>
+		<?php echo $form->error($model,'article_exported'); ?>
+	</div>
+
+	<div class="row buttons">
+		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
+	</div>
+
+<?php $this->endWidget(); ?>
+
+</div><!-- form -->
