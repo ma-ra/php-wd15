@@ -3,7 +3,7 @@
 Yii::import('application.vendor.*');
 require_once('fpdf17/fpdf.php');
 
-class PDF extends FPDF {
+class ShippingLabel extends FPDF {
 	public $model;
 	public $dessin;
 	public $variant;
@@ -17,6 +17,8 @@ class PDF extends FPDF {
 	public $plz;
 	public $artikelNr;
 	public $eanNummer;
+	public $number;
+	public $totalNumber;
 	
 	// Page header
 	function Header() {
@@ -46,6 +48,10 @@ class PDF extends FPDF {
 			$y=0;
 		}
 		
+		#Domyślna numeracja etykiet
+		isset($this->number)? true : $this->number=1;
+		isset($this->totalNumber)? true : $this->totalNumber=1;
+		
 		#Nagłowek
 		$this->SetFont('arial_ce','B',18);
 		$this->SetXY(5+$x,5+$y);
@@ -54,43 +60,44 @@ class PDF extends FPDF {
 		#Lewa strona
 		$this->SetFont('arial_ce','',12);
 		$this->Rect(5+$x, 13+$y, 143.5, 20);
-		$this->Cell(143.5, 5, "Model:", 0, 2, "L");
-		$this->Cell(143.5, 5, "Dessin:", 0, 2, "L");
-		$this->Cell(143.5, 5, "Variant:", 0, 2, "L");
-		$this->Cell(143.5, 5, iconv('utf-8', 'windows-1250',"Füße:"), 0, 2, "L");
+		$this->Cell(143.5, 5, "Model: " . $this->model, 0, 2, "L");
+		$this->Cell(143.5, 5, "Dessin: " . $this->dessin, 0, 2, "L");
+		$this->Cell(143.5, 5, "Variant: " . $this->variant, 0, 2, "L");
+		$this->Cell(143.5, 5, iconv('utf-8', 'windows-1250',"Füße: ") . $this->fusse, 0, 2, "L");
 		$this->Cell(143.5, 5, "", 0, 2, "L");
 		
-		$this->Cell(143.5, 5, "Empfanger:", 0, 2, "L");
-		$this->Cell(143.5, 5, "Nazwa firmy", 0, 2, "L");
+		$this->Cell(143.5, 5, "Empfanger: ", 0, 2, "L");
+		$this->Cell(143.5, 5, $this->empfanger, 0, 2, "L");
 		$this->Cell(143.5, 5, "", 0, 2, "L");
 		
 		$this->Rect(5+$x, 53+$y, 71.75, 40);
 		$this->Rect(76.75+$x, 53+$y, 71.75, 40);
-		$this->Cell(71.75, 5, "Auftrag - nr", 0, 2, "L");
-		$this->Cell(71.75, 5, "Bestellnummer", 0, 2, "L");
-		$this->Cell(71.75, 5, "Lieferanschrift", 0, 2, "L");
+		$this->Cell(71.75, 5, "Auftrag - nr: " . $this->auftragNr, 0, 2, "L");
+		$this->Cell(71.75, 5, "Bestellnummer: " . $this->bestellnummer, 0, 2, "L");
+		$this->Cell(71.75, 5, "Lieferanschrift: ", 0, 2, "L");
 		$this->Cell(71.75, 5, "", 0, 2, "L");
-		$this->Cell(71.75, 5, "Nazwa firmy", 0, 2, "L");
-		$this->Cell(71.75, 5, "Ulica", 0, 2, "L");
-		$this->Cell(71.75, 5, "Kod pocztowy", 0, 2, "L");
+		$this->Cell(71.75, 5, $this->empfanger, 0, 2, "L");
+		$this->Cell(71.75, 5, $this->strasse, 0, 2, "L");
+		$this->Cell(71.75, 5, $this->plz, 0, 2, "L");
 		
 		#Stopka z numeracją etykiet
 		//$this->Rect(5, 98, 71.75, 10);
 		$this->Cell(143.5, 5, "", 0, 2, "L");
 		$this->Cell(143.5, 5, "", 0, 2, "L");
 		$this->SetX(148.5-50+$x);
-		$this->Cell(50, 5, "1        von        1", 1, 2, "C");
+		$this->Cell(50, 5, $this->number . "        von        " . $this->totalNumber, 1, 2, "C");
 		
 		#Prawa strona
 		$this->SetXY(76.75+$x, 38+$y);
 		$this->Cell(71.75, 5, "Lieferant:", 0, 2, "L");
+		$this->Cell(143.5, 5, $this->lieferant, 0, 2, "L");
 		
 		$this->SetXY(76.75+$x, 53+$y);
-		$this->Cell(71.75, 5, "Artikel - nr", 0, 2, "L");
+		$this->Cell(71.75, 5, "Artikel - nr: " . $this->artikelNr, 0, 2, "L");
 		$this->Cell(71.75, 5, "", 0, 2, "L");
-		$this->Cell(71.75, 5, "Model", 0, 2, "L");
+		$this->Cell(71.75, 5, "Model: " . $this->model, 0, 2, "L");
 		$this->Cell(71.75, 5, "", 0, 2, "L");
-		$this->Cell(71.75, 5, "EAN Nummer", 0, 2, "L");
+		$this->Cell(71.75, 5, "EAN Nummer: " . $this->eanNummer, 0, 2, "L");
 	}
 	
 	function  DrawLine() {

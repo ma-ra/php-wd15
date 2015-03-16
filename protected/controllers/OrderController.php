@@ -146,7 +146,7 @@ class OrderController extends Controller
 	public function actionPrint()
 	{
 		// Instanciation of inherited class
-		$pdf = new PDF('L','mm','A4');
+		$pdf = new ShippingLabel('L','mm','A4');
 		$pdf->AliasNbPages();
 		$pdf->SetMargins(5, 5, 5);
 		$pdf->SetAutoPageBreak(true, 5);
@@ -159,14 +159,32 @@ class OrderController extends Controller
 		$pdf->AddPage();
 		$pdf->DrawLine();
 		
+		#Uzupełniamy dane
+		$pdf->model="Corona 3-Ottomane";
+		$pdf->dessin="1. Dess: 4033 Baltic 96; 2. Dess: 2006 Cayenne 1114 black";
+		$pdf->variant="";
+		$pdf->fusse="Metall - Chrom";
+		$pdf->empfanger=iconv('utf-8', 'windows-1250',"Avanti Möbel-Mitnahmemarkt GmbH");
+		$pdf->lieferant="Reality Import GmbH";
+		$pdf->auftragNr="303589-1";
+		$pdf->bestellnummer="Zuteilung";
+		$pdf->lieferanschrift="";
+		$pdf->strasse=iconv('utf-8', 'windows-1250',"Rohräcker 1");
+		$pdf->plz=iconv('utf-8', 'windows-1250',"DE 37077  Göttingen");
+		$pdf->artikelNr="4670410";
+		$pdf->eanNummer="";
+		$pdf->number=1;
+		$pdf->totalNumber=1;
+		
+		#Rysujemy
 		$pdf->Draw(1);
-		$pdf->Draw(2);
-		$pdf->Draw(3);
+		//$pdf->Draw(2);
+		//$pdf->Draw(3);
 		$pdf->Draw(4);
 		
 		$pdf->Close();
 		
-	
+		#Drukujemy - w sensie tworzymy plik PDF
 		#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
 		$pdf->Output("Etykiety transportowe: " . ".pdf", "I");
 	}
