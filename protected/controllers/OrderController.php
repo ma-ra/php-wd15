@@ -28,7 +28,7 @@ class OrderController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view','print'),
+				'actions'=>array('index','view','print','upload'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -101,6 +101,133 @@ class OrderController extends Controller
 		$this->render('update',array(
 			'model'=>$model,
 		));
+	}
+	
+	public function actionUpload()
+	{
+		$model=new UploadForm;
+		$linia=array();
+		
+		if(isset($_POST['UploadForm']))
+		{
+			$model->attributes=$_POST['UploadForm'];
+			$model->file=CUploadedFile::getInstance($model,'file');
+			$model->file_extension=isset($model->file->extensionName)? $model->file->extensionName : " ";
+			$model->file_mime=isset($model->file->type)? $model->file->type : " ";
+			$model->file_size=isset($model->file->size)? $model->file->size : " ";
+			if ($model->validate()) {
+				$file=$model->file->tempName;
+				
+				#Odczytywanie pliku i zapis zamówień do bazy
+				echo "<pre>";
+				$handle = @fopen($file, "r");
+				$i=1;
+				
+				
+				$transaction = Yii::app()->db->beginTransaction();
+				try {
+					if ($handle) {
+						while (($buffer = fgets($handle, 4096)) !== false) {
+							$line=explode("^",$buffer);
+							if ($line[0] != 75007) {
+								continue;
+							}
+							/* echo $i++ . " ### " . $buffer;
+							echo "          ";
+							foreach ($line as $key => $value) {
+								echo $key . "=>" . $value . "   ";
+							} */
+					
+							$buyer=new Buyer();
+							$buyer->buyer_name_1=$line[5];
+							$buyer->buyer_name_2=$line[6];
+							$buyer->buyer_street=$line[7];
+							$buyer->buyer_zip_code=$line[8];
+							$buyer->save();
+							
+							$broker=new Broker();
+							$broker->broker_name="Reality Import GmbH";
+							$broker->save();
+							
+							$manufacturer=new Manufacturer();
+							$manufacturer->manufacturer_number=$line[0];
+							$manufacturer->manufacturer_name=$line[1];
+							$manufacturer->save();
+							
+							$leg=new Leg();
+							$leg->leg_type=$line[14];
+							$leg->save();
+							
+							$article=new Article();
+							$article->article_colli=1;
+							$article->article_number=$line[11];
+							$article->model_name=$line[12];
+							$article->model_type=$line[13];
+							$article->save();
+							
+							$order=new Order();
+							$order->article_amount=$line[24];
+							$order->buyer_comments=$line[10];
+							if ($line[15]<=999) {
+								$order->textile_order=$line[15];
+							}
+							$order->buyer_order_number=$line[9];
+							$order->order_date=$line[4];
+							$order->order_number=$line[3];
+							$order->order_reference=$line[19];
+							$order->order_term=$line[21];
+							$order->article_article_id=$article->article_id;
+							$order->leg_leg_id=$leg->leg_id;
+							$order->buyer_buyer_id=$buyer->buyer_id;
+							$order->broker_broker_id=$broker->broker_id;
+							$order->manufacturer_manufacturer_id=$manufacturer->manufacturer_id;
+							$order->save();
+							
+							$textile=new Textile();
+							$order_has_textile=new OrderHasTextile();
+							if ($line[15]>999) {
+								$textile->textile_number=$line[15];
+							} else {
+								preg_match('/([0-9]{4})/i',$line[16],$matches);
+								$textile->textile_number=$matches[1];
+								$textile->textile_name=$line[16];
+							}
+							$textile->textile_name=$line[16];
+							$textile->textile_price_group=$line[18];
+							$textile->save();
+							$order_has_textile->order_order_id=$order->order_id;
+							$order_has_textile->textile_textile_id=$textile->textile_id;
+							$order_has_textile->save();
+							
+							
+							if ($line[15]<=999) {
+								$textile2=new Textile();
+								$order_has_textile2=new OrderHasTextile();
+								preg_match('/([0-9]{4})/i',$line[16],$matches);
+								$textile2->textile_number=$matches[1];
+								$textile2->textile_name=$line[16];
+								$textile2->save();
+								$order_has_textile2->order_order_id=$order->order_id;
+								$order_has_textile2->textile_textile_id=$textile2->textile_id;
+								$order_has_textile2->save();
+							}
+							
+							
+						}
+						fclose($handle);
+						unlink($file);
+					}
+					echo "</pre>";
+					$transaction->commit();
+					echo "Done";
+				} catch(Exception $e) {
+					$transaction->rollBack();
+					echo "Nie udało się";
+				}
+			}
+		}
+		
+		$this->render('upload',array('model'=>$model));
 	}
 
 	/**
@@ -177,10 +304,15 @@ class OrderController extends Controller
 							$pdf->DrawLine();
 						}
 						
+						#Zebranie danych
 						$pdf->model=$Order->articleArticle->model_name . " " . $Order->articleArticle->model_type;
-						$dess1="1. Dess: " . $Order->textiles[0]->textile_number . " " . $Order->textiles[0]->textile_name;
-						$dess2=isset($Order->textiles[1]->textile_number)? "/ 2. Dess: " . $Order->textiles[1]->textile_number . " " . $Order->textiles[1]->textile_name : " ";
-						$dessin=$dess1 . " " . $dess2;
+						if(isset($Order->textile_order)) {
+							$dess1=$Order->textile_order . "; " . $Order->textiles[0]->textile_name . ";";
+						} else {
+							$dess1=$Order->textiles[0]->textile_number . "; " . $Order->textiles[0]->textile_name;
+						}
+						$dess2=isset($Order->textiles[1]->textile_name)? "; " . $Order->textiles[1]->textile_name : " ";
+						$pdf->dessin=$dess1 . " " . $dess2;
 						$pdf->variant="";
 						$pdf->fusse=$Order->legLeg->leg_type;
 						$pdf->empfanger=$Order->buyerBuyer->buyer_name_1;
@@ -195,7 +327,7 @@ class OrderController extends Controller
 						$pdf->number=$j;
 						$pdf->totalNumber=$Order->articleArticle->article_colli;
 			
-						#Rysujemy
+						#Rysujemy daną ćwiartkę
 						$pdf->Draw($quarter);
 					}
 				}
