@@ -60,25 +60,25 @@ class ShippingLabel extends FPDF {
 		#Lewa strona
 		$this->SetFont('arial_ce','',12);
 		$this->Rect(5+$x, 13+$y, 143.5, 20);
-		$this->Cell(143.5, 5, "Model: " . $this->model, 0, 2, "L");
-		$this->Cell(143.5, 5, "Dessin: " . $this->dessin, 0, 2, "L");
-		$this->Cell(143.5, 5, "Variant: " . $this->variant, 0, 2, "L");
-		$this->Cell(143.5, 5, iconv('utf-8', 'windows-1250',"Füße: ") . $this->fusse, 0, 2, "L");
+		$this->Cell(143.5, 5, "Model: " . iconv('utf-8', 'windows-1250',$this->model), 0, 2, "L");
+		$this->Cell(143.5, 5, "Dessin: " . iconv('utf-8', 'windows-1250',$this->dessin), 0, 2, "L");
+		$this->Cell(143.5, 5, "Variant: " . iconv('utf-8', 'windows-1250',$this->variant), 0, 2, "L");
+		$this->Cell(143.5, 5, iconv('utf-8', 'windows-1250',"Füße: " . $this->fusse), 0, 2, "L");
 		$this->Cell(143.5, 5, "", 0, 2, "L");
 		
 		$this->Cell(143.5, 5, "Empfanger: ", 0, 2, "L");
-		$this->Cell(143.5, 5, $this->empfanger, 0, 2, "L");
+		$this->Cell(143.5, 5, iconv('utf-8', 'windows-1250',$this->empfanger), 0, 2, "L");
 		$this->Cell(143.5, 5, "", 0, 2, "L");
 		
 		$this->Rect(5+$x, 53+$y, 71.75, 40);
 		$this->Rect(76.75+$x, 53+$y, 71.75, 40);
-		$this->Cell(71.75, 5, "Auftrag - nr: " . $this->auftragNr, 0, 2, "L");
-		$this->Cell(71.75, 5, "Bestellnummer: " . $this->bestellnummer, 0, 2, "L");
+		$this->Cell(71.75, 5, "Auftrag - nr: " . iconv('utf-8', 'windows-1250',$this->auftragNr), 0, 2, "L");
+		$this->Cell(71.75, 5, "Bestellnummer: " . iconv('utf-8', 'windows-1250',$this->bestellnummer), 0, 2, "L");
 		$this->Cell(71.75, 5, "Lieferanschrift: ", 0, 2, "L");
 		$this->Cell(71.75, 5, "", 0, 2, "L");
-		$this->Cell(71.75, 5, $this->empfanger, 0, 2, "L");
-		$this->Cell(71.75, 5, $this->strasse, 0, 2, "L");
-		$this->Cell(71.75, 5, $this->plz, 0, 2, "L");
+		$this->Cell(71.75, 5, iconv('utf-8', 'windows-1250',$this->empfanger), 0, 2, "L");
+		$this->Cell(71.75, 5, iconv('utf-8', 'windows-1250',$this->strasse), 0, 2, "L");
+		$this->Cell(71.75, 5, iconv('utf-8', 'windows-1250',$this->plz), 0, 2, "L");
 		
 		#Stopka z numeracją etykiet
 		//$this->Rect(5, 98, 71.75, 10);
@@ -90,14 +90,14 @@ class ShippingLabel extends FPDF {
 		#Prawa strona
 		$this->SetXY(76.75+$x, 38+$y);
 		$this->Cell(71.75, 5, "Lieferant:", 0, 2, "L");
-		$this->Cell(143.5, 5, $this->lieferant, 0, 2, "L");
+		$this->Cell(143.5, 5, iconv('utf-8', 'windows-1250',$this->lieferant), 0, 2, "L");
 		
 		$this->SetXY(76.75+$x, 53+$y);
-		$this->Cell(71.75, 5, "Artikel - nr: " . $this->artikelNr, 0, 2, "L");
+		$this->Cell(71.75, 5, "Artikel - nr: " . iconv('utf-8', 'windows-1250',$this->artikelNr), 0, 2, "L");
 		$this->Cell(71.75, 5, "", 0, 2, "L");
-		$this->Cell(71.75, 5, "Model: " . $this->model, 0, 2, "L");
+		$this->Cell(71.75, 5, "Model: " . iconv('utf-8', 'windows-1250',$this->model), 0, 2, "L");
 		$this->Cell(71.75, 5, "", 0, 2, "L");
-		$this->Cell(71.75, 5, "EAN Nummer: " . $this->eanNummer, 0, 2, "L");
+		$this->Cell(71.75, 5, "EAN Nummer: " . iconv('utf-8', 'windows-1250',$this->eanNummer), 0, 2, "L");
 	}
 	
 	function  DrawLine() {

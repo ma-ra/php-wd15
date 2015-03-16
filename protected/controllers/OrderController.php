@@ -145,42 +145,62 @@ class OrderController extends Controller
 	
 	public function actionPrint()
 	{
-		// Instanciation of inherited class
-		$pdf = new ShippingLabel('L','mm','A4');
-		$pdf->AliasNbPages();
-		$pdf->SetMargins(5, 5, 5);
-		$pdf->SetAutoPageBreak(true, 5);
-	
-		$pdf->SetAuthor("Firma Wyrwał Daniel",1);
-		$pdf->SetCreator("WD15",1);
-		$pdf->SetSubject("Etykieta transportowa");
-		$pdf->SetDisplayMode("fullpage","continuous");
-	
-		$pdf->AddPage();
-		$pdf->DrawLine();
-		
-		#Uzupełniamy dane
-		$pdf->model="Corona 3-Ottomane";
-		$pdf->dessin="1. Dess: 4033 Baltic 96; 2. Dess: 2006 Cayenne 1114 black";
-		$pdf->variant="";
-		$pdf->fusse="Metall - Chrom";
-		$pdf->empfanger=iconv('utf-8', 'windows-1250',"Avanti Möbel-Mitnahmemarkt GmbH");
-		$pdf->lieferant="Reality Import GmbH";
-		$pdf->auftragNr="303589-1";
-		$pdf->bestellnummer="Zuteilung";
-		$pdf->lieferanschrift="";
-		$pdf->strasse=iconv('utf-8', 'windows-1250',"Rohräcker 1");
-		$pdf->plz=iconv('utf-8', 'windows-1250',"DE 37077  Göttingen");
-		$pdf->artikelNr="4670410";
-		$pdf->eanNummer="";
-		$pdf->number=1;
-		$pdf->totalNumber=1;
-		
-		#Rysujemy
-		$pdf->Draw(1);
-		//$pdf->Draw(2);
-		//$pdf->Draw(3);
-		$pdf->Draw(4);
+		if (isset($_POST)) {
+			#Przygotowanie wydruku
+			// Instanciation of inherited class
+			$pdf = new ShippingLabel('L','mm','A4');
+			$pdf->AliasNbPages();
+			$pdf->SetMargins(5, 5, 5);
+			$pdf->SetAutoPageBreak(true, 5);
+			
+			$pdf->SetAuthor("Firma Wyrwał Daniel",1);
+			$pdf->SetCreator("WD15",1);
+			$pdf->SetSubject("Etykieta transportowa");
+			$pdf->SetDisplayMode("fullpage","continuous");
+			
+			$pdf->AddPage();
+			$pdf->DrawLine();
+			$quarter=0;
+			
+			#Pętla po zaznaczonych zamówieniach
+			foreach ($_POST["select"] as $id => $checked) {
+				$Order=$this->loadModel($id);
+				#Pętla po ilości
+				for ($i = 1; $i <= $Order->article_amount; $i++) {
+					#Pętla po colli
+					for ($j = 1; $j <= $Order->articleArticle->article_colli; $j++) {
+						#Odmieżanie ćwiartek i dodawanie stron
+						$quarter=$quarter+1;
+						if ($quarter==5) {
+							$quarter=1;
+							$pdf->AddPage();
+							$pdf->DrawLine();
+						}
+						
+						$pdf->model=$Order->articleArticle->model_name . " " . $Order->articleArticle->model_type;
+						$dess1="1. Dess: " . $Order->textiles[0]->textile_number . " " . $Order->textiles[0]->textile_name;
+						$dess2=isset($Order->textiles[1]->textile_number)? "/ 2. Dess: " . $Order->textiles[1]->textile_number . " " . $Order->textiles[1]->textile_name : " ";
+						$dessin=$dess1 . " " . $dess2;
+						$pdf->variant="";
+						$pdf->fusse=$Order->legLeg->leg_type;
+						$pdf->empfanger=$Order->buyerBuyer->buyer_name_1;
+						$pdf->lieferant=$Order->brokerBroker->broker_name;
+						$pdf->auftragNr=$Order->order_number;
+						$pdf->bestellnummer=$Order->buyer_comments;
+						$pdf->lieferanschrift="";
+						$pdf->strasse=$Order->buyerBuyer->buyer_street;
+						$pdf->plz=$Order->buyerBuyer->buyer_zip_code;
+						$pdf->artikelNr=$Order->articleArticle->article_number;
+						$pdf->eanNummer="";
+						$pdf->number=$j;
+						$pdf->totalNumber=$Order->articleArticle->article_colli;
+			
+						#Rysujemy
+						$pdf->Draw($quarter);
+					}
+				}
+			}
+		}
 		
 		$pdf->Close();
 		
