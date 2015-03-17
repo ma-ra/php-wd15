@@ -175,7 +175,7 @@ class OrderController extends Controller
 							$order->order_date=$line[4];
 							$order->order_number=$line[3];
 							$order->order_reference=$line[19];
-							$order->order_term=$line[21];
+							$order->order_term=$line[22];
 							$order->article_article_id=$article->article_id;
 							$order->leg_leg_id=$leg->leg_id;
 							$order->buyer_buyer_id=$buyer->buyer_id;
@@ -272,7 +272,34 @@ class OrderController extends Controller
 	
 	public function actionPrint()
 	{
-		if (isset($_POST)) {
+		if (isset($_POST) && isset($_POST["yt3"])) {
+			#Przygotowanie wydruku
+			// Instanciation of inherited class
+			$pdf = new LoadingList('P','mm','A4');
+			$pdf->AliasNbPages();
+			$pdf->SetMargins(10, 10, 10);
+			$pdf->SetAutoPageBreak(true, 5);
+				
+			$pdf->SetAuthor("Firma Wyrwał Daniel",1);
+			$pdf->SetCreator("WD15",1);
+			$pdf->SetSubject("Lista załadunkowa");
+			$pdf->SetDisplayMode("fullpage","continuous");
+				
+			$pdf->AddPage();
+			
+			$pdf->Draw();
+			
+			$pdf->Close();
+			
+			#Drukujemy - w sensie tworzymy plik PDF
+			#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
+			$pdf->Output("Etykiety transportowe: " . ".pdf", "I");
+			
+			/* echo "<pre>"; var_dump($_POST); echo "</pre>";
+			die(); */
+		}
+		
+		if (isset($_POST) && isset($_POST["yt2"])) {
 			#Przygotowanie wydruku
 			// Instanciation of inherited class
 			$pdf = new ShippingLabel('L','mm','A4');

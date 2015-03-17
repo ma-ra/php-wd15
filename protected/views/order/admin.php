@@ -142,6 +142,17 @@ $this->widget('zii.widgets.grid.CGridView', array(
 		),
 	),
 )); 
-echo CHtml::submitButton('Drukuj etykiety');
+echo CHtml::button('Zaznacz wszystkie powyższe') . "<br>";
+echo CHtml::submitButton('Drukuj etykiety') . "<br>";
+echo CHtml::submitButton('Drukuj listę załadunkową');
 echo CHtml::endForm();
 ?>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		console.log('KLIK1');
+		$('input[name=yt1]).click(function() {
+			console.log('KLIK!');
+		});
+	});
+</script>

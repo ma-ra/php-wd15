@@ -67,7 +67,9 @@ class ShippingLabel extends FPDF {
 		$this->Cell(143.5, 5, "", 0, 2, "L");
 		
 		$this->Cell(143.5, 5, "Empfanger: ", 0, 2, "L");
+		strlen($this->empfanger) > 36 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',12);
 		$this->Cell(143.5, 5, iconv('utf-8', 'windows-1250',$this->empfanger), 0, 2, "L");
+		$this->SetFont('arial_ce','',12);
 		$this->Cell(143.5, 5, "", 0, 2, "L");
 		
 		$this->Rect(5+$x, 53+$y, 71.75, 40);
@@ -76,7 +78,9 @@ class ShippingLabel extends FPDF {
 		$this->Cell(71.75, 5, "Bestellnummer: " . iconv('utf-8', 'windows-1250',$this->bestellnummer), 0, 2, "L");
 		$this->Cell(71.75, 5, "Lieferanschrift: ", 0, 2, "L");
 		$this->Cell(71.75, 5, "", 0, 2, "L");
+		strlen($this->empfanger) > 36 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',12);
 		$this->Cell(71.75, 5, iconv('utf-8', 'windows-1250',$this->empfanger), 0, 2, "L");
+		$this->SetFont('arial_ce','',12);
 		$this->Cell(71.75, 5, iconv('utf-8', 'windows-1250',$this->strasse), 0, 2, "L");
 		$this->Cell(71.75, 5, iconv('utf-8', 'windows-1250',$this->plz), 0, 2, "L");
 		
@@ -95,8 +99,12 @@ class ShippingLabel extends FPDF {
 		$this->SetXY(76.75+$x, 53+$y);
 		$this->Cell(71.75, 5, "Artikel - nr: " . iconv('utf-8', 'windows-1250',$this->artikelNr), 0, 2, "L");
 		$this->Cell(71.75, 5, "", 0, 2, "L");
-		$this->Cell(71.75, 5, "Model: " . iconv('utf-8', 'windows-1250',$this->model), 0, 2, "L");
+		$this->Cell(14, 5, "Model: ",0, 0, "L");
+		strlen($this->model) > 29 ? $this->SetFont('arial_ce','',11) : $this->SetFont('arial_ce','',12);
+		$this->MultiCell(57.75, 5, iconv('utf-8', 'windows-1250',$this->model), 0, "L");
+		$this->SetX(76.75+$x);
 		$this->Cell(71.75, 5, "", 0, 2, "L");
+		$this->SetFont('arial_ce','',12);
 		$this->Cell(71.75, 5, "EAN Nummer: " . iconv('utf-8', 'windows-1250',$this->eanNummer), 0, 2, "L");
 	}
 	
