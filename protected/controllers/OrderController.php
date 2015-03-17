@@ -287,7 +287,31 @@ class OrderController extends Controller
 				
 			$pdf->AddPage();
 			
-			$pdf->Draw();
+			$pdf->DrawHead();
+			$i=0;
+			$articleAmountSum=0;
+			$articleColiSum=0;
+			foreach ($_POST["select"] as $id => $checked) {
+				$Order=$this->loadModel($id);
+				
+				$pdf->orderNumber=$Order->order_number;
+				$pdf->modelName=$Order->articleArticle->model_name;
+				$pdf->modelType=$Order->articleArticle->model_type;
+				$pdf->textileNumber="";
+				preg_match('/([A-Z].*[0-9])/i',$Order->buyerBuyer->buyer_zip_code,$matches);
+				$pdf->buyerZipCode=$matches[1];
+				$pdf->articleAmount=$Order->article_amount;
+				$articleAmountSum=$articleAmountSum+$pdf->articleAmount;
+				$pdf->articleColi=$Order->articleArticle->article_colli * $pdf->articleAmount;
+				$articleColiSum=$articleColiSum+$pdf->articleColi;
+				$pdf->textileNumber=$Order->textiles[0]->textile_number;
+				
+				$i++;
+				$pdf->DrawLine($i);
+			}
+			$pdf->articleAmount=$articleAmountSum;
+			$pdf->articleColi=$articleColiSum;
+			$pdf->DrawFooter();
 			
 			$pdf->Close();
 			
