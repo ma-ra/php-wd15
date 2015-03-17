@@ -92,7 +92,29 @@ class Textile extends CActiveRecord
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+			'pagination'=>array('pageSize'=>50),
 		));
+	}
+	
+	public function beforeSave() {
+		#wyszukujemy, czy taki wpis już istnieje
+		$find=Textile::model()->find(array(
+		'condition'=>'textile_number=:number AND textile_name=:name AND textile_price_group=:group',
+		'params'=>array(':number'=>$this->textile_number,
+						':name'=>$this->textile_name,
+						':group'=>$this->textile_price_group,
+						),
+		#ostatni element
+		'order' => "textile_id DESC",
+		'limit' => 1
+		));
+		if (!empty($find)) {
+			#update
+			$this->textile_id=$find->textile_id;
+		} else {
+			return parent::beforeSave();
+		}
+	
 	}
 
 	/**

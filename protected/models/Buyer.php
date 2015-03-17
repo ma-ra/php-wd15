@@ -93,6 +93,28 @@ class Buyer extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	
+	public function beforeSave() {
+		#wyszukujemy, czy taki wpis już istnieje
+		$find=Buyer::model()->find(array(
+				'condition'=>'buyer_name_1=:name1 AND buyer_name_2=:name2 AND buyer_street=:street AND buyer_zip_code=:zip_code',
+				'params'=>array(':name1'=>$this->buyer_name_1, 
+								':name2'=>$this->buyer_name_2,
+				 				':street'=>$this->buyer_street,
+								':zip_code'=>$this->buyer_zip_code,
+								),
+				#ostatni element
+				'order' => "buyer_id DESC",
+				'limit' => 1
+		));
+		if (!empty($find)) {
+			#update
+			$this->buyer_id=$find->buyer_id;
+		} else {
+			return parent::beforeSave();
+		}
+		
+	}
 
 	/**
 	 * Returns the static model of the specified AR class.

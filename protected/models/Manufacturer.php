@@ -88,6 +88,26 @@ class Manufacturer extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	
+	public function beforeSave() {
+		#wyszukujemy, czy taki wpis już istnieje
+		$find=Manufacturer::model()->find(array(
+		'condition'=>'manufacturer_name=:name AND manufacturer_number=:number',
+		'params'=>array(':name'=>$this->manufacturer_name,
+						':number'=>$this->manufacturer_number,
+						),
+		#ostatni element
+		'order' => "manufacturer_id DESC",
+		'limit' => 1
+		));
+		if (!empty($find)) {
+			#update
+			$this->manufacturer_id=$find->manufacturer_id;
+		} else {
+			return parent::beforeSave();
+		}
+	
+	}
 
 	/**
 	 * Returns the static model of the specified AR class.

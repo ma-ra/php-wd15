@@ -93,7 +93,29 @@ class Article extends CActiveRecord
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+			'pagination'=>array('pageSize'=>50),
 		));
+	}
+	
+	public function beforeSave() {
+		#wyszukujemy, czy taki wpis już istnieje
+		$find=Article::model()->find(array(
+		'condition'=>'article_number=:number AND model_name=:name AND model_type=:type',
+		'params'=>array(':number'=>$this->article_number,
+						':name'=>$this->model_name,
+						':type'=>$this->model_type,
+						),
+		#ostatni element
+		'order' => "article_id DESC",
+		'limit' => 1
+		));
+		if (!empty($find)) {
+			#update
+			$this->article_id=$find->article_id;
+		} else {
+			return parent::beforeSave();
+		}
+	
 	}
 
 	/**

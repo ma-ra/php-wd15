@@ -84,6 +84,24 @@ class Broker extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	
+	public function beforeSave() {
+		#wyszukujemy, czy taki wpis już istnieje
+		$find=Broker::model()->find(array(
+		'condition'=>'broker_name=:name',
+		'params'=>array(':name'=>$this->broker_name),
+		#ostatni element
+		'order' => "broker_id DESC",
+		'limit' => 1
+		));
+		if (!empty($find)) {
+			#update
+			$this->broker_id=$find->broker_id;
+		} else {
+			return parent::beforeSave();
+		}
+	
+	}
 
 	/**
 	 * Returns the static model of the specified AR class.
