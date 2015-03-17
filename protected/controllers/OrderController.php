@@ -203,9 +203,10 @@ class OrderController extends Controller
 							if ($line[15]<=999) {
 								$textile2=new Textile();
 								$order_has_textile2=new OrderHasTextile();
-								preg_match('/([0-9]{4})/i',$line[16],$matches);
+								preg_match('/([0-9]{4})/i',$line[17],$matches);
 								$textile2->textile_number=$matches[1];
-								$textile2->textile_name=$line[16];
+								$textile2->textile_name=$line[17];
+								$textile2->textile_price_group=$line[18];
 								$textile2->save();
 								$order_has_textile2->order_order_id=$order->order_id;
 								$order_has_textile2->textile_textile_id=$textile2->textile_id;
@@ -304,7 +305,10 @@ class OrderController extends Controller
 				$articleAmountSum=$articleAmountSum+$pdf->articleAmount;
 				$pdf->articleColi=$Order->articleArticle->article_colli * $pdf->articleAmount;
 				$articleColiSum=$articleColiSum+$pdf->articleColi;
-				$pdf->textileNumber=$Order->textiles[0]->textile_number;
+				//var_dump($Order->textiles[1]);
+				$textile1=$Order->textiles[0]->textile_number;
+				isset($Order->textiles[1]->textile_number)? $textile2="/".$Order->textiles[1]->textile_number: $textile2="";
+				$pdf->textileNumber= $textile1 . $textile2;
 				
 				$i++;
 				$pdf->DrawLine($i);

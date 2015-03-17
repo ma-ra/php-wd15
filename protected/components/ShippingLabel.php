@@ -61,7 +61,12 @@ class ShippingLabel extends FPDF {
 		$this->SetFont('arial_ce','',12);
 		$this->Rect(5+$x, 13+$y, 143.5, 20);
 		$this->Cell(143.5, 5, "Model: " . iconv('utf-8', 'windows-1250',$this->model), 0, 2, "L");
-		$this->Cell(143.5, 5, "Dessin: " . iconv('utf-8', 'windows-1250',$this->dessin), 0, 2, "L");
+		$position=$this->GetX();
+		$this->Cell(15, 5, "Dessin: ", 0, 0, "L");
+		strlen($this->dessin) > 63 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',12);
+		$this->Cell(128.5, 5, iconv('utf-8', 'windows-1250',$this->dessin), 0, 2, "L");
+		$this->SetFont('arial_ce','',12);
+		$this->SetX($position);
 		$this->Cell(143.5, 5, "Variant: " . iconv('utf-8', 'windows-1250',$this->variant), 0, 2, "L");
 		$this->Cell(143.5, 5, iconv('utf-8', 'windows-1250',"Füße: " . $this->fusse), 0, 2, "L");
 		$this->Cell(143.5, 5, "", 0, 2, "L");
