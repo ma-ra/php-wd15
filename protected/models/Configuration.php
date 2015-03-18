@@ -1,26 +1,20 @@
 <?php
 
 /**
- * This is the model class for table "article".
+ * This is the model class for table "configuration".
  *
- * The followings are the available columns in table 'article':
- * @property integer $article_id
- * @property string $article_number
- * @property string $model_name
- * @property string $model_type
- * @property integer $article_colli
- *
- * The followings are the available model relations:
- * @property Order[] $orders
+ * The followings are the available columns in table 'configuration':
+ * @property string $name
+ * @property string $value
  */
-class Article extends CActiveRecord
+class Configuration extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'article';
+		return 'configuration';
 	}
 
 	/**
@@ -31,13 +25,11 @@ class Article extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('article_number, model_name, model_type', 'required'),
-			array('article_colli', 'numerical', 'integerOnly'=>true),
-			array('article_number', 'length', 'max'=>50),
-			array('model_name, model_type', 'length', 'max'=>100),
+			array('name, value', 'required'),
+			array('name, value', 'length', 'max'=>45),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('article_id, article_number, model_name, model_type, article_colli', 'safe', 'on'=>'search'),
+			array('name, value', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -49,7 +41,6 @@ class Article extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'orders' => array(self::HAS_MANY, 'Order', 'article_article_id'),
 		);
 	}
 
@@ -59,11 +50,8 @@ class Article extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'article_id' => 'id artykułu',
-			'article_number' => 'numer artykułu',
-			'model_name' => 'model',
-			'model_type' => 'typ',
-			'article_colli' => 'colli',
+			'name' => 'Nazwa parametru',
+			'value' => 'Wartość parametru',
 		);
 	}
 
@@ -85,42 +73,19 @@ class Article extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('article_id',$this->article_id);
-		$criteria->compare('article_number',$this->article_number,true);
-		$criteria->compare('model_name',$this->model_name,true);
-		$criteria->compare('model_type',$this->model_type,true);
-		$criteria->compare('article_colli',$this->article_colli);
+		$criteria->compare('name',$this->name,true);
+		$criteria->compare('value',$this->value,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
-			'pagination'=>array('pageSize'=>50),
 		));
-	}
-	
-	public function beforeSave() {
-		#wyszukujemy, czy taki wpis już istnieje
-		$find=Article::model()->find(array(
-		'condition'=>'article_number=:number',
-		'params'=>array(':number'=>$this->article_number),
-		#ostatni element
-		'order' => "article_id DESC",
-		'limit' => 1
-		));
-		if (!empty($find)) {
-			#nie dublujemy, ale zwracamy id aby użyć dalej w budowaniu powiązania
-			$this->article_id=$find->article_id;
-			return false;
-		} else {
-			return parent::beforeSave();
-		}
-	
 	}
 
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Article the static model class
+	 * @return Configuration the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

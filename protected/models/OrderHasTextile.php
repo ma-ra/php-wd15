@@ -80,6 +80,24 @@ class OrderHasTextile extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	
+	public function beforeSave() {
+		#wyszukujemy, czy taki wpis już istnieje
+		$find=OrderHasTextile::model()->find(array(
+			'condition'=>'order_order_id=:order_order_id AND textile_textile_id=:textile_textile_id',
+			'params'=>array(':order_order_id'=>$this->order_order_id, ':textile_textile_id'=>$this->textile_textile_id),
+			#ostatni element
+			'order' => "order_order_id",
+			'limit' => 1
+		));
+		if (!empty($find)) {
+			$this->order_order_id=$find->order_order_id;
+			$this->textile_textile_id=$find->textile_textile_id;
+		} else {
+			return parent::beforeSave();
+		}
+	}
+	
 
 	/**
 	 * Returns the static model of the specified AR class.

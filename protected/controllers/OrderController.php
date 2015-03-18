@@ -285,6 +285,10 @@ class OrderController extends Controller
 			$pdf->SetCreator("WD15",1);
 			$pdf->SetSubject("Lista załadunkowa");
 			$pdf->SetDisplayMode("fullpage","continuous");
+			
+			$configuration=Configuration::model();
+			$pdf->ladedatum=$configuration->findByAttributes(array('name'=>'ladedatum'))->value;
+			$pdf->verladeliste_tour=$configuration->findByAttributes(array('name'=>'verladeliste_tour'))->value;
 				
 			$pdf->AddPage();
 			

@@ -12,6 +12,8 @@ class LoadingList extends FPDF {
 	public $articleAmount;
 	public $articleColi;
 	public $x1, $x2, $y1, $y2;
+	public $verladeliste_tour;
+	public $ladedatum;
 	
 	// Page header
 	function Header() {
@@ -26,12 +28,12 @@ class LoadingList extends FPDF {
 		#Nagłowek
 		$this->SetFont('arial_ce','',26);
 		$this->SetXY(15,10);
-		$this->Cell(0, 8, "Verladeliste Tour: 4/2015", 0, 2, "C");
+		$this->Cell(0, 8, "Verladeliste Tour: " . $this->verladeliste_tour, 0, 2, "C");
 		$this->Cell(0, 8, "", 0, 2, "C");
 		$this->SetFont('arial_ce','',16);
 		$this->Cell(35, 8, "Ladedatum: ", 0, 0, "L");
 		$this->SetFont('arial_ce','B',16);
-		$this->Cell(40, 8, "13.03.2015", "B", 1, "C");
+		$this->Cell(40, 8, $this->ladedatum, "B", 1, "C");
 		$this->SetFont('arial_ce','',16);
 		$this->SetX(15);
 		$this->Cell(35, 8, "Produzent: ", 0, 0, "L	");

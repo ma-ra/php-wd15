@@ -150,20 +150,9 @@ class Order extends CActiveRecord
 	
 	public function beforeSave() {
 		#wyszukujemy, czy taki wpis już istnieje
-		/* $find=Order::model()->find(array(
-		'condition'=>'order_number=:order_number AND order_date=:order_date AND buyer_order_number=:buyer_order_number AND order_reference=:order_reference AND article_amount=:article_amount AND buyer_buyer_id=:buyer_buyer_id AND broker_broker_id=:broker_broker_id AND manufacturer_manufacturer_id=:manufacturer_manufacturer_id AND leg_leg_id=:leg_leg_id AND article_article_id=:article_article_id AND textile_order=:textile_order',
-		'params'=>array(':order_number'=>$this->buyer_name_1,
-						':order_date'=>$this->buyer_name_2,
-						':buyer_order_number'=>$this->buyer_street,
-						':order_reference'=>$this->order_reference,
-						':article_amount'=>$this->article_amount,
-						':buyer_buyer_id'=>$this->buyer_buyer_id,
-						':broker_broker_id'=>$this->broker_broker_id,
-						':manufacturer_manufacturer_id'=>$this->manufacturer_manufacturer_id,
-						':leg_leg_id'=>$this->leg_leg_id,
-						':article_article_id'=>$this->article_article_id,
-						':textile_order'=>$this->textile_order,
-						),
+		$find=Order::model()->find(array(
+		'condition'=>'order_number=:order_number',
+		'params'=>array(':order_number'=>$this->order_number),
 		#ostatni element
 		'order' => "order_id DESC",
 		'limit' => 1
@@ -171,9 +160,9 @@ class Order extends CActiveRecord
 		if (!empty($find)) {
 			#update
 			$this->order_id=$find->order_id;
-		} else { */
+		} else {
 			return parent::beforeSave();
-		//}
+		}
 	
 	}
 
