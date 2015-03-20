@@ -10,7 +10,10 @@ $this->breadcrumbs=array(
 $this->menu=array(
 	array('label'=>'List Order', 'url'=>array('index')),
 	array('label'=>'Create Order', 'url'=>array('create')),
-		array('label'=>'Upload', 'url'=>array('upload')),
+	array('label'=>'Upload', 'url'=>array('upload')),
+	array('label'=>'Drukuj etykiety transportowe', 'url'=>'#', 'itemOptions'=>array('id' => 'print_label')),
+	array('label'=>'Drukuj ladeliste', 'url'=>'#', 'itemOptions'=>array('id' => 'print_transport_list')),
+	array('label'=>'Zaznacz wszystkie widoczne', 'url'=>'#', 'itemOptions'=>array('id' => 'check')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -41,8 +44,12 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 )); ?>
 </div><!-- search-form -->
 
+<br>
+<br>
+<br>
+<br>
 <?php 
-echo CHtml::beginForm(array('Order/print'),'post', array('enctype'=>'multipart/form-data'));
+echo CHtml::beginForm(array('Order/print'),'post', array('enctype'=>'multipart/form-data', 'id'=>'check_form'));
 
 $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'order-grid',
@@ -50,7 +57,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
 	'filter'=>$model,
 	'columns'=>array(
 		'select'=>array(
-				'header' => 'zaznacz',
+				'header' => 'Zaznacz',
 				'type'=>'raw',
 				'value'=>'"<input id=\"select_".$data->order_id."\" type=\"checkbox\" value=\"1\" name=\"select[".$data->order_id."]\"/>"'
 		),
@@ -142,17 +149,43 @@ $this->widget('zii.widgets.grid.CGridView', array(
 		),
 	),
 )); 
-echo CHtml::button('Zaznacz wszystkie powyższe') . "<br>";
 echo CHtml::submitButton('Drukuj etykiety') . "<br>";
 echo CHtml::submitButton('Drukuj listę załadunkową');
 echo CHtml::endForm();
 ?>
 
 <script type="text/javascript">
+/*<![CDATA[*/
 	$(document).ready(function() {
-		console.log('KLIK1');
-		$('input[name=yt1]).click(function() {
-			console.log('KLIK!');
-		});
+		//najpierw ukrywamy orginalne przyciski
+		$('input[value="Drukuj etykiety"]').hide();
+		$('input[value="Drukuj listę załadunkową"]').hide();
+		
+		//realizujemy kliknięcie za pomocą linku
+		$("li#print_label a").click(function() {
+			$('input[value="Drukuj etykiety"]').click();
+		})
+		$("li#print_transport_list a").click(function() {
+			$('input[value="Drukuj listę załadunkową"]').click();
+		})
+		
+		//obsługa zaznaczania i odznaczania
+		$('li#check a').click(function() {
+			console.log("klik");
+			//zaznaczanie i odznaczanie
+			if($(this).text() == "Zaznacz wszystkie widoczne") {
+				$('input[id^=select_]').attr("checked",true);
+				$(this).text("Odznacz wszystkie widoczne");
+			} 
+			else {
+				$('input[id^=select_]').attr("checked",false);
+				$(this).text("Zaznacz wszystkie widoczne");
+			}
+		})
+		
+		//Rozszeżanie kontenera
+		$('div#page').css("width","2100px");
+		
 	});
+/*]]>*/
 </script>

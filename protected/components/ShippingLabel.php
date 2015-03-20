@@ -80,7 +80,14 @@ class ShippingLabel extends FPDF {
 		$this->Rect(5+$x, 53+$y, 71.75, 40);
 		$this->Rect(76.75+$x, 53+$y, 71.75, 40);
 		$this->Cell(71.75, 5, "Auftrag - nr: " . iconv('utf-8', 'windows-1250',$this->auftragNr), 0, 2, "L");
-		$this->Cell(71.75, 5, "Bestellnummer: " . iconv('utf-8', 'windows-1250',$this->bestellnummer), 0, 2, "L");
+		
+		$position=$this->GetX();
+		$this->Cell(30, 5, "Bestellnummer: ", 0, 0, "L");
+		strlen($this->bestellnummer) > 16 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',12);
+		$this->Cell(41.75, 5, iconv('utf-8', 'windows-1250',$this->bestellnummer), 0, 2, "L");
+		$this->SetFont('arial_ce','',12);
+		$this->SetX($position);
+		
 		$this->Cell(71.75, 5, "Lieferanschrift: ", 0, 2, "L");
 		$this->Cell(71.75, 5, "", 0, 2, "L");
 		strlen($this->empfanger) > 36 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',12);

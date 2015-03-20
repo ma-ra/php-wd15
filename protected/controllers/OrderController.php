@@ -273,7 +273,7 @@ class OrderController extends Controller
 	
 	public function actionPrint()
 	{
-		if (isset($_POST) && isset($_POST["yt3"])) {
+		if (isset($_POST) && isset($_POST["yt2"])) {
 			#Przygotowanie wydruku
 			// Instanciation of inherited class
 			$pdf = new LoadingList('P','mm','A4');
@@ -331,7 +331,7 @@ class OrderController extends Controller
 			die(); */
 		}
 		
-		if (isset($_POST) && isset($_POST["yt2"])) {
+		if (isset($_POST) && isset($_POST["yt1"])) {
 			#Przygotowanie wydruku
 			// Instanciation of inherited class
 			$pdf = new ShippingLabel('L','mm','A4');

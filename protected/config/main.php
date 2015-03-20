@@ -53,9 +53,9 @@ return array(
 		*/
 		// uncomment the following to use a MySQL database
 		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=wd15',
+			'connectionString' => 'mysql:host=localhost;dbname=mara_wd15',
 			'emulatePrepare' => true,
-			'username' => 'root',
+			'username' => 'mara_wd15',
 			'password' => '{password_for_database}'
 			'charset' => 'utf8',
 			'enableParamLogging'=>true,
