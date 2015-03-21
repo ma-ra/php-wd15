@@ -79,7 +79,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
 				'value' => 'CHtml::encode($data->brokerBroker->broker_name)'
 		),
 		array(
-				'name' => 'buyerBuyer.buyer_name',
+				'name' => 'buyerBuyer.buyer_name_1',
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->buyerBuyer->buyer_name_1)'
 		),
@@ -104,11 +104,20 @@ $this->widget('zii.widgets.grid.CGridView', array(
 				'value' => 'CHtml::encode($data->articleArticle->article_colli)'
 		),
 		'article_amount',
-		'textile_order',
 		array(
 				'name' => 'legLeg.leg_type',
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->legLeg->leg_type)'
+		),
+		array(
+				'name' => 'textilesInfo.textile_pair',
+				'type' => 'raw',
+				'value' => 'CHtml::encode($data->textilesInfo[0]->textile_pair)'
+		),
+		array(
+				'name' => 'textilesInfo.textilepair_price_group',
+				'type' => 'raw',
+				'value' => 'CHtml::encode($data->textilesInfo[0]->textilepair_price_group)'
 		),
 		array(
 				'name' => 'textiles.textile_number',
@@ -142,8 +151,12 @@ $this->widget('zii.widgets.grid.CGridView', array(
 		),
 		'printed_minilabel',
 		'printed_shipping_label',
+		'textile_prepared',
 		'article_manufactured',
 		'article_exported',
+		'article_canceled',
+		'order_error',
+		'order_add_date',
 		array(
 			'class'=>'CButtonColumn',
 		),

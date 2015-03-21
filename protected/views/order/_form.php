@@ -21,7 +21,7 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'order_number'); ?>
-		<?php echo $form->textField($model,'order_number',array('size'=>15,'maxlength'=>15)); ?>
+		<?php echo $form->textField($model,'order_number',array('size'=>50,'maxlength'=>50)); ?>
 		<?php echo $form->error($model,'order_number'); ?>
 	</div>
 
@@ -92,12 +92,6 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'textile_order'); ?>
-		<?php echo $form->textField($model,'textile_order'); ?>
-		<?php echo $form->error($model,'textile_order'); ?>
-	</div>
-
-	<div class="row">
 		<?php echo $form->labelEx($model,'printed_minilabel'); ?>
 		<?php echo $form->textField($model,'printed_minilabel'); ?>
 		<?php echo $form->error($model,'printed_minilabel'); ?>
@@ -110,6 +104,12 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->labelEx($model,'textile_prepared'); ?>
+		<?php echo $form->textField($model,'textile_prepared'); ?>
+		<?php echo $form->error($model,'textile_prepared'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->labelEx($model,'article_manufactured'); ?>
 		<?php echo $form->textField($model,'article_manufactured'); ?>
 		<?php echo $form->error($model,'article_manufactured'); ?>
@@ -119,6 +119,24 @@
 		<?php echo $form->labelEx($model,'article_exported'); ?>
 		<?php echo $form->textField($model,'article_exported'); ?>
 		<?php echo $form->error($model,'article_exported'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'article_canceled'); ?>
+		<?php echo $form->textField($model,'article_canceled'); ?>
+		<?php echo $form->error($model,'article_canceled'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'order_error'); ?>
+		<?php echo $form->textField($model,'order_error'); ?>
+		<?php echo $form->error($model,'order_error'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'order_add_date'); ?>
+		<?php echo $form->textField($model,'order_add_date'); ?>
+		<?php echo $form->error($model,'order_add_date'); ?>
 	</div>
 
 	<div class="row buttons">

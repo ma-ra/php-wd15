@@ -58,10 +58,6 @@
 	<?php echo CHtml::encode($data->article_article_id); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('textile_order')); ?>:</b>
-	<?php echo CHtml::encode($data->textile_order); ?>
-	<br />
-
 	<b><?php echo CHtml::encode($data->getAttributeLabel('printed_minilabel')); ?>:</b>
 	<?php echo CHtml::encode($data->printed_minilabel); ?>
 	<br />
@@ -70,12 +66,28 @@
 	<?php echo CHtml::encode($data->printed_shipping_label); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('textile_prepared')); ?>:</b>
+	<?php echo CHtml::encode($data->textile_prepared); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('article_manufactured')); ?>:</b>
 	<?php echo CHtml::encode($data->article_manufactured); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('article_exported')); ?>:</b>
 	<?php echo CHtml::encode($data->article_exported); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('article_canceled')); ?>:</b>
+	<?php echo CHtml::encode($data->article_canceled); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('order_error')); ?>:</b>
+	<?php echo CHtml::encode($data->order_error); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('order_add_date')); ?>:</b>
+	<?php echo CHtml::encode($data->order_add_date); ?>
 	<br />
 
 	*/ ?>

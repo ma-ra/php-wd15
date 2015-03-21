@@ -18,7 +18,7 @@
 
 	<div class="row">
 		<?php echo $form->label($model,'order_number'); ?>
-		<?php echo $form->textField($model,'order_number',array('size'=>15,'maxlength'=>15)); ?>
+		<?php echo $form->textField($model,'order_number',array('size'=>50,'maxlength'=>50)); ?>
 	</div>
 
 	<div class="row">
@@ -77,11 +77,6 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'textile_order'); ?>
-		<?php echo $form->textField($model,'textile_order'); ?>
-	</div>
-
-	<div class="row">
 		<?php echo $form->label($model,'printed_minilabel'); ?>
 		<?php echo $form->textField($model,'printed_minilabel'); ?>
 	</div>
@@ -92,6 +87,11 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->label($model,'textile_prepared'); ?>
+		<?php echo $form->textField($model,'textile_prepared'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->label($model,'article_manufactured'); ?>
 		<?php echo $form->textField($model,'article_manufactured'); ?>
 	</div>
@@ -99,6 +99,21 @@
 	<div class="row">
 		<?php echo $form->label($model,'article_exported'); ?>
 		<?php echo $form->textField($model,'article_exported'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'article_canceled'); ?>
+		<?php echo $form->textField($model,'article_canceled'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'order_error'); ?>
+		<?php echo $form->textField($model,'order_error'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'order_add_date'); ?>
+		<?php echo $form->textField($model,'order_add_date'); ?>
 	</div>
 
 	<div class="row buttons">

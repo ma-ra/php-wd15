@@ -43,6 +43,24 @@
 		<?php echo $form->error($model,'article_colli'); ?>
 	</div>
 
+	<div class="row">
+		<?php echo $form->labelEx($model,'article_all_textile_amount'); ?>
+		<?php echo $form->textField($model,'article_all_textile_amount'); ?>
+		<?php echo $form->error($model,'article_all_textile_amount'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'article_first_textile_amount'); ?>
+		<?php echo $form->textField($model,'article_first_textile_amount'); ?>
+		<?php echo $form->error($model,'article_first_textile_amount'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'article_second_textile_amount'); ?>
+		<?php echo $form->textField($model,'article_second_textile_amount'); ?>
+		<?php echo $form->error($model,'article_second_textile_amount'); ?>
+	</div>
+
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>

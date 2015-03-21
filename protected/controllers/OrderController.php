@@ -28,16 +28,8 @@ class OrderController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view','print','upload'),
+				'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print','upload'),
 				'users'=>array('*'),
-			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
-				'users'=>array('@'),
-			),
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -122,6 +114,7 @@ class OrderController extends Controller
 				echo "<pre>";
 				$handle = @fopen($file, "r");
 				$i=1;
+				$currentDate=date('Y-m-d H:i:s');
 				
 				
 				$transaction = Yii::app()->db->beginTransaction();
@@ -138,39 +131,36 @@ class OrderController extends Controller
 								echo $key . "=>" . $value . "   ";
 							} */
 					
-							$buyer=new Buyer();
+							$buyer=new Buyer('upload');
 							$buyer->buyer_name_1=$line[5];
 							$buyer->buyer_name_2=$line[6];
 							$buyer->buyer_street=$line[7];
 							$buyer->buyer_zip_code=$line[8];
 							$buyer->save();
 							
-							$broker=new Broker();
+							$broker=new Broker('upload');
 							$broker->broker_name="Reality Import GmbH";
 							$broker->save();
 							
-							$manufacturer=new Manufacturer();
+							$manufacturer=new Manufacturer('upload');
 							$manufacturer->manufacturer_number=$line[0];
 							$manufacturer->manufacturer_name=$line[1];
 							$manufacturer->save();
 							
-							$leg=new Leg();
+							$leg=new Leg('upload');
 							$leg->leg_type=$line[14];
 							$leg->save();
 							
-							$article=new Article();
+							$article=new Article('upload');
 							$article->article_colli=1;
 							$article->article_number=$line[11];
 							$article->model_name=$line[12];
 							$article->model_type=$line[13];
 							$article->save();
 							
-							$order=new Order();
+							$order=new Order('upload');
 							$order->article_amount=$line[24];
 							$order->buyer_comments=$line[10];
-							if ($line[15]<=999) {
-								$order->textile_order=$line[15];
-							}
 							$order->buyer_order_number=$line[9];
 							$order->order_date=$line[4];
 							$order->order_number=$line[3];
@@ -181,39 +171,43 @@ class OrderController extends Controller
 							$order->buyer_buyer_id=$buyer->buyer_id;
 							$order->broker_broker_id=$broker->broker_id;
 							$order->manufacturer_manufacturer_id=$manufacturer->manufacturer_id;
+							$order->order_add_date=$currentDate;
 							$order->save();
 							
-							$textile=new Textile();
-							$order_has_textile=new OrderHasTextile();
-							if ($line[15]>999) {
+							#Pierwszy deseń
+							$textile=new Textile('upload');
+							$order_has_textile=new OrderHasTextile('upload');
+							if ($line[15]>999) { #Jeden deseń na zamówieniu
 								$textile->textile_number=$line[15];
-							} else {
+								$textile->textile_price_group=$line[18];
+							} else { #Dwa desenie na zamówieniu
 								preg_match('/([0-9]{4})/i',$line[16],$matches);
 								$textile->textile_number=$matches[1];
-								$textile->textile_name=$line[16];
+								$textile->textile_price_group=0; #przy dwuch, mamy grupę dla dwuch materiałów i zapisujemy gdzie indziej
+								$order_has_textile->textile_pair=$line[15];
+								$order_has_textile->textilepair_price_group=$line[18];
 							}
 							$textile->textile_name=$line[16];
-							$textile->textile_price_group=$line[18];
 							$textile->save();
 							$order_has_textile->order_order_id=$order->order_id;
 							$order_has_textile->textile_textile_id=$textile->textile_id;
 							$order_has_textile->save();
 							
-							
+							#Drugi deseń
 							if ($line[15]<=999) {
-								$textile2=new Textile();
-								$order_has_textile2=new OrderHasTextile();
+								$textile2=new Textile('upload');
+								$order_has_textile2=new OrderHasTextile('upload');
 								preg_match('/([0-9]{4})/i',$line[17],$matches);
 								$textile2->textile_number=$matches[1];
 								$textile2->textile_name=$line[17];
-								$textile2->textile_price_group=$line[18];
+								$textile2->textile_price_group=0; #przy dwuch, mamy grupę dla dwuch materiałów i zapisujemy gdzie indziej
+								$order_has_textile2->textile_pair=$line[15];
+								$order_has_textile2->textilepair_price_group=$line[18];
 								$textile2->save();
 								$order_has_textile2->order_order_id=$order->order_id;
 								$order_has_textile2->textile_textile_id=$textile2->textile_id;
 								$order_has_textile2->save();
 							}
-							
-							
 						}
 						fclose($handle);
 						unlink($file);
@@ -223,7 +217,7 @@ class OrderController extends Controller
 					echo "Done";
 				} catch(Exception $e) {
 					$transaction->rollBack();
-					echo "Nie udało się";
+					echo "Nie udało się: " . var_dump($e);
 				}
 			}
 		}

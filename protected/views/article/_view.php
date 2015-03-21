@@ -25,5 +25,19 @@
 	<?php echo CHtml::encode($data->article_colli); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('article_all_textile_amount')); ?>:</b>
+	<?php echo CHtml::encode($data->article_all_textile_amount); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('article_first_textile_amount')); ?>:</b>
+	<?php echo CHtml::encode($data->article_first_textile_amount); ?>
+	<br />
+
+	<?php /*
+	<b><?php echo CHtml::encode($data->getAttributeLabel('article_second_textile_amount')); ?>:</b>
+	<?php echo CHtml::encode($data->article_second_textile_amount); ?>
+	<br />
+
+	*/ ?>
 
 </div>

@@ -6,6 +6,8 @@
  * The followings are the available columns in table 'order_has_textile':
  * @property integer $order_order_id
  * @property integer $textile_textile_id
+ * @property integer $textile_pair
+ * @property integer $textilepair_price_group
  */
 class OrderHasTextile extends CActiveRecord
 {
@@ -26,10 +28,10 @@ class OrderHasTextile extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('order_order_id, textile_textile_id', 'required'),
-			array('order_order_id, textile_textile_id', 'numerical', 'integerOnly'=>true),
+			array('order_order_id, textile_textile_id, textile_pair, textilepair_price_group', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('order_order_id, textile_textile_id', 'safe', 'on'=>'search'),
+			array('order_order_id, textile_textile_id, textile_pair, textilepair_price_group', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -41,6 +43,7 @@ class OrderHasTextile extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'order' => array(self::BELONGS_TO, 'Order', 'order_order_id)'),
 		);
 	}
 
@@ -52,6 +55,8 @@ class OrderHasTextile extends CActiveRecord
 		return array(
 			'order_order_id' => 'id zamówienia',
 			'textile_textile_id' => 'id materiału',
+			'textile_pair' => 'numer pary materiałów',
+			'textilepair_price_group' => 'grupa cenowa pary materiałów',
 		);
 	}
 
@@ -75,6 +80,8 @@ class OrderHasTextile extends CActiveRecord
 
 		$criteria->compare('order_order_id',$this->order_order_id);
 		$criteria->compare('textile_textile_id',$this->textile_textile_id);
+		$criteria->compare('textile_pair',$this->textile_pair);
+		$criteria->compare('textilepair_price_group',$this->textilepair_price_group);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

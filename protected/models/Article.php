@@ -9,6 +9,9 @@
  * @property string $model_name
  * @property string $model_type
  * @property integer $article_colli
+ * @property integer $article_all_textile_amount
+ * @property integer $article_first_textile_amount
+ * @property integer $article_second_textile_amount
  *
  * The followings are the available model relations:
  * @property Order[] $orders
@@ -32,12 +35,12 @@ class Article extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('article_number, model_name, model_type', 'required'),
-			array('article_colli', 'numerical', 'integerOnly'=>true),
+			array('article_colli, article_all_textile_amount, article_first_textile_amount, article_second_textile_amount', 'numerical', 'integerOnly'=>true),
 			array('article_number', 'length', 'max'=>50),
 			array('model_name, model_type', 'length', 'max'=>100),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('article_id, article_number, model_name, model_type, article_colli', 'safe', 'on'=>'search'),
+			array('article_id, article_number, model_name, model_type, article_colli, article_all_textile_amount, article_first_textile_amount, article_second_textile_amount', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -64,6 +67,9 @@ class Article extends CActiveRecord
 			'model_name' => 'model',
 			'model_type' => 'typ',
 			'article_colli' => 'colli',
+			'article_all_textile_amount' => 'ilość materiału',
+			'article_first_textile_amount' => 'Deseń 1 - ilość materiału',
+			'article_second_textile_amount' => 'Deseń 2 - ilość materiału',
 		);
 	}
 
@@ -90,6 +96,9 @@ class Article extends CActiveRecord
 		$criteria->compare('model_name',$this->model_name,true);
 		$criteria->compare('model_type',$this->model_type,true);
 		$criteria->compare('article_colli',$this->article_colli);
+		$criteria->compare('article_all_textile_amount',$this->article_all_textile_amount);
+		$criteria->compare('article_first_textile_amount',$this->article_first_textile_amount);
+		$criteria->compare('article_second_textile_amount',$this->article_second_textile_amount);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

@@ -17,11 +17,14 @@
  * @property integer $manufacturer_manufacturer_id
  * @property integer $leg_leg_id
  * @property integer $article_article_id
- * @property integer $textile_order
  * @property integer $printed_minilabel
  * @property integer $printed_shipping_label
+ * @property integer $textile_prepared
  * @property integer $article_manufactured
  * @property integer $article_exported
+ * @property integer $article_canceled
+ * @property integer $order_error
+ * @property string $order_add_date
  *
  * The followings are the available model relations:
  * @property Buyer $buyerBuyer
@@ -50,11 +53,10 @@ class Order extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('order_number, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id', 'required'),
-			array('article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textile_order, printed_minilabel, printed_shipping_label, article_manufactured, article_exported', 'numerical', 'integerOnly'=>true),
-			array('order_number', 'length', 'max'=>15),
-			array('buyer_order_number, order_term', 'length', 'max'=>50),
+			array('article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, printed_minilabel, printed_shipping_label, textile_prepared, article_manufactured, article_exported, article_canceled, order_error', 'numerical', 'integerOnly'=>true),
+			array('order_number, buyer_order_number, order_term', 'length', 'max'=>50),
 			array('buyer_comments, order_reference', 'length', 'max'=>150),
-			array('order_date', 'safe'),
+			array('order_date, order_add_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textile_order, printed_minilabel, printed_shipping_label, article_manufactured, article_exported', 'safe', 'on'=>'search'),
@@ -75,6 +77,7 @@ class Order extends CActiveRecord
 			'legLeg' => array(self::BELONGS_TO, 'Leg', 'leg_leg_id'),
 			'articleArticle' => array(self::BELONGS_TO, 'Article', 'article_article_id'),
 			'textiles' => array(self::MANY_MANY, 'Textile', 'order_has_textile(order_order_id, textile_textile_id)'),
+			'textilesInfo' => array(self::HAS_MANY, 'OrderHasTextile', 'order_order_id'),
 		);
 	}
 
@@ -97,11 +100,14 @@ class Order extends CActiveRecord
 			'manufacturer_manufacturer_id' => 'id producenta',
 			'leg_leg_id' => 'id nogi',
 			'article_article_id' => 'id artykułu',
-			'textile_order' => 'numer pary desenii',
 			'printed_minilabel' => 'mini etykieta',
 			'printed_shipping_label' => 'etykieta transportowa',
+			'textile_prepared' => 'wykrojono',
 			'article_manufactured' => 'wyprodukowano',
 			'article_exported' => 'wywieziono',
+			'article_canceled' => 'storno',
+			'order_error' => 'błąd',
+			'order_add_date' => 'data wgrania',
 		);
 	}
 
@@ -136,11 +142,14 @@ class Order extends CActiveRecord
 		$criteria->compare('manufacturer_manufacturer_id',$this->manufacturer_manufacturer_id);
 		$criteria->compare('leg_leg_id',$this->leg_leg_id);
 		$criteria->compare('article_article_id',$this->article_article_id);
-		$criteria->compare('textile_order',$this->textile_order);
 		$criteria->compare('printed_minilabel',$this->printed_minilabel);
 		$criteria->compare('printed_shipping_label',$this->printed_shipping_label);
+		$criteria->compare('textile_prepared',$this->textile_prepared);
 		$criteria->compare('article_manufactured',$this->article_manufactured);
 		$criteria->compare('article_exported',$this->article_exported);
+		$criteria->compare('article_canceled',$this->article_canceled);
+		$criteria->compare('order_error',$this->order_error);
+		$criteria->compare('order_add_date',$this->order_add_date,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

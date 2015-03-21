@@ -58,8 +58,8 @@ class Buyer extends CActiveRecord
 	{
 		return array(
 			'buyer_id' => 'id klienta',
-			'buyer_name_1' => 'nazwa 1',
-			'buyer_name_2' => 'nazwa 2',
+			'buyer_name_1' => 'nazwa kupującego',
+			'buyer_name_2' => 'dodatkowa nazwa kupującego',
 			'buyer_street' => 'ulica',
 			'buyer_zip_code' => 'kod pocztowy',
 		);
