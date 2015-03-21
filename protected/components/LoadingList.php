@@ -47,8 +47,8 @@ class LoadingList extends FPDF {
 		#Nagłówek
 		$this->SetFont('arial_ce','B',12);
 		$this->SetFillColor(220, 220, 220);
-		$this->Cell(11, 8, "Pos.", 1, 0, "C", true);
-		$this->Cell(20, 8, "Auftrag", 1, 0, "C", true);
+		$this->Cell(10, 8, "Pos.", 1, 0, "C", true);
+		$this->Cell(21, 8, "Auftrag", 1, 0, "C", true);
 		$this->Cell(20, 8, "Modell", 1, 0, "C", true);
 		$this->Cell(52, 8, iconv('utf-8', 'windows-1250',"Ausführung"), 1, 0, "C", true);
 		$this->Cell(23, 8, "Stoff", 1, 0, "C", true);
@@ -80,9 +80,13 @@ class LoadingList extends FPDF {
 
 		#Na lewo od MultiCell
 		$this->SetXY(10,$this->y1);
-		$this->Cell(11, $this->y2-$this->y1, $i . ".", 1, 0, "C");
-		$this->Cell(20, $this->y2-$this->y1, $this->orderNumber, 1, 0, "C");
+		$this->Cell(10, $this->y2-$this->y1, $i . ".", 1, 0, "C");
+		$this->GetStringWidth($this->orderNumber) > 21 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',12);
+		$this->Cell(21, $this->y2-$this->y1, $this->orderNumber, 1, 0, "C");
+		$this->GetStringWidth($this->modelName) > 20 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',12);
+		$this->GetStringWidth($this->modelName) > 20 ? $this->SetFont('arial_ce','',8): $this->SetFont('arial_ce','',12);
 		$this->Cell(20, $this->y2-$this->y1, $this->modelName, 1, 0, "L");
+		$this->SetFont('arial_ce','',12);
 					
 		#Na prawo od MultiCell
 		$this->SetXY($this->x1+52,$this->y1);
@@ -93,10 +97,48 @@ class LoadingList extends FPDF {
 		$this->Cell(11, $this->y2-$this->y1, $this->articleColi, 1, 1, "C");
 	}
 	
+	function SpecialDrawLine($i) {
+		#Wiersz
+		$this->SetFont('arial_ce','',12);
+			
+		$currentY=$this->GetY();
+		if (297 - 22 - $currentY < 26) {
+			$this->AddPage();
+		}
+	
+		#Najpierw MultiCell
+		$this->SetX(20); 
+		$this->x1=$this->GetX();
+		$this->y1=$this->GetY();
+		$text=iconv('utf-8', 'windows-1250',$this->orderNumber);
+		$this->SetX(20); $this->MultiCell(139, 5, $text, 1, "L");
+		$text=iconv('utf-8', 'windows-1250',$this->modelName);
+		$this->SetX(20); $this->MultiCell(139, 5, $text, 1, "L");
+		$text=iconv('utf-8', 'windows-1250',$this->modelType);
+		$this->SetX(20); $this->MultiCell(139, 5, $text, 1, "L");
+		$text=iconv('utf-8', 'windows-1250',$this->textileNumber);
+		$this->SetX(20); $this->MultiCell(139, 5, $text, 1, "L");
+		$text=iconv('utf-8', 'windows-1250',$this->buyerZipCode);
+		$this->SetX(20); $this->MultiCell(139, 5, $text, 1, "L");
+		$this->SetFont('arial_ce','',12);
+		$this->x2=$this->GetX();
+		$this->y2=$this->GetY();
+
+		#Na lewo od MultiCell
+		$this->SetXY(10,$this->y1);
+		$this->Cell(10, $this->y2-$this->y1, $i . ".", 1, 0, "C");
+			
+		#Na prawo od MultiCell
+		$this->SetXY($this->x1+139,$this->y1);
+		$this->Cell(14, $this->y2-$this->y1, " ", 1, 0, "C");
+		$this->Cell(16, $this->y2-$this->y1, $this->articleAmount, 1, 0, "C");
+		$this->Cell(11, $this->y2-$this->y1, $this->articleColi, 1, 1, "C");
+	}
+	
 	function DrawFooter() {
 		#Podsumowanie tabeli
 		$this->y1=$this->GetY();
-		$this->SetX($this->x1+52+23);
+		$this->SetX(61+52+23);
 		$this->SetFont('arial_ce','',12);
 		$this->Cell(23, 5, "Summe:", 1, 0, "C", true);
 		$this->Cell(14, 5, "", 1, 0, "C", true);

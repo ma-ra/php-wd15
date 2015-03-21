@@ -267,131 +267,152 @@ class OrderController extends Controller
 	
 	public function actionPrint()
 	{
+		#Ladeliste
 		if (isset($_POST) && isset($_POST["yt2"])) {
-			#Przygotowanie wydruku
-			// Instanciation of inherited class
-			$pdf = new LoadingList('P','mm','A4');
-			$pdf->AliasNbPages();
-			$pdf->SetMargins(10, 10, 10);
-			$pdf->SetAutoPageBreak(true, 5);
+			if (isset($_POST["select"])) {
+				#Przygotowanie wydruku
+				// Instanciation of inherited class
+				$pdf = new LoadingList('P','mm','A4');
+				$pdf->AliasNbPages();
+				$pdf->SetMargins(10, 10, 10);
+				$pdf->SetAutoPageBreak(true, 5);
+					
+				$pdf->SetAuthor("Firma Wyrwał Daniel",1);
+				$pdf->SetCreator("WD15",1);
+				$pdf->SetSubject("Lista załadunkowa");
+				$pdf->SetDisplayMode("fullpage","continuous");
 				
-			$pdf->SetAuthor("Firma Wyrwał Daniel",1);
-			$pdf->SetCreator("WD15",1);
-			$pdf->SetSubject("Lista załadunkowa");
-			$pdf->SetDisplayMode("fullpage","continuous");
-			
-			$configuration=Configuration::model();
-			$pdf->ladedatum=$configuration->findByAttributes(array('name'=>'ladedatum'))->value;
-			$pdf->verladeliste_tour=$configuration->findByAttributes(array('name'=>'verladeliste_tour'))->value;
+				$configuration=Configuration::model();
+				$pdf->ladedatum=$configuration->findByAttributes(array('name'=>'ladedatum'))->value;
+				$pdf->verladeliste_tour=$configuration->findByAttributes(array('name'=>'verladeliste_tour'))->value;
+					
+				$pdf->AddPage();
 				
-			$pdf->AddPage();
-			
-			$pdf->DrawHead();
-			$i=0;
-			$articleAmountSum=0;
-			$articleColiSum=0;
-			foreach ($_POST["select"] as $id => $checked) {
-				$Order=$this->loadModel($id);
-				
-				$pdf->orderNumber=$Order->order_number;
-				$pdf->modelName=$Order->articleArticle->model_name;
-				$pdf->modelType=$Order->articleArticle->model_type;
-				$pdf->textileNumber="";
-				preg_match('/([A-Z].*[0-9])/i',$Order->buyerBuyer->buyer_zip_code,$matches);
-				$pdf->buyerZipCode=$matches[1];
-				$pdf->articleAmount=$Order->article_amount;
-				$articleAmountSum=$articleAmountSum+$pdf->articleAmount;
-				$pdf->articleColi=$Order->articleArticle->article_colli * $pdf->articleAmount;
-				$articleColiSum=$articleColiSum+$pdf->articleColi;
-				//var_dump($Order->textiles[1]);
-				$textile1=$Order->textiles[0]->textile_number;
-				isset($Order->textiles[1]->textile_number)? $textile2="/".$Order->textiles[1]->textile_number: $textile2="";
-				$pdf->textileNumber= $textile1 . $textile2;
-				
-				$i++;
-				$pdf->DrawLine($i);
-			}
-			$pdf->articleAmount=$articleAmountSum;
-			$pdf->articleColi=$articleColiSum;
-			$pdf->DrawFooter();
-			
-			$pdf->Close();
-			
-			#Drukujemy - w sensie tworzymy plik PDF
-			#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
-			$pdf->Output("Etykiety transportowe: " . ".pdf", "I");
-			
-			/* echo "<pre>"; var_dump($_POST); echo "</pre>";
-			die(); */
-		}
-		
-		if (isset($_POST) && isset($_POST["yt1"])) {
-			#Przygotowanie wydruku
-			// Instanciation of inherited class
-			$pdf = new ShippingLabel('L','mm','A4');
-			$pdf->AliasNbPages();
-			$pdf->SetMargins(5, 5, 5);
-			$pdf->SetAutoPageBreak(true, 5);
-			
-			$pdf->SetAuthor("Firma Wyrwał Daniel",1);
-			$pdf->SetCreator("WD15",1);
-			$pdf->SetSubject("Etykieta transportowa");
-			$pdf->SetDisplayMode("fullpage","continuous");
-			
-			$pdf->AddPage();
-			$pdf->DrawLine();
-			$quarter=0;
-			
-			#Pętla po zaznaczonych zamówieniach
-			foreach ($_POST["select"] as $id => $checked) {
-				$Order=$this->loadModel($id);
-				#Pętla po ilości
-				for ($i = 1; $i <= $Order->article_amount; $i++) {
-					#Pętla po colli
-					for ($j = 1; $j <= $Order->articleArticle->article_colli; $j++) {
-						#Odmieżanie ćwiartek i dodawanie stron
-						$quarter=$quarter+1;
-						if ($quarter==5) {
-							$quarter=1;
-							$pdf->AddPage();
-							$pdf->DrawLine();
-						}
-						
-						#Zebranie danych
-						$pdf->model=$Order->articleArticle->model_name . " " . $Order->articleArticle->model_type;
-						if(isset($Order->textile_order)) {
-							$dess1=$Order->textile_order . "; " . $Order->textiles[0]->textile_name . ";";
-						} else {
-							$dess1=$Order->textiles[0]->textile_number . "; " . $Order->textiles[0]->textile_name;
-						}
-						$dess2=isset($Order->textiles[1]->textile_name)? "; " . $Order->textiles[1]->textile_name : " ";
-						$pdf->dessin=$dess1 . " " . $dess2;
-						$pdf->variant="";
-						$pdf->fusse=$Order->legLeg->leg_type;
-						$pdf->empfanger=$Order->buyerBuyer->buyer_name_1;
-						$pdf->lieferant=$Order->brokerBroker->broker_name;
-						$pdf->auftragNr=$Order->order_number;
-						$pdf->bestellnummer=$Order->buyer_comments;
-						$pdf->lieferanschrift="";
-						$pdf->strasse=$Order->buyerBuyer->buyer_street;
-						$pdf->plz=$Order->buyerBuyer->buyer_zip_code;
-						$pdf->artikelNr=$Order->articleArticle->article_number;
-						$pdf->eanNummer="";
-						$pdf->number=$j;
-						$pdf->totalNumber=$Order->articleArticle->article_colli;
-			
-						#Rysujemy daną ćwiartkę
-						$pdf->Draw($quarter);
+				$pdf->DrawHead();
+				$i=0;
+				$articleAmountSum=0;
+				$articleColiSum=0;
+				foreach ($_POST["select"] as $id => $checked) {
+					$Order=$this->loadModel($id);
+					
+					$pdf->orderNumber=$Order->order_number;
+					$pdf->modelName=$Order->articleArticle->model_name;
+					$pdf->modelType=$Order->articleArticle->model_type;
+					$pdf->textileNumber="";
+					preg_match('/([A-Z].*[0-9])/i',$Order->buyerBuyer->buyer_zip_code,$matches);
+					$pdf->buyerZipCode=$matches[1];
+					$pdf->articleAmount=$Order->article_amount;
+					$articleAmountSum=$articleAmountSum+$pdf->articleAmount;
+					$pdf->articleColi=$Order->articleArticle->article_colli * $pdf->articleAmount;
+					$articleColiSum=$articleColiSum+$pdf->articleColi;
+					
+					
+					if (isset($Order->textil_pair)) {
+						isset($Order->textil_pair)? $textile1=$Order->textil_pair : $textile1="";
+					} else {
+						isset($Order->textile1Textile->textile_number)? $textile1=$Order->textile1Textile->textile_number: $textile1="";
+					}
+					$pdf->textileNumber= $textile1;
+					
+					$i++;
+					
+					if (preg_match('/Musteranforderung/i',$Order->order_number)) {
+						$textile1 = $textile1 . "; " . $Order->textile1Textile->textile_name;
+						$textile2 = isset($Order->textile2Textile->textile_name) ? $Order->textile2Textile->textile_name : "";
+						$pdf->textileNumber= $textile1 . "; " . $textile2;
+						$pdf->SpecialDrawLine($i);
+					} else {
+						$pdf->DrawLine($i);						
 					}
 				}
+				$pdf->articleAmount=$articleAmountSum;
+				$pdf->articleColi=$articleColiSum;
+				$pdf->DrawFooter();
+				
+				$pdf->Close();
+				
+				#Drukujemy - w sensie tworzymy plik PDF
+				#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
+				$pdf->Output("Etykiety transportowe: " . ".pdf", "I");
+				
+				/* echo "<pre>"; var_dump($_POST); echo "</pre>";
+				die(); */
+			} else {
+				echo "Nic nie zaznaczono";
 			}
 		}
 		
-		$pdf->Close();
-		
-		#Drukujemy - w sensie tworzymy plik PDF
-		#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
-		$pdf->Output("Etykiety transportowe: " . ".pdf", "I");
+		#Etykiety transportowe
+		if (isset($_POST) && isset($_POST["yt1"])) {
+			if (isset($_POST["select"])) {
+				#Przygotowanie wydruku
+				// Instanciation of inherited class
+				$pdf = new ShippingLabel('L','mm','A4');
+				$pdf->AliasNbPages();
+				$pdf->SetMargins(5, 5, 5);
+				$pdf->SetAutoPageBreak(true, 5);
+				
+				$pdf->SetAuthor("Firma Wyrwał Daniel",1);
+				$pdf->SetCreator("WD15",1);
+				$pdf->SetSubject("Etykieta transportowa");
+				$pdf->SetDisplayMode("fullpage","continuous");
+				
+				$pdf->AddPage();
+				$pdf->DrawLine();
+				$quarter=0;
+				
+				#Pętla po zaznaczonych zamówieniach
+				foreach ($_POST["select"] as $id => $checked) {
+					$Order=$this->loadModel($id);
+					#Pętla po ilości
+					for ($i = 1; $i <= $Order->article_amount; $i++) {
+						#Pętla po colli
+						for ($j = 1; $j <= $Order->articleArticle->article_colli; $j++) {
+							#Odmieżanie ćwiartek i dodawanie stron
+							$quarter=$quarter+1;
+							if ($quarter==5) {
+								$quarter=1;
+								$pdf->AddPage();
+								$pdf->DrawLine();
+							}
+							
+							#Zebranie danych
+							$pdf->model=$Order->articleArticle->model_name . " " . $Order->articleArticle->model_type;
+							if(isset($Order->textil_pair)) {
+								$dess1=$Order->textil_pair . "; " . $Order->textile1Textile->textile_name;
+							} else {
+								$dess1=$Order->textile1Textile->textile_number . "; " . $Order->textile1Textile->textile_name;
+							}
+							$dess2=isset($Order->textile2Textile->textile_name)? "; " . $Order->textile2Textile->textile_name : " ";
+							$pdf->dessin=$dess1 . " " . $dess2;
+							$pdf->variant="";
+							$pdf->fusse=$Order->legLeg->leg_type;
+							$pdf->empfanger=$Order->buyerBuyer->buyer_name_1;
+							$pdf->lieferant=$Order->brokerBroker->broker_name;
+							$pdf->auftragNr=$Order->order_number;
+							$pdf->bestellnummer=$Order->buyer_comments;
+							$pdf->lieferanschrift="";
+							$pdf->strasse=$Order->buyerBuyer->buyer_street;
+							$pdf->plz=$Order->buyerBuyer->buyer_zip_code;
+							$pdf->artikelNr=$Order->articleArticle->article_number;
+							$pdf->eanNummer="";
+							$pdf->number=$j;
+							$pdf->totalNumber=$Order->articleArticle->article_colli;
+				
+							#Rysujemy daną ćwiartkę
+							$pdf->Draw($quarter);
+						}
+					}
+				}
+				$pdf->Close();
+				
+				#Drukujemy - w sensie tworzymy plik PDF
+				#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
+				$pdf->Output("Etykiety transportowe: " . ".pdf", "I");
+			} else {
+				echo "Nic nie zaznaczono";
+			}
+		}
 	}
 
 	/**
