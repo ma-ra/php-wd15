@@ -117,53 +117,43 @@ $this->widget('zii.widgets.grid.CGridView', array(
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->legLeg->leg_type)'
 		),
+		'textil_pair',
+		'textilpair_price_group',
 		array(
-				'name' => 'textilesInfo.textile_pair',
-				'filter'=>CHtml::activeTextField($model,'textilesInfo_textile_pair'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->textilesInfo[0]->textile_pair)'
-		),
-		array(
-				'name' => 'textilesInfo.textilepair_price_group',
-				'filter'=>CHtml::activeTextField($model,'textilesInfo_textilepair_price_group'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->textilesInfo[0]->textilepair_price_group)'
-		),
-		array(
-				'name' => 'textiles.textile_number',
+				'name' => 'textile1Textile.textile_number',
 				'filter'=>CHtml::activeTextField($model,'textiles1_textile_number'),
 				'type' => 'raw',
-				'value' => 'CHtml::encode($data->textiles[0]->textile_number)'
+				'value' => 'CHtml::encode($data->textile1Textile->textile_number)'
 		),
 		array(
-				'name' => 'textiles.textile_name',
+				'name' => 'textile1Textile.textile_name',
 				'filter'=>CHtml::activeTextField($model,'textiles1_textile_name'),
 				'type' => 'raw',
-				'value' => 'CHtml::encode($data->textiles[0]->textile_name)'
+				'value' => 'CHtml::encode($data->textile1Textile->textile_name)'
 		),
 		array(
-				'name' => 'textiles.textile_price_group',
+				'name' => 'textile1Textile.textile_price_group',
 				'filter'=>CHtml::activeTextField($model,'textiles1_textile_price_groupe'),
 				'type' => 'raw',
-				'value' => 'CHtml::encode($data->textiles[0]->textile_price_group)'
+				'value' => 'CHtml::encode($data->textile1Textile->textile_price_group)'
 		),
 		array(
-				'name' => 'textiles.textile_number',
+				'name' => 'textile2Textile.textile_number',
 				'filter'=>CHtml::activeTextField($model,'textiles2_textile_number'),
 				'type' => 'raw',
-				'value' => 'CHtml::encode(isset($data->textiles[1]->textile_number)? $data->textiles[1]->textile_number : "")'
+				'value' => 'CHtml::encode(isset($data->textile2Textile->textile_number)? $data->textile2Textile->textile_number : "")'
 		),
 		array(
-				'name' => 'textiles.textile_name',
+				'name' => 'textile2Textile.textile_name',
 				'filter'=>CHtml::activeTextField($model,'textiles2_textile_name'),
 				'type' => 'raw',
-				'value' => 'CHtml::encode(isset($data->textiles[1]->textile_name)? $data->textiles[1]->textile_name : "")'
+				'value' => 'CHtml::encode(isset($data->textile2Textile->textile_name)? $data->textile2Textile->textile_name : "")'
 		),
 		array(
-				'name' => 'textiles.textile_price_group',
-				'filter'=>CHtml::activeTextField($model,'textiles2_textile_price_group'),
+				'name' => 'textile2Textile.textile_price_group',
+				'filter'=>CHtml::activeTextField($model,'textiles2_textile_price_groupe'),
 				'type' => 'raw',
-				'value' => 'CHtml::encode(isset($data->textiles[1]->textile_price_group)? $data->textiles[1]->textile_price_group : "")'
+				'value' => 'CHtml::encode(isset($data->textile2Textile->textile_price_group)? $data->textile2Textile->textile_price_group : "")'
 		),
 		'printed_minilabel',
 		'printed_shipping_label',

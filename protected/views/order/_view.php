@@ -58,6 +58,22 @@
 	<?php echo CHtml::encode($data->article_article_id); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('textil_pair')); ?>:</b>
+	<?php echo CHtml::encode($data->textil_pair); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('textilpair_price_group')); ?>:</b>
+	<?php echo CHtml::encode($data->textilpair_price_group); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('textile1_textile_id')); ?>:</b>
+	<?php echo CHtml::encode($data->textile1_textile_id); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('textile2_textile_id')); ?>:</b>
+	<?php echo CHtml::encode($data->textile2_textile_id); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('printed_minilabel')); ?>:</b>
 	<?php echo CHtml::encode($data->printed_minilabel); ?>
 	<br />

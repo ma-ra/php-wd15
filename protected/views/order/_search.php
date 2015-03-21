@@ -77,6 +77,26 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->label($model,'textil_pair'); ?>
+		<?php echo $form->textField($model,'textil_pair'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'textilpair_price_group'); ?>
+		<?php echo $form->textField($model,'textilpair_price_group'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'textile1_textile_id'); ?>
+		<?php echo $form->textField($model,'textile1_textile_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'textile2_textile_id'); ?>
+		<?php echo $form->textField($model,'textile2_textile_id'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->label($model,'printed_minilabel'); ?>
 		<?php echo $form->textField($model,'printed_minilabel'); ?>
 	</div>

@@ -10,7 +10,8 @@
  * @property integer $textile_price_group
  *
  * The followings are the available model relations:
- * @property Order[] $orders
+ * @property Order[] $orders1
+ * @property Order[] $orders2
  * @property Supplier[] $suppliers
  */
 class Textile extends CActiveRecord
@@ -49,7 +50,8 @@ class Textile extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'orders' => array(self::MANY_MANY, 'Order', 'order_has_textile(textile_textile_id, order_order_id)'),
+			'orders1' => array(self::HAS_MANY, 'Order', 'textile1_textile_id'),
+			'orders2' => array(self::HAS_MANY, 'Order', 'textile2_textile_id'),
 			'suppliers' => array(self::HAS_MANY, 'Supplier', 'textile_textile_id'),
 		);
 	}

@@ -158,6 +158,30 @@ class OrderController extends Controller
 							$article->model_type=$line[13];
 							$article->save();
 							
+							
+							#Pierwszy deseń
+							$textile=new Textile('upload');
+							if ($line[15]>999) { #Jeden deseń na zamówieniu
+								$textile->textile_number=$line[15];
+								$textile->textile_price_group=$line[18];
+							} else { #Dwa desenie na zamówieniu
+								preg_match('/([0-9]{4})/i',$line[16],$matches);
+								$textile->textile_number=$matches[1];
+								$textile->textile_price_group=0; #przy dwuch, mamy grupę dla dwuch materiałów i zapisujemy gdzie indziej
+							}
+							$textile->textile_name=$line[16];
+							$textile->save();
+							
+							#Drugi deseń
+							if ($line[15]<=999) {
+								$textile2=new Textile('upload');
+								preg_match('/([0-9]{4})/i',$line[17],$matches);
+								$textile2->textile_number=$matches[1];
+								$textile2->textile_name=$line[17];
+								$textile2->textile_price_group=0; #przy dwuch, mamy grupę dla dwuch materiałów i zapisujemy gdzie indziej
+								$textile2->save();
+							}
+							
 							$order=new Order('upload');
 							$order->article_amount=$line[24];
 							$order->buyer_comments=$line[10];
@@ -168,46 +192,22 @@ class OrderController extends Controller
 							$order->order_term=$line[22];
 							$order->article_article_id=$article->article_id;
 							$order->leg_leg_id=$leg->leg_id;
+							#Jeżeli mamy dwa desenie							
+							if ($line[15]<=999) {
+								$order->textil_pair=$line[15];
+								$order->textilpair_price_group=$line[18];
+								$order->textile2_textile_id=$textile2->textile_id;
+							} else {
+								$order->textile2_textile_id=null;
+							}
+							#Pierwszy deseń zawsze zapisuj
+							$order->textile1_textile_id=$textile->textile_id;
 							$order->buyer_buyer_id=$buyer->buyer_id;
 							$order->broker_broker_id=$broker->broker_id;
 							$order->manufacturer_manufacturer_id=$manufacturer->manufacturer_id;
 							$order->order_add_date=$currentDate;
 							$order->save();
 							
-							#Pierwszy deseń
-							$textile=new Textile('upload');
-							$order_has_textile=new OrderHasTextile('upload');
-							if ($line[15]>999) { #Jeden deseń na zamówieniu
-								$textile->textile_number=$line[15];
-								$textile->textile_price_group=$line[18];
-							} else { #Dwa desenie na zamówieniu
-								preg_match('/([0-9]{4})/i',$line[16],$matches);
-								$textile->textile_number=$matches[1];
-								$textile->textile_price_group=0; #przy dwuch, mamy grupę dla dwuch materiałów i zapisujemy gdzie indziej
-								$order_has_textile->textile_pair=$line[15];
-								$order_has_textile->textilepair_price_group=$line[18];
-							}
-							$textile->textile_name=$line[16];
-							$textile->save();
-							$order_has_textile->order_order_id=$order->order_id;
-							$order_has_textile->textile_textile_id=$textile->textile_id;
-							$order_has_textile->save();
-							
-							#Drugi deseń
-							if ($line[15]<=999) {
-								$textile2=new Textile('upload');
-								$order_has_textile2=new OrderHasTextile('upload');
-								preg_match('/([0-9]{4})/i',$line[17],$matches);
-								$textile2->textile_number=$matches[1];
-								$textile2->textile_name=$line[17];
-								$textile2->textile_price_group=0; #przy dwuch, mamy grupę dla dwuch materiałów i zapisujemy gdzie indziej
-								$order_has_textile2->textile_pair=$line[15];
-								$order_has_textile2->textilepair_price_group=$line[18];
-								$textile2->save();
-								$order_has_textile2->order_order_id=$order->order_id;
-								$order_has_textile2->textile_textile_id=$textile2->textile_id;
-								$order_has_textile2->save();
-							}
 						}
 						fclose($handle);
 						unlink($file);
