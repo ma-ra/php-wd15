@@ -70,82 +70,98 @@ $this->widget('zii.widgets.grid.CGridView', array(
 		'order_term',
 		array(
 				'name' => 'manufacturerManufacturer.manufacturer_name',
+				'filter'=>CHtml::activeTextField($model,'manufacturerManufacturer_manufacturer_name'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->manufacturerManufacturer->manufacturer_name)'
 		),
 		array(
 				'name' => 'brokerBroker.broker_name',
+				'filter'=>CHtml::activeTextField($model,'brokerBroker_broker_name'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->brokerBroker->broker_name)'
 		),
 		array(
 				'name' => 'buyerBuyer.buyer_name_1',
+				'filter'=>CHtml::activeTextField($model,'buyerBuyer_buyer_name_1'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->buyerBuyer->buyer_name_1)'
 		),
 		array(
 				'name' => 'articleArticle.article_number',
+				'filter'=>CHtml::activeTextField($model,'articleArticle_article_number'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->articleArticle->article_number)'
 		),
 		array(
 				'name' => 'articleArticle.model_name',
+				'filter'=>CHtml::activeTextField($model,'articleArticle_model_name'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->articleArticle->model_name)'
 		),
 		array(
 				'name' => 'articleArticle.model_type',
+				'filter'=>CHtml::activeTextField($model,'articleArticle_model_type'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->articleArticle->model_type)'
 		),
 		array(
 				'name' => 'articleArticle.article_colli',
+				'filter'=>CHtml::activeTextField($model,'articleArticle_article_colli'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->articleArticle->article_colli)'
 		),
 		'article_amount',
 		array(
 				'name' => 'legLeg.leg_type',
+				'filter'=>CHtml::activeTextField($model,'legLeg_leg_type'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->legLeg->leg_type)'
 		),
 		array(
 				'name' => 'textilesInfo.textile_pair',
+				'filter'=>CHtml::activeTextField($model,'textilesInfo_textile_pair'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->textilesInfo[0]->textile_pair)'
 		),
 		array(
 				'name' => 'textilesInfo.textilepair_price_group',
+				'filter'=>CHtml::activeTextField($model,'textilesInfo_textilepair_price_group'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->textilesInfo[0]->textilepair_price_group)'
 		),
 		array(
 				'name' => 'textiles.textile_number',
+				'filter'=>CHtml::activeTextField($model,'textiles1_textile_number'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->textiles[0]->textile_number)'
 		),
 		array(
 				'name' => 'textiles.textile_name',
+				'filter'=>CHtml::activeTextField($model,'textiles1_textile_name'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->textiles[0]->textile_name)'
 		),
 		array(
 				'name' => 'textiles.textile_price_group',
+				'filter'=>CHtml::activeTextField($model,'textiles1_textile_price_groupe'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->textiles[0]->textile_price_group)'
 		),
 		array(
 				'name' => 'textiles.textile_number',
+				'filter'=>CHtml::activeTextField($model,'textiles2_textile_number'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode(isset($data->textiles[1]->textile_number)? $data->textiles[1]->textile_number : "")'
 		),
 		array(
 				'name' => 'textiles.textile_name',
+				'filter'=>CHtml::activeTextField($model,'textiles2_textile_name'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode(isset($data->textiles[1]->textile_name)? $data->textiles[1]->textile_name : "")'
 		),
 		array(
 				'name' => 'textiles.textile_price_group',
+				'filter'=>CHtml::activeTextField($model,'textiles2_textile_price_group'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode(isset($data->textiles[1]->textile_price_group)? $data->textiles[1]->textile_price_group : "")'
 		),
@@ -169,7 +185,7 @@ echo CHtml::endForm();
 
 <script type="text/javascript">
 /*<![CDATA[*/
-	$(document).ready(function() {
+	 $(document).ready(function() {
 		//najpierw ukrywamy orginalne przyciski
 		$('input[value="Drukuj etykiety"]').hide();
 		$('input[value="Drukuj listę załadunkową"]').hide();

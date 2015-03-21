@@ -36,6 +36,24 @@
  */
 class Order extends CActiveRecord
 {
+	
+	public $manufacturerManufacturer_manufacturer_name;
+	public $brokerBroker_broker_name;
+	public $buyerBuyer_buyer_name_1;
+	public $articleArticle_article_number;
+	public $articleArticle_model_name;
+	public $articleArticle_model_type;
+	public $articleArticle_article_colli;
+	public $legLeg_leg_type;
+	public $textilesInfo_textile_pair;
+	public $textilesInfo_textilepair_price_group;
+	public $textiles1_textile_number;
+	public $textiles1_textile_name;
+	public $textiles1_textile_price_groupe;
+	public $textiles2_textile_number;
+	public $textiles2_textile_name;
+	public $textiles2_textile_price_group;
+	
 	/**
 	 * @return string the associated database table name
 	 */
@@ -59,7 +77,7 @@ class Order extends CActiveRecord
 			array('order_date, order_add_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textile_order, printed_minilabel, printed_shipping_label, article_manufactured, article_exported', 'safe', 'on'=>'search'),
+			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textile_order, printed_minilabel, printed_shipping_label, article_manufactured, article_exported, manufacturerManufacturer_manufacturer_name, brokerBroker_broker_name, buyerBuyer_buyer_name_1, articleArticle_article_number, articleArticle_model_name, articleArticle_model_type, articleArticle_article_colli, legLeg_leg_type, textilesInfo_textile_pair, textilesInfo_textilepair_price_group, textiles1_textile_number, textiles1_textile_name, textiles1_textile_price_groupe, textiles2_textile_number, textiles2_textile_name, textiles2_textile_price_group', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -150,10 +168,54 @@ class Order extends CActiveRecord
 		$criteria->compare('article_canceled',$this->article_canceled);
 		$criteria->compare('order_error',$this->order_error);
 		$criteria->compare('order_add_date',$this->order_add_date,true);
-
+		
+		$criteria->with = array('manufacturerManufacturer', 'brokerBroker', 'buyerBuyer', 'articleArticle', 'legLeg', 'textilesInfo');
+		$criteria->compare('manufacturerManufacturer.manufacturer_name',$this->manufacturerManufacturer_manufacturer_name,true);
+		$criteria->compare('brokerBroker.broker_name',$this->brokerBroker_broker_name,true);
+		$criteria->compare('buyerBuyer.buyer_name_1',$this->buyerBuyer_buyer_name_1,true);
+		$criteria->compare('articleArticle.article_number',$this->articleArticle_article_number,true);
+		$criteria->compare('articleArticle.model_name',$this->articleArticle_model_name,true);
+		$criteria->compare('articleArticle.model_type',$this->articleArticle_model_type,true);
+		$criteria->compare('articleArticle.article_colli',$this->articleArticle_article_colli,true);
+		$criteria->compare('legLeg.leg_type',$this->legLeg_leg_type,true);
+		$criteria->compare('textilesInfo.textile_pair',$this->textilesInfo_textile_pair,true);
+		$criteria->compare('textilesInfo.textilepair_price_group',$this->textilesInfo_textilepair_price_group,true);
+	/* 	$criteria->compare('textiles1_textile_number',$this->textiles1_textile_number,true);
+		$criteria->compare('textiles1_textile_name',$this->,true);
+		$criteria->compare('textiles1_textile_price_groupe',$this->,true);
+		$criteria->compare('textiles2_textile_number',$this->,true);
+		$criteria->compare('textiles2_textile_name',$this->,true);
+		$criteria->compare('textiles2_textile_price_group',$this->,true); */
+		
+		
+		
+		//Create a new CSort
+		$sort = new CSort;
+		$sort->attributes = array(
+				'manufacturerManufacturer.manufacturer_name',
+				'brokerBroker.broker_name',
+				'buyerBuyer.buyer_name_1',
+				'articleArticle.article_number',
+				'articleArticle.model_name',
+				'articleArticle.model_type',
+				'articleArticle.article_colli',
+				'legLeg.leg_type',
+				'textilesInfo.textile_pair',
+				'textilesInfo.textilepair_price_group',
+				'textiles1.textile_number',
+				'textiles1.textile_name',
+				'textiles1.textile_price_groupe',
+				'textiles2.textile_number',
+				'textiles2.textile_name',
+				'textiles2.textile_price_group',
+				
+				'*',//Add the * to include all the rest of the fields from the main model
+		);
+		
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
-			'pagination'=>array('pageSize'=>100),
+			'pagination'=>array('pageSize'=>25),
+			'sort'=>$sort,
 		));
 	}
 	
