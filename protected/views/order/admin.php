@@ -11,6 +11,7 @@ $this->menu=array(
 	array('label'=>'List Order', 'url'=>array('index')),
 	array('label'=>'Create Order', 'url'=>array('create')),
 	array('label'=>'Upload', 'url'=>array('upload')),
+	array('label'=>'Drukuj etykiety na wykroje', 'url'=>'#', 'itemOptions'=>array('id' => 'print_minilabel')),
 	array('label'=>'Drukuj etykiety transportowe', 'url'=>'#', 'itemOptions'=>array('id' => 'print_label')),
 	array('label'=>'Drukuj ladeliste', 'url'=>'#', 'itemOptions'=>array('id' => 'print_transport_list')),
 	array('label'=>'Zaznacz wszystkie widoczne', 'url'=>'#', 'itemOptions'=>array('id' => 'check')),
@@ -44,6 +45,9 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 )); ?>
 </div><!-- search-form -->
 
+<br>
+<br>
+<br>
 <br>
 <br>
 <br>
@@ -169,7 +173,8 @@ $this->widget('zii.widgets.grid.CGridView', array(
 	),
 )); 
 echo CHtml::submitButton('Drukuj etykiety') . "<br>";
-echo CHtml::submitButton('Drukuj listę załadunkową');
+echo CHtml::submitButton('Drukuj listę załadunkową') . "<br>";
+echo CHtml::submitButton('Drukuj etykiety na wykroje') . "<br>";
 echo CHtml::endForm();
 ?>
 
@@ -177,6 +182,7 @@ echo CHtml::endForm();
 /*<![CDATA[*/
 	 $(document).ready(function() {
 		//najpierw ukrywamy orginalne przyciski
+		$('input[value="Drukuj etykiety na wykroje"]').hide();
 		$('input[value="Drukuj etykiety"]').hide();
 		$('input[value="Drukuj listę załadunkową"]').hide();
 		
@@ -186,6 +192,9 @@ echo CHtml::endForm();
 		})
 		$("li#print_transport_list a").click(function() {
 			$('input[value="Drukuj listę załadunkową"]').click();
+		})
+		$("li#print_minilabel a").click(function() {
+			$('input[value="Drukuj etykiety na wykroje"]').click();
 		})
 		
 		//obsługa zaznaczania i odznaczania

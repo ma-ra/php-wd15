@@ -257,6 +257,7 @@ class OrderController extends Controller
 	{
 		$model=new Order('search');
 		$model->unsetAttributes();  // clear any default values
+		$model->article_exported=0;
 		if(isset($_GET['Order']))
 			$model->attributes=$_GET['Order'];
 
@@ -267,6 +268,60 @@ class OrderController extends Controller
 	
 	public function actionPrint()
 	{
+		#Mini etykiety
+		if (isset($_POST) && isset($_POST["yt3"])) {
+			if (isset($_POST["select"])) {
+				#Przygotowanie wydruku
+				// Instanciation of inherited class
+				$pdf = new MiniLabel('P','mm','A4');
+				$pdf->AliasNbPages();
+				$pdf->SetMargins(10, 15, 5);
+				$pdf->SetAutoPageBreak(true, 10);
+					
+				$pdf->SetAuthor("Firma Wyrwał Daniel",1);
+				$pdf->SetCreator("WD15",1);
+				$pdf->SetSubject("Mini etykiety");
+				$pdf->SetDisplayMode("fullpage","continuous");
+		
+				$pdf->AddPage();
+		
+				foreach ($_POST["select"] as $id => $checked) {
+					$Order=$this->loadModel($id);
+					
+					$pdf->orderNumber=$Order->order_number;
+					$pdf->articleNumber=$Order->articleArticle->article_number;
+					$pdf->articleName=$Order->articleArticle->model_name;
+					$pdf->articleType=$Order->articleArticle->model_type;
+					
+					$textileNumber1=$Order->textile1Textile->textile_number;
+					$textileName1= $Order->textile1Textile->textile_name;
+					$textileNumber2=isset($Order->textile2Textile->textile_number) ? $Order->textile2Textile->textile_number : "" ;
+					$textileName2=isset($Order->textile2Textile->textile_name) ? $Order->textile2Textile->textile_name : "" ;
+					
+					$pdf->textileNumber1=iconv('utf-8', 'windows-1250',$textileNumber1);
+					$pdf->textileName1=iconv('utf-8', 'windows-1250',$textileName1);
+					$pdf->textileNumber2=iconv('utf-8', 'windows-1250',$textileNumber2);
+					$pdf->textileName2=iconv('utf-8', 'windows-1250',$textileName2);
+					
+					$pdf->orderDate=$Order->order_term;
+					
+					
+					$pdf->DrawLine();						
+				}
+		
+				$pdf->Close();
+		
+				#Drukujemy - w sensie tworzymy plik PDF
+				#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
+				$pdf->Output("Mini etykiety: " . ".pdf", "I");
+		
+				/* echo "<pre>"; var_dump($_POST); echo "</pre>";
+				die(); */
+				} else {
+				echo "Nic nie zaznaczono";
+			}
+		}
+		
 		#Ladeliste
 		if (isset($_POST) && isset($_POST["yt2"])) {
 			if (isset($_POST["select"])) {
@@ -321,8 +376,11 @@ class OrderController extends Controller
 						$textile2 = isset($Order->textile2Textile->textile_name) ? $Order->textile2Textile->textile_name : "";
 						$pdf->textileNumber= $textile1 . "; " . $textile2;
 					} 
-					$pdf->DrawLine($i);						
-					
+					$pdf->DrawLine($i);
+
+					#Oznacz jako wywiezione
+					$Order->article_exported=1;
+					$Order->save();
 				
 				}
 				$pdf->articleAmount=$articleAmountSum;

@@ -220,7 +220,7 @@ class Order extends CActiveRecord
 		
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
-			'pagination'=>array('pageSize'=>255),
+			'pagination'=>array('pageSize'=>200),
 			'sort'=>$sort,
 		));
 	}
