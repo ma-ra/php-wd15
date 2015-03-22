@@ -234,7 +234,7 @@ class Order extends CActiveRecord
 		'order' => "order_id DESC",
 		'limit' => 1
 		));
-		if (!empty($find)) {
+		if (!empty($find) && $this->scenario === 'upload') {
 			#update
 			$this->order_id=$find->order_id;
 		} else {

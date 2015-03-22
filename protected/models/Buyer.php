@@ -107,7 +107,7 @@ class Buyer extends CActiveRecord
 				'order' => "buyer_id DESC",
 				'limit' => 1
 		));
-		if (!empty($find)) {
+		if (!empty($find) && $this->scenario === 'upload') {
 			#update
 			$this->buyer_id=$find->buyer_id;
 		} else {

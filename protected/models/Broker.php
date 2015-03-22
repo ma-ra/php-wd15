@@ -94,7 +94,7 @@ class Broker extends CActiveRecord
 		'order' => "broker_id DESC",
 		'limit' => 1
 		));
-		if (!empty($find)) {
+		if (!empty($find) && $this->scenario === 'upload') {
 			#update
 			$this->broker_id=$find->broker_id;
 		} else {

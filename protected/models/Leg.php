@@ -94,7 +94,7 @@ class Leg extends CActiveRecord
 		'order' => "leg_id DESC",
 		'limit' => 1
 		));
-		if (!empty($find)) {
+		if (!empty($find) && $this->scenario === 'upload') {
 			#update
 			$this->leg_id=$find->leg_id;
 		} else {

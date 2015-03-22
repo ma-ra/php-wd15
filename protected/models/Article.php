@@ -115,7 +115,7 @@ class Article extends CActiveRecord
 		'order' => "article_id DESC",
 		'limit' => 1
 		));
-		if (!empty($find)) {
+		if (!empty($find) && $this->scenario === 'upload') {
 			#nie dublujemy, ale zwracamy id aby użyć dalej w budowaniu powiązania
 			$this->article_id=$find->article_id;
 			return false;

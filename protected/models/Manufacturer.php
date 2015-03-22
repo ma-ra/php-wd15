@@ -100,7 +100,7 @@ class Manufacturer extends CActiveRecord
 		'order' => "manufacturer_id DESC",
 		'limit' => 1
 		));
-		if (!empty($find)) {
+		if (!empty($find) && $this->scenario === 'upload') {
 			#update
 			$this->manufacturer_id=$find->manufacturer_id;
 		} else {

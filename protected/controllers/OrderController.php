@@ -305,8 +305,11 @@ class OrderController extends Controller
 					
 					$pdf->orderDate=$Order->order_term;
 					
-					
-					$pdf->DrawLine();						
+					$pdf->DrawLine();
+
+					#Oznacz jako wydrukowane
+					$Order->printed_minilabel=1;
+					$Order->save();
 				}
 		
 				$pdf->Close();
@@ -459,6 +462,10 @@ class OrderController extends Controller
 				
 							#Rysujemy daną ćwiartkę
 							$pdf->Draw($quarter);
+							
+							#Oznacz jako wydrukowane
+							$Order->printed_shipping_label=1;
+							$Order->save();
 						}
 					}
 				}

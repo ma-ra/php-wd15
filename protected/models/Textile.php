@@ -110,7 +110,7 @@ class Textile extends CActiveRecord
 		'order' => "textile_id DESC",
 		'limit' => 1
 		));
-		if (!empty($find)) {
+		if (!empty($find) && $this->scenario === 'upload') {
 			#update
 			$this->textile_id=$find->textile_id;
 		} else {
