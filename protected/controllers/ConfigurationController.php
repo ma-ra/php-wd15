@@ -139,11 +139,11 @@ class ConfigurationController extends Controller
 	{
 		$connection=Yii::app()->db;
 		if ($noArticle=="true") {
-			$command=$connection->createCommand("SET foreign_key_checks = 0; truncate buyer; truncate manufacturer; truncate broker; truncate leg; truncate textile; truncate supplier; truncate order_has_textile; TRUNCATE `order` ; SET foreign_key_checks = 1;");
+			$command=$connection->createCommand("SET foreign_key_checks = 0; truncate buyer; truncate manufacturer; truncate broker; truncate leg; truncate textile; truncate supplier; TRUNCATE `order` ; SET foreign_key_checks = 1;");
 			$command->execute();
 			echo "Usunieto wszystko oprocz artykulow";
 		} else {
-			$command=$connection->createCommand("SET foreign_key_checks = 0; truncate buyer; truncate manufacturer; truncate broker; truncate leg; truncate article; truncate textile; truncate supplier; truncate order_has_textile; TRUNCATE `order` ; SET foreign_key_checks = 1;");
+			$command=$connection->createCommand("SET foreign_key_checks = 0; truncate buyer; truncate manufacturer; truncate broker; truncate leg; truncate article; truncate textile; truncate supplier; TRUNCATE `order` ; SET foreign_key_checks = 1;");
 			$command->execute();
 			echo "Usunieto wszystko";
 		}

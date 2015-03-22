@@ -8,7 +8,6 @@ truncate leg;
 truncate article;
 truncate textile;
 truncate supplier;
-truncate order_has_textile;
 TRUNCATE `order` ;
 
 SET foreign_key_checks = 1;

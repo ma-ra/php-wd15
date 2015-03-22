@@ -287,26 +287,27 @@ class OrderController extends Controller
 		
 				foreach ($_POST["select"] as $id => $checked) {
 					$Order=$this->loadModel($id);
-					
-					$pdf->orderNumber=$Order->order_number;
-					$pdf->articleNumber=$Order->articleArticle->article_number;
-					$pdf->articleName=$Order->articleArticle->model_name;
-					$pdf->articleType=$Order->articleArticle->model_type;
-					
-					$textileNumber1=$Order->textile1Textile->textile_number;
-					$textileName1= $Order->textile1Textile->textile_name;
-					$textileNumber2=isset($Order->textile2Textile->textile_number) ? $Order->textile2Textile->textile_number : "" ;
-					$textileName2=isset($Order->textile2Textile->textile_name) ? $Order->textile2Textile->textile_name : "" ;
-					
-					$pdf->textileNumber1=iconv('utf-8', 'windows-1250',$textileNumber1);
-					$pdf->textileName1=iconv('utf-8', 'windows-1250',$textileName1);
-					$pdf->textileNumber2=iconv('utf-8', 'windows-1250',$textileNumber2);
-					$pdf->textileName2=iconv('utf-8', 'windows-1250',$textileName2);
-					
-					$pdf->orderDate=$Order->order_term;
-					
-					$pdf->DrawLine();
-
+					for ($i = 1; $i <= $Order->article_amount; $i++) {
+						
+						$pdf->orderNumber=$Order->order_number;
+						$pdf->articleNumber=$Order->articleArticle->article_number;
+						$pdf->articleName=$Order->articleArticle->model_name;
+						$pdf->articleType=$Order->articleArticle->model_type;
+						
+						$textileNumber1=$Order->textile1Textile->textile_number;
+						$textileName1= $Order->textile1Textile->textile_name;
+						$textileNumber2=isset($Order->textile2Textile->textile_number) ? $Order->textile2Textile->textile_number : "" ;
+						$textileName2=isset($Order->textile2Textile->textile_name) ? $Order->textile2Textile->textile_name : "" ;
+						
+						$pdf->textileNumber1=iconv('utf-8', 'windows-1250',$textileNumber1);
+						$pdf->textileName1=iconv('utf-8', 'windows-1250',$textileName1);
+						$pdf->textileNumber2=iconv('utf-8', 'windows-1250',$textileNumber2);
+						$pdf->textileName2=iconv('utf-8', 'windows-1250',$textileName2);
+						
+						$pdf->orderDate=$Order->order_term;
+						
+						$pdf->DrawLine();
+					}
 					#Oznacz jako wydrukowane
 					$Order->printed_minilabel=1;
 					$Order->save();
@@ -451,7 +452,7 @@ class OrderController extends Controller
 							$pdf->empfanger=$Order->buyerBuyer->buyer_name_1;
 							$pdf->lieferant=$Order->brokerBroker->broker_name;
 							$pdf->auftragNr=$Order->order_number;
-							$pdf->bestellnummer=$Order->buyer_comments;
+							$pdf->bestellnummer=$Order->buyer_order_number;
 							$pdf->lieferanschrift="";
 							$pdf->strasse=$Order->buyerBuyer->buyer_street;
 							$pdf->plz=$Order->buyerBuyer->buyer_zip_code;
@@ -463,11 +464,11 @@ class OrderController extends Controller
 							#Rysujemy daną ćwiartkę
 							$pdf->Draw($quarter);
 							
-							#Oznacz jako wydrukowane
-							$Order->printed_shipping_label=1;
-							$Order->save();
 						}
 					}
+					#Oznacz jako wydrukowane
+					$Order->printed_shipping_label=1;
+					$Order->save();
 				}
 				$pdf->Close();
 				
