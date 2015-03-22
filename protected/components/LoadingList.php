@@ -67,72 +67,105 @@ class LoadingList extends FPDF {
 			$this->AddPage();
 		}
 		
-		#Najpierw MultiCell
-		$this->SetX(61);
-		$this->x1=$this->GetX();
-		$this->y1=$this->GetY();
-		$text=iconv('utf-8', 'windows-1250',$this->modelType);
-		strlen($text) >20 ? $this->SetFont('arial_ce','',10) : $this->SetFont('arial_ce','',12);
-		$this->MultiCell(52, 6, $text, 1, "L");
-		$this->SetFont('arial_ce','',12);
-		$this->x2=$this->GetX();
-		$this->y2=$this->GetY();
-
-		#Na lewo od MultiCell
-		$this->SetXY(10,$this->y1);
-		$this->Cell(10, $this->y2-$this->y1, $i . ".", 1, 0, "C");
-		$this->GetStringWidth($this->orderNumber) > 21 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',12);
-		$this->Cell(21, $this->y2-$this->y1, $this->orderNumber, 1, 0, "C");
-		$this->GetStringWidth($this->modelName) > 20 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',12);
-		$this->GetStringWidth($this->modelName) > 20 ? $this->SetFont('arial_ce','',8): $this->SetFont('arial_ce','',12);
-		$this->Cell(20, $this->y2-$this->y1, $this->modelName, 1, 0, "L");
-		$this->SetFont('arial_ce','',12);
-					
-		#Na prawo od MultiCell
-		$this->SetXY($this->x1+52,$this->y1);
-		$this->Cell(23, $this->y2-$this->y1, $this->textileNumber, 1, 0, "C");
-		$this->Cell(23, $this->y2-$this->y1, $this->buyerZipCode, 1, 0, "C");
-		$this->Cell(14, $this->y2-$this->y1, " ", 1, 0, "C");
-		$this->Cell(16, $this->y2-$this->y1, $this->articleAmount, 1, 0, "C");
-		$this->Cell(11, $this->y2-$this->y1, $this->articleColi, 1, 1, "C");
-	}
+		$this->SetFont('arial_ce','',8);
+		#Wersja normalna czy na długi tekst
+		if ($this->GetStringWidth($this->orderNumber) <= 21 && $this->GetStringWidth($this->modelName) <= 20 && $this->GetStringWidth($this->textileNumber) <= 23 && $this->GetStringWidth($this->buyerZipCode) <= 23) {
+			#Wersja normalna
+			$this->SetFont('arial_ce','',12);
+			#Najpierw MultiCell
+			$this->SetX(61);
+			$this->x1=$this->GetX();
+			$this->y1=$this->GetY();
+			$text=iconv('utf-8', 'windows-1250',$this->modelType);
+			strlen($text) >20 ? $this->SetFont('arial_ce','',10) : $this->SetFont('arial_ce','',12);
+			$this->MultiCell(52, 6, $text, 1, "L");
+			$this->SetFont('arial_ce','',12);
+			$this->x2=$this->GetX();
+			$this->y2=$this->GetY();
 	
-	function SpecialDrawLine($i) {
-		#Wiersz
-		$this->SetFont('arial_ce','',12);
+			#Na lewo od MultiCell
+			$this->SetXY(10,$this->y1);
+			$this->Cell(10, $this->y2-$this->y1, $i . ".", 1, 0, "C");
+			$this->GetStringWidth($this->orderNumber) > 21 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',12);
+			$this->GetStringWidth($this->orderNumber) > 21 ? $this->SetFont('arial_ce','',8): $this->SetFont('arial_ce','',12);
+			$this->Cell(21, $this->y2-$this->y1, $this->orderNumber, 1, 0, "C");
+			$this->GetStringWidth($this->modelName) > 20 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',12);
+			$this->GetStringWidth($this->modelName) > 20 ? $this->SetFont('arial_ce','',8): $this->SetFont('arial_ce','',12);
+			$this->Cell(20, $this->y2-$this->y1, $this->modelName, 1, 0, "L");
+			$this->SetFont('arial_ce','',12);
+						
+			#Na prawo od MultiCell
+			$this->SetXY($this->x1+52,$this->y1);
+			$this->Cell(23, $this->y2-$this->y1, $this->textileNumber, 1, 0, "C");
+			$this->Cell(23, $this->y2-$this->y1, $this->buyerZipCode, 1, 0, "C");
+			$this->Cell(14, $this->y2-$this->y1, " ", 1, 0, "C");
+			$this->Cell(16, $this->y2-$this->y1, $this->articleAmount, 1, 0, "C");
+			$this->Cell(11, $this->y2-$this->y1, $this->articleColi, 1, 1, "C");
+		} else {
+			#Wersja na długi tekst
+			$this->SetFont('arial_ce','',10);
+			#Najpierw MultiCell
+			#Punkt startowy potrzzebny do obliczenia wysokości
+			$this->SetX(20); 
+			$this->x1=$this->GetX();
+			$this->y1=$this->GetY();
+			#Punkt potrzebny do obliczenia cząstkowych wysokości
+			$y1temp=$this->GetY();
+			$text=iconv('utf-8', 'windows-1250',$this->orderNumber);
+			$this->SetX(41); $this->MultiCell(118, 5, $text, 1, "L");
+			$y2temp=$this->GetY();
+			$wys1=$y2temp-$y1temp;
 			
-		$currentY=$this->GetY();
-		if (297 - 22 - $currentY < 26) {
-			$this->AddPage();
+			$y1temp=$this->GetY();
+			$text=iconv('utf-8', 'windows-1250',$this->modelName);
+			$this->SetX(41); $this->MultiCell(118, 5, $text, 1, "L");
+			$y2temp=$this->GetY();
+			$wys2=$y2temp-$y1temp;
+			
+			$y1temp=$this->GetY();
+			$text=iconv('utf-8', 'windows-1250',$this->modelType);
+			$this->SetX(41); $this->MultiCell(118, 5, $text, 1, "L");
+			$y2temp=$this->GetY();
+			$wys3=$y2temp-$y1temp;
+			
+			$x1temp=$this->GetX();
+			$y1temp=$this->GetY();
+			$text=iconv('utf-8', 'windows-1250',$this->textileNumber);
+			$this->SetX(41); $this->MultiCell(118, 5, $text, 1, "L");
+			$x2temp=$this->GetX();
+			$y2temp=$this->GetY();
+			$wys4=$y2temp-$y1temp;
+			
+			$x1temp=$this->GetX();
+			$y1temp=$this->GetY();
+			$text=iconv('utf-8', 'windows-1250',$this->buyerZipCode);
+			$this->SetX(41); $this->MultiCell(118, 5, $text, 1, "L");
+			$x2temp=$this->GetX();
+			$y2temp=$this->GetY();
+			$wys5=$y2temp-$y1temp;
+			
+			$this->x2=$this->GetX();
+			$this->y2=$this->GetY();
+			
+			#Dodatkowe specjalne nagłowki
+			$this->SetXY(20,$this->y1);
+			$this->Cell(21, $wys1, "Auftrag:", 1, 2, "L", true);
+			$this->Cell(21, $wys2, "Modell:", 1, 2, "L", true);
+			$this->Cell(21, $wys3, iconv('utf-8', 'windows-1250',"Ausführung:"), 1, 2, "L", true);
+			$this->Cell(21, $wys4, "Stoff:", 1, 2, "L", true);
+			$this->Cell(21, $wys5, "PLZ:", 1, 2, "L", true);
+	
+			#Na lewo od MultiCell
+			$this->SetFont('arial_ce','',12);
+			$this->SetXY(10,$this->y1);
+			$this->Cell(10, $this->y2-$this->y1, $i . ".", 1, 0, "C");
+				
+			#Na prawo od MultiCell
+			$this->SetXY($this->x1+139,$this->y1);
+			$this->Cell(14, $this->y2-$this->y1, " ", 1, 0, "C");
+			$this->Cell(16, $this->y2-$this->y1, $this->articleAmount, 1, 0, "C");
+			$this->Cell(11, $this->y2-$this->y1, $this->articleColi, 1, 1, "C");
 		}
-	
-		#Najpierw MultiCell
-		$this->SetX(20); 
-		$this->x1=$this->GetX();
-		$this->y1=$this->GetY();
-		$text=iconv('utf-8', 'windows-1250',$this->orderNumber);
-		$this->SetX(20); $this->MultiCell(139, 5, $text, 1, "L");
-		$text=iconv('utf-8', 'windows-1250',$this->modelName);
-		$this->SetX(20); $this->MultiCell(139, 5, $text, 1, "L");
-		$text=iconv('utf-8', 'windows-1250',$this->modelType);
-		$this->SetX(20); $this->MultiCell(139, 5, $text, 1, "L");
-		$text=iconv('utf-8', 'windows-1250',$this->textileNumber);
-		$this->SetX(20); $this->MultiCell(139, 5, $text, 1, "L");
-		$text=iconv('utf-8', 'windows-1250',$this->buyerZipCode);
-		$this->SetX(20); $this->MultiCell(139, 5, $text, 1, "L");
-		$this->SetFont('arial_ce','',12);
-		$this->x2=$this->GetX();
-		$this->y2=$this->GetY();
-
-		#Na lewo od MultiCell
-		$this->SetXY(10,$this->y1);
-		$this->Cell(10, $this->y2-$this->y1, $i . ".", 1, 0, "C");
-			
-		#Na prawo od MultiCell
-		$this->SetXY($this->x1+139,$this->y1);
-		$this->Cell(14, $this->y2-$this->y1, " ", 1, 0, "C");
-		$this->Cell(16, $this->y2-$this->y1, $this->articleAmount, 1, 0, "C");
-		$this->Cell(11, $this->y2-$this->y1, $this->articleColi, 1, 1, "C");
 	}
 	
 	function DrawFooter() {

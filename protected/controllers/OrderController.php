@@ -300,7 +300,7 @@ class OrderController extends Controller
 					$pdf->modelType=$Order->articleArticle->model_type;
 					$pdf->textileNumber="";
 					preg_match('/([A-Z].*[0-9])/i',$Order->buyerBuyer->buyer_zip_code,$matches);
-					$pdf->buyerZipCode=$matches[1];
+					isset($matches[1])? $pdf->buyerZipCode=$matches[1] : $pdf->buyerZipCode=$Order->buyerBuyer->buyer_zip_code;
 					$pdf->articleAmount=$Order->article_amount;
 					$articleAmountSum=$articleAmountSum+$pdf->articleAmount;
 					$pdf->articleColi=$Order->articleArticle->article_colli * $pdf->articleAmount;
@@ -320,10 +320,10 @@ class OrderController extends Controller
 						$textile1 = $textile1 . "; " . $Order->textile1Textile->textile_name;
 						$textile2 = isset($Order->textile2Textile->textile_name) ? $Order->textile2Textile->textile_name : "";
 						$pdf->textileNumber= $textile1 . "; " . $textile2;
-						$pdf->SpecialDrawLine($i);
-					} else {
-						$pdf->DrawLine($i);						
-					}
+					} 
+					$pdf->DrawLine($i);						
+					
+				
 				}
 				$pdf->articleAmount=$articleAmountSum;
 				$pdf->articleColi=$articleColiSum;
