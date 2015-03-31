@@ -1,5 +1,4 @@
 <?php
-/* @var $this OrderController */
 /* @var $model Order */
 
 $this->breadcrumbs=array(
@@ -15,20 +14,11 @@ $this->menu=array(
 	array('label'=>'Drukuj etykiety transportowe', 'url'=>'#', 'itemOptions'=>array('id' => 'print_label')),
 	array('label'=>'Drukuj ladeliste', 'url'=>'#', 'itemOptions'=>array('id' => 'print_transport_list')),
 	array('label'=>'Zaznacz wszystkie widoczne', 'url'=>'#', 'itemOptions'=>array('id' => 'check')),
+	array('label'=>'Zapisz/Usuń zaznaczenie', 'url'=>'#', 'itemOptions'=>array('id' => 'save_check')),
+	array('label'=>'Wykrojono (Zaznacz/Odznacz)', 'url'=>'#', 'itemOptions'=>array('id' => 'prepared')),
+	array('label'=>'Wyprodukowano (Zaznacz/Odznacz)', 'url'=>'#', 'itemOptions'=>array('id' => 'manufactured')),
+	array('label'=>'Storno (Zaznacz/Odznacz)', 'url'=>'#', 'itemOptions'=>array('id' => 'canceled')),
 );
-
-Yii::app()->clientScript->registerScript('search', "
-$('.search-button').click(function(){
-	$('.search-form').toggle();
-	return false;
-});
-$('.search-form form').submit(function(){
-	$('#order-grid').yiiGridView('update', {
-		data: $(this).serialize()
-	});
-	return false;
-});
-");
 ?>
 
 <h1>Manage Orders</h1>
@@ -37,14 +27,15 @@ $('.search-form form').submit(function(){
 You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
 or <b>=</b>) at the beginning of each of your search values to specify how the comparison should be done.
 </p>
-
-<?php echo CHtml::link('Advanced Search','#',array('class'=>'search-button')); ?>
-<div class="search-form" style="display:none">
-<?php $this->renderPartial('_search',array(
-	'model'=>$model,
-)); ?>
-</div><!-- search-form -->
-
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 <br>
 <br>
 <br>
@@ -65,31 +56,15 @@ $this->widget('zii.widgets.grid.CGridView', array(
 				'type'=>'raw',
 				'value'=>'"<input id=\"select_".$data->order_id."\" type=\"checkbox\" value=\"1\" name=\"select[".$data->order_id."]\"/>"'
 		),
+		'checked',
+		array(
+			'class'=>'CButtonColumn',
+			'template'=>'{update}',
+		),
 		'order_id',
+		'article_amount',
 		'order_number',
-		'order_date',
-		'buyer_order_number',
-		'buyer_comments',
-		'order_reference',
 		'order_term',
-		array(
-				'name' => 'manufacturerManufacturer.manufacturer_name',
-				'filter'=>CHtml::activeTextField($model,'manufacturerManufacturer_manufacturer_name'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->manufacturerManufacturer->manufacturer_name)'
-		),
-		array(
-				'name' => 'brokerBroker.broker_name',
-				'filter'=>CHtml::activeTextField($model,'brokerBroker_broker_name'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->brokerBroker->broker_name)'
-		),
-		array(
-				'name' => 'buyerBuyer.buyer_name_1',
-				'filter'=>CHtml::activeTextField($model,'buyerBuyer_buyer_name_1'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->buyerBuyer->buyer_name_1)'
-		),
 		array(
 				'name' => 'articleArticle.article_number',
 				'filter'=>CHtml::activeTextField($model,'articleArticle_article_number'),
@@ -114,15 +89,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->articleArticle->article_colli)'
 		),
-		'article_amount',
-		array(
-				'name' => 'legLeg.leg_type',
-				'filter'=>CHtml::activeTextField($model,'legLeg_leg_type'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->legLeg->leg_type)'
-		),
 		'textil_pair',
-		'textilpair_price_group',
 		array(
 				'name' => 'textile1Textile.textile_number',
 				'filter'=>CHtml::activeTextField($model,'textiles1_textile_number'),
@@ -136,12 +103,6 @@ $this->widget('zii.widgets.grid.CGridView', array(
 				'value' => 'CHtml::encode($data->textile1Textile->textile_name)'
 		),
 		array(
-				'name' => 'textile1Textile.textile_price_group',
-				'filter'=>CHtml::activeTextField($model,'textiles1_textile_price_groupe'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->textile1Textile->textile_price_group)'
-		),
-		array(
 				'name' => 'textile2Textile.textile_number',
 				'filter'=>CHtml::activeTextField($model,'textiles2_textile_number'),
 				'type' => 'raw',
@@ -153,12 +114,6 @@ $this->widget('zii.widgets.grid.CGridView', array(
 				'type' => 'raw',
 				'value' => 'CHtml::encode(isset($data->textile2Textile->textile_name)? $data->textile2Textile->textile_name : "")'
 		),
-		array(
-				'name' => 'textile2Textile.textile_price_group',
-				'filter'=>CHtml::activeTextField($model,'textiles2_textile_price_groupe'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode(isset($data->textile2Textile->textile_price_group)? $data->textile2Textile->textile_price_group : "")'
-		),
 		'printed_minilabel',
 		'printed_shipping_label',
 		'textile_prepared',
@@ -166,9 +121,51 @@ $this->widget('zii.widgets.grid.CGridView', array(
 		'article_exported',
 		'article_canceled',
 		'order_error',
-		'order_add_date',
 		array(
-			'class'=>'CButtonColumn',
+				'class'=>'CButtonColumn',
+				'template'=>'{update}',
+		),
+		'order_add_date',
+		'order_date',
+		'buyer_order_number',
+		'buyer_comments',
+		'order_reference',
+		array(
+				'name' => 'manufacturerManufacturer.manufacturer_name',
+				'filter'=>CHtml::activeTextField($model,'manufacturerManufacturer_manufacturer_name'),
+				'type' => 'raw',
+				'value' => 'CHtml::encode($data->manufacturerManufacturer->manufacturer_name)'
+		),
+		array(
+				'name' => 'brokerBroker.broker_name',
+				'filter'=>CHtml::activeTextField($model,'brokerBroker_broker_name'),
+				'type' => 'raw',
+				'value' => 'CHtml::encode($data->brokerBroker->broker_name)'
+		),
+		array(
+				'name' => 'buyerBuyer.buyer_name_1',
+				'filter'=>CHtml::activeTextField($model,'buyerBuyer_buyer_name_1'),
+				'type' => 'raw',
+				'value' => 'CHtml::encode($data->buyerBuyer->buyer_name_1)'
+		),
+		array(
+				'name' => 'legLeg.leg_type',
+				'filter'=>CHtml::activeTextField($model,'legLeg_leg_type'),
+				'type' => 'raw',
+				'value' => 'CHtml::encode($data->legLeg->leg_type)'
+		),
+		'textilpair_price_group',
+		array(
+				'name' => 'textile1Textile.textile_price_group',
+				'filter'=>CHtml::activeTextField($model,'textiles1_textile_price_groupe'),
+				'type' => 'raw',
+				'value' => 'CHtml::encode($data->textile1Textile->textile_price_group)'
+		),
+		array(
+				'name' => 'textile2Textile.textile_price_group',
+				'filter'=>CHtml::activeTextField($model,'textiles2_textile_price_groupe'),
+				'type' => 'raw',
+				'value' => 'CHtml::encode(isset($data->textile2Textile->textile_price_group)? $data->textile2Textile->textile_price_group : "")'
 		),
 	),
 )); 
@@ -196,6 +193,59 @@ echo CHtml::endForm();
 		$("li#print_minilabel a").click(function() {
 			$('input[value="Drukuj etykiety na wykroje"]').click();
 		})
+		$("li#save_check a").click(function() {
+			//dodajemy informację do POST po przez ukryte pole
+			var input = $("<input>")
+	            .attr("type", "hidden")
+	            .attr("name", "checked")
+	            .val("checked");
+			$("form#check_form").append($(input));
+			//zmieniamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/checked")?>");
+			console.log($("form#check_form").attr("action"));
+			//zatwierdzenie formularza
+			$("form#check_form").submit();
+		})
+		$("li#prepared a").click(function() {
+			//dodajemy informację do POST po przez ukryte pole
+			var input = $("<input>")
+	            .attr("type", "hidden")
+	            .attr("name", "prepared")
+	            .val("prepared");
+			$("form#check_form").append($(input));
+			//zmieniamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/checked")?>");
+			console.log($("form#check_form").attr("action"));
+			//zatwierdzenie formularza
+			$("form#check_form").submit();
+		})
+		$("li#manufactured a").click(function() {
+			//dodajemy informację do POST po przez ukryte pole
+			var input = $("<input>")
+	            .attr("type", "hidden")
+	            .attr("name", "manufactured")
+	            .val("manufactured");
+			$("form#check_form").append($(input));
+			//zmieniamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/checked")?>");
+			console.log($("form#check_form").attr("action"));
+			//zatwierdzenie formularza
+			$("form#check_form").submit();
+		})
+		$("li#canceled a").click(function() {
+			//dodajemy informację do POST po przez ukryte pole
+			var input = $("<input>")
+	            .attr("type", "hidden")
+	            .attr("name", "canceled")
+	            .val("canceled");
+			$("form#check_form").append($(input));
+			//zmieniamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/checked")?>");
+			console.log($("form#check_form").attr("action"));
+			//zatwierdzenie formularza
+			$("form#check_form").submit();
+		})
+		
 		
 		//obsługa zaznaczania i odznaczania
 		$('li#check a').click(function() {

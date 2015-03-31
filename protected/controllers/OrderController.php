@@ -28,7 +28,7 @@ class OrderController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print','upload'),
+				'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print','upload', 'checked'),
 				'users'=>array('*'),
 			),
 			array('deny',  // deny all users
@@ -258,6 +258,7 @@ class OrderController extends Controller
 		$model=new Order('search');
 		$model->unsetAttributes();  // clear any default values
 		$model->article_exported=0;
+		$model->article_canceled=0;
 		if(isset($_GET['Order']))
 			$model->attributes=$_GET['Order'];
 
@@ -266,10 +267,65 @@ class OrderController extends Controller
 		));
 	}
 	
+	public function actionChecked()
+	{
+		if (isset($_POST["checked"]) && isset($_POST["select"])) {
+			foreach ($_POST["select"] as $id => $checked) {
+				$Order=$this->loadModel($id);
+				if ($Order->checked==0) {
+					$Order->checked=1;
+				} else {
+					$Order->checked=0;					
+				}
+				$Order->save();
+			}
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		}
+		
+		if (isset($_POST["prepared"]) && isset($_POST["select"])) {
+			foreach ($_POST["select"] as $id => $checked) {
+				$Order=$this->loadModel($id);
+				if ($Order->textile_prepared==0) {
+					$Order->textile_prepared=1;
+				} else {
+					$Order->textile_prepared=0;
+				}
+				$Order->save();
+			}
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		}
+		
+		if (isset($_POST["manufactured"]) && isset($_POST["select"])) {
+			foreach ($_POST["select"] as $id => $checked) {
+				$Order=$this->loadModel($id);
+				if ($Order->article_manufactured==0) {
+					$Order->article_manufactured=1;
+				} else {
+					$Order->article_manufactured=0;
+				}
+				$Order->save();
+			}
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		}
+		
+		if (isset($_POST["canceled"]) && isset($_POST["select"])) {
+			foreach ($_POST["select"] as $id => $checked) {
+				$Order=$this->loadModel($id);
+				if ($Order->article_canceled==0) {
+					$Order->article_canceled=1;
+				} else {
+					$Order->article_canceled=0;
+				}
+				$Order->save();
+			}
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		}
+	}
+	
 	public function actionPrint()
 	{
 		#Mini etykiety
-		if (isset($_POST) && isset($_POST["yt3"])) {
+		if (isset($_POST) && isset($_POST["yt2"])) {
 			if (isset($_POST["select"])) {
 				#Przygotowanie wydruku
 				// Instanciation of inherited class
@@ -284,6 +340,7 @@ class OrderController extends Controller
 				$pdf->SetDisplayMode("fullpage","continuous");
 		
 				$pdf->AddPage();
+				$currentDate=date('Y-m-d H:i:s');
 		
 				foreach ($_POST["select"] as $id => $checked) {
 					$Order=$this->loadModel($id);
@@ -309,7 +366,7 @@ class OrderController extends Controller
 						$pdf->DrawLine();
 					}
 					#Oznacz jako wydrukowane
-					$Order->printed_minilabel=1;
+					$Order->printed_minilabel=$currentDate;
 					$Order->save();
 				}
 		
@@ -327,7 +384,7 @@ class OrderController extends Controller
 		}
 		
 		#Ladeliste
-		if (isset($_POST) && isset($_POST["yt2"])) {
+		if (isset($_POST) && isset($_POST["yt1"])) {
 			if (isset($_POST["select"])) {
 				#Przygotowanie wydruku
 				// Instanciation of inherited class
@@ -383,7 +440,7 @@ class OrderController extends Controller
 					$pdf->DrawLine($i);
 
 					#Oznacz jako wywiezione
-					$Order->article_exported=1;
+					$Order->article_exported=$pdf->verladeliste_tour;
 					$Order->save();
 				
 				}
@@ -395,7 +452,7 @@ class OrderController extends Controller
 				
 				#Drukujemy - w sensie tworzymy plik PDF
 				#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
-				$pdf->Output("Etykiety transportowe: " . ".pdf", "I");
+				$pdf->Output("Ladeliste: " . ".pdf", "D");
 				
 				/* echo "<pre>"; var_dump($_POST); echo "</pre>";
 				die(); */
@@ -405,7 +462,7 @@ class OrderController extends Controller
 		}
 		
 		#Etykiety transportowe
-		if (isset($_POST) && isset($_POST["yt1"])) {
+		if (isset($_POST) && isset($_POST["yt0"])) {
 			if (isset($_POST["select"])) {
 				#Przygotowanie wydruku
 				// Instanciation of inherited class
@@ -420,6 +477,7 @@ class OrderController extends Controller
 				$pdf->SetDisplayMode("fullpage","continuous");
 				
 				$pdf->AddPage();
+				$currentDate=date('Y-m-d H:i:s');
 				$pdf->DrawLine();
 				$quarter=0;
 				
@@ -467,7 +525,7 @@ class OrderController extends Controller
 						}
 					}
 					#Oznacz jako wydrukowane
-					$Order->printed_shipping_label=1;
+					$Order->printed_shipping_label=$currentDate;
 					$Order->save();
 				}
 				$pdf->Close();

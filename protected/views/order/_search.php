@@ -118,7 +118,7 @@
 
 	<div class="row">
 		<?php echo $form->label($model,'article_exported'); ?>
-		<?php echo $form->textField($model,'article_exported'); ?>
+		<?php echo $form->textField($model,'article_exported',array('size'=>50,'maxlength'=>50)); ?>
 	</div>
 
 	<div class="row">
@@ -134,6 +134,11 @@
 	<div class="row">
 		<?php echo $form->label($model,'order_add_date'); ?>
 		<?php echo $form->textField($model,'order_add_date'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'checked'); ?>
+		<?php echo $form->textField($model,'checked'); ?>
 	</div>
 
 	<div class="row buttons">

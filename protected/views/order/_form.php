@@ -141,7 +141,7 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'article_exported'); ?>
-		<?php echo $form->textField($model,'article_exported'); ?>
+		<?php echo $form->textField($model,'article_exported',array('size'=>50,'maxlength'=>50)); ?>
 		<?php echo $form->error($model,'article_exported'); ?>
 	</div>
 
@@ -161,6 +161,12 @@
 		<?php echo $form->labelEx($model,'order_add_date'); ?>
 		<?php echo $form->textField($model,'order_add_date'); ?>
 		<?php echo $form->error($model,'order_add_date'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'checked'); ?>
+		<?php echo $form->textField($model,'checked'); ?>
+		<?php echo $form->error($model,'checked'); ?>
 	</div>
 
 	<div class="row buttons">

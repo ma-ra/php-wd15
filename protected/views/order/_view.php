@@ -106,6 +106,10 @@
 	<?php echo CHtml::encode($data->order_add_date); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('checked')); ?>:</b>
+	<?php echo CHtml::encode($data->checked); ?>
+	<br />
+
 	*/ ?>
 
 </div>
