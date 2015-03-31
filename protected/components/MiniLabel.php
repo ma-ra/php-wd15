@@ -66,6 +66,5 @@ class MiniLabel extends FPDF {
 	// Page footer
 	function Footer() {
 	}
-	
 }
 ?>

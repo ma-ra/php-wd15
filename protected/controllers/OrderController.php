@@ -374,7 +374,7 @@ class OrderController extends Controller
 		
 				#Drukujemy - w sensie tworzymy plik PDF
 				#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
-				$pdf->Output("Mini etykiety: " . ".pdf", "I");
+				$pdf->Output("Mini etykiety " . date('Y-m-d') . ".pdf", "I");
 		
 				/* echo "<pre>"; var_dump($_POST); echo "</pre>";
 				die(); */
@@ -452,7 +452,7 @@ class OrderController extends Controller
 				
 				#Drukujemy - w sensie tworzymy plik PDF
 				#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
-				$pdf->Output("Ladeliste: " . ".pdf", "D");
+				$pdf->Output("Ladeliste " . date('Y-m-d') . ".pdf", "I");
 				
 				/* echo "<pre>"; var_dump($_POST); echo "</pre>";
 				die(); */
@@ -510,6 +510,7 @@ class OrderController extends Controller
 							$pdf->empfanger=$Order->buyerBuyer->buyer_name_1;
 							$pdf->lieferant=$Order->brokerBroker->broker_name;
 							$pdf->auftragNr=$Order->order_number;
+							$pdf->id=$Order->order_id;
 							$pdf->bestellnummer=$Order->buyer_order_number;
 							$pdf->lieferanschrift="";
 							$pdf->strasse=$Order->buyerBuyer->buyer_street;
@@ -532,7 +533,7 @@ class OrderController extends Controller
 				
 				#Drukujemy - w sensie tworzymy plik PDF
 				#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
-				$pdf->Output("Etykiety transportowe: " . ".pdf", "I");
+				$pdf->Output("Etykiety transportowe " . date('Y-m-d') .  ".pdf", "I");
 			} else {
 				echo "Nic nie zaznaczono";
 			}
