@@ -28,7 +28,7 @@ class OrderController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print','upload', 'checked'),
+				'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print','upload', 'mobileScaned', 'checked'),
 				'users'=>array('*'),
 			),
 			array('deny',  // deny all users
@@ -322,6 +322,17 @@ class OrderController extends Controller
 		}
 	}
 	
+	public function actionMobileScaned() {
+		if (isset($_POST["data"])) {
+			$json = json_decode($_POST["data"]);
+			foreach ($json as $key => $value) {
+				echo "$value";
+			}
+		} else {
+			echo "false";
+		}
+	}
+	
 	public function actionPrint()
 	{
 		#Mini etykiety
@@ -510,7 +521,6 @@ class OrderController extends Controller
 							$pdf->empfanger=$Order->buyerBuyer->buyer_name_1;
 							$pdf->lieferant=$Order->brokerBroker->broker_name;
 							$pdf->auftragNr=$Order->order_number;
-							$pdf->id=$Order->order_id;
 							$pdf->bestellnummer=$Order->buyer_order_number;
 							$pdf->lieferanschrift="";
 							$pdf->strasse=$Order->buyerBuyer->buyer_street;
@@ -520,6 +530,9 @@ class OrderController extends Controller
 							$pdf->number=$j;
 							$pdf->totalNumber=$Order->articleArticle->article_colli;
 				
+							
+							$pdf->id=$Order->order_id . sprintf('%03d', $i) . $j;
+							
 							#Rysujemy daną ćwiartkę
 							$pdf->Draw($quarter);
 							

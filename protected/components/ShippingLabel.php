@@ -149,7 +149,25 @@ class ShippingLabel extends FPDF {
 	function Footer() {
 	}
 	
-	######### Barcode function
+	############################
+	####                    ####
+	####  Dashes function   ####
+	####                    ####
+	############################
+	function SetDash($black=null, $white=null)
+    {
+        if($black!==null)
+            $s=sprintf('[%.3F %.3F] 0 d',$black*$this->k,$white*$this->k);
+        else
+            $s='[] 0 d';
+        $this->_out($s);
+    }
+	
+	############################
+	####                    ####
+	####  Barcode function  ####
+	####                    ####
+	############################
 	function EAN13($x, $y, $barcode, $h=16, $w=.35)
 	{
 		$this->Barcode($x,$y,$barcode,$h,$w,13);
@@ -238,15 +256,5 @@ class ShippingLabel extends FPDF {
 		$this->SetFont('Arial','',12);
 		$this->Text($x,$y+$h+11/$this->k,substr($barcode,-$len));
 	}
-
-	######### Dashes function	
-	function SetDash($black=null, $white=null)
-    {
-        if($black!==null)
-            $s=sprintf('[%.3F %.3F] 0 d',$black*$this->k,$white*$this->k);
-        else
-            $s='[] 0 d';
-        $this->_out($s);
-    }
 }
 ?>
