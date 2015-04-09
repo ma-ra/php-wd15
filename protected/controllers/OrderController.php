@@ -325,9 +325,20 @@ class OrderController extends Controller
 	public function actionMobileScaned() {
 		if (isset($_POST["data"])) {
 			$json = json_decode($_POST["data"]);
-			foreach ($json as $key => $value) {
-				echo "$value";
-			}
+			#var_dump($json);
+			#echo $json->count . "\n";
+			#echo $json->coli . "\n";
+			#foreach ($json->values as $key => $value) {
+				#echo $value . "\n";
+			#}
+			
+			$return=array(
+				'status' => 'PARTIAL',
+				'coli' => 7,
+				'count' =>7,
+				'values' => $json->values
+			);
+			echo json_encode($return, JSON_FORCE_OBJECT);
 		} else {
 			echo "false";
 		}
@@ -530,8 +541,8 @@ class OrderController extends Controller
 							$pdf->number=$j;
 							$pdf->totalNumber=$Order->articleArticle->article_colli;
 				
-							
-							$pdf->id=$Order->order_id . sprintf('%03d', $i) . $j;
+							//odred_id + (3) sztuka + (1) no coli + (1) ilość coli
+							$pdf->id=$Order->order_id . sprintf('%03d', $i) . $j . $Order->articleArticle->article_colli;
 							
 							#Rysujemy daną ćwiartkę
 							$pdf->Draw($quarter);
