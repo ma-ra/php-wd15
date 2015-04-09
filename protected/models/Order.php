@@ -244,24 +244,6 @@ class Order extends CActiveRecord
 		));
 	}
 	
-	public function beforeSave() {
-		#wyszukujemy, czy taki wpis już istnieje
-		$find=Order::model()->find(array(
-		'condition'=>'order_number=:order_number AND article_article_id=:article_id',
-		'params'=>array(':order_number'=>$this->order_number, ':article_id'=>$this->article_article_id),
-		#ostatni element
-		'order' => "order_id DESC",
-		'limit' => 1
-		));
-		if (!empty($find) && $this->scenario === 'upload') {
-			#update
-			$this->order_id=$find->order_id;
-		} else {
-			return parent::beforeSave();
-		}
-	
-	}
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!

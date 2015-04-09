@@ -1,0 +1,6 @@
+* Teraz mamy nic nie rób lub insert podczas wgrywania. Zmienić na update lub insert (Na razie poprawione tylko dla Order).
+* Jeżeli puste pole to null do bazy (Na razie poprawione tylko w Order).
+* Ustaleanie storno podczas wgrywania.
+* Dokończenie z kodami kreskowymi.
+* Obliczanie materiałów.
+* Informacje na podstawie faktury.

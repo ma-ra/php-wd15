@@ -182,7 +182,18 @@ class OrderController extends Controller
 								$textile2->save();
 							}
 							
-							$order=new Order('upload');
+							
+							#order - update or insert
+							$order=Order::model()->find(array(
+							'condition'=>'order_number=:order_number AND article_article_id=:article_id',
+							'params'=>array(':order_number'=>$line[3], ':article_id'=>$article->article_id),
+							#ostatni element
+							'order' => "order_id DESC",
+							'limit' => 1
+							));
+							if (empty($order) && $this->scenario === 'upload') {
+								$order=new Order('upload');
+							}
 							$order->article_amount=$line[24];
 							$order->buyer_comments=$line[10];
 							$order->buyer_order_number=$line[9];
