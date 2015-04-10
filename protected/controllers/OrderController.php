@@ -397,8 +397,19 @@ class OrderController extends Controller
 						}
 					}
 				} else {
-					#zapis informacji do bazy
-					$order->article_manufactured+=$values["count"];
+					#zapis informacji do bazy w postaci procentów
+					//wyliczenie obecnej liczby coli na podstawie procent będacych w bazie
+					$currentPercentColi=$order->article_manufactured;
+					//echo "$key %coli: $currentPercentColi\n";
+					$currentColi=($order->article_manufactured * $order->article_amount * $order->articleArticle->article_colli)/100;
+					//zwiększenie liczby coli o nowe skany
+					//echo "$key  coli: $currentColi\n";
+					$currentColi+=$values["coli"];
+					//echo "$key  coli++: $currentColi\n";
+					//wyliczenie procent i przypisane nowej wartości
+					$order->article_manufactured=(100*$currentColi)/($order->article_amount*$order->articleArticle->article_colli);
+					//echo $key . " %coli++: " . (100*$currentColi)/($order->article_amount*$order->articleArticle->article_colli) . "\n";
+					
 					$order->save();
 					$totalCount+=$values["count"];
 					$totalColi+=$values["coli"];
