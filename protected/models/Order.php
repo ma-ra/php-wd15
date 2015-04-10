@@ -244,6 +244,17 @@ class Order extends CActiveRecord
 		));
 	}
 	
+	public function beforeSave() {
+		//wyprodukowano != 100% => zgłoś błąd
+		if ($this->article_manufactured != $this->article_amount * $this->articleArticle->article_colli && $this->article_manufactured != 0) {
+			$this->order_error=Constants::NOT_100PERCENT_MANUFACTURED;
+		} else if ($this->article_manufactured == $this->article_amount * $this->articleArticle->article_colli ||  $this->article_manufactured == 0) {
+			$this->order_error=Constants::NO_ERROR;
+		}
+		return parent::beforeSave();
+	}
+	
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!

@@ -189,13 +189,19 @@ echo CHtml::endForm();
 		
 		//realizujemy kliknięcie za pomocą linku
 		$("li#print_label a").click(function() {
+			$("form#check_form").attr("target","_blank");
 			$('input[value="Drukuj etykiety"]').click();
+			$("form#check_form").attr("target","_self");
 		})
 		$("li#print_transport_list a").click(function() {
+			$("form#check_form").attr("target","_blank");
 			$('input[value="Drukuj listę załadunkową"]').click();
+			$("form#check_form").attr("target","_self");
 		})
 		$("li#print_minilabel a").click(function() {
+			$("form#check_form").attr("target","_blank");
 			$('input[value="Drukuj etykiety na wykroje"]').click();
+			$("form#check_form").attr("target","_self");
 		})
 		$("li#save_check a").click(function() {
 			//dodajemy informację do POST po przez ukryte pole
@@ -252,7 +258,7 @@ echo CHtml::endForm();
 		
 		
 		//obsługa zaznaczania i odznaczania
-		$('li#check a').click(function() {
+		$('li#check a').click(function(e) {
 			console.log("klik");
 			//zaznaczanie i odznaczanie
 			if($(this).text() == "Zaznacz wszystkie widoczne") {
@@ -263,6 +269,7 @@ echo CHtml::endForm();
 				$('input[id^=select_]').attr("checked",false);
 				$(this).text("Zaznacz wszystkie widoczne");
 			}
+			e.preventDefault();
 		})
 		
 		//Rozszeżanie kontenera

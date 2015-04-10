@@ -310,7 +310,7 @@ class OrderController extends Controller
 			foreach ($_POST["select"] as $id => $checked) {
 				$Order=$this->loadModel($id);
 				if ($Order->article_manufactured==0) {
-					$Order->article_manufactured=1;
+					$Order->article_manufactured=$Order->article_amount * $Order->articleArticle->article_colli;
 				} else {
 					$Order->article_manufactured=0;
 				}
@@ -398,12 +398,6 @@ class OrderController extends Controller
 					}
 				} else {
 					$order->article_manufactured+=$values["coli"];
-					//wyprodukowano != 100% => zgłoś błąd
-					if ($order->article_manufactured != $order->article_amount * $order->articleArticle->article_colli) {
-						$order->order_error=Constants::NOT_100PERCENT_MANUFACTURED;
-					} else if ($order->article_manufactured == $order->article_amount * $order->articleArticle->article_colli) {
-						$order->order_error=Constants::NO_ERROR;
-					}
 					$order->save();
 					$totalCount+=$values["count"];
 					$totalColi+=$values["coli"];
@@ -540,9 +534,15 @@ class OrderController extends Controller
 					$pdf->textileNumber="";
 					preg_match('/([A-Z].*[0-9])/i',$Order->buyerBuyer->buyer_zip_code,$matches);
 					isset($matches[1])? $pdf->buyerZipCode=$matches[1] : $pdf->buyerZipCode=$Order->buyerBuyer->buyer_zip_code;
-					$pdf->articleAmount=$Order->article_amount;
+					//jeżeli nie jest wyprodukowana całość (liczone w coli), to umieszczaj tylko część na ladeliste
+					if ($Order->article_manufactured > 0 && $Order->article_manufactured < ($Order->article_amount * $Order->articleArticle->article_colli)) {
+						$pdf->articleAmount=($Order->article_amount * $Order->article_manufactured) / ($Order->article_amount * $Order->articleArticle->article_colli);
+						$pdf->articleColi=$Order->article_manufactured;
+					} else {
+						$pdf->articleAmount=$Order->article_amount;
+						$pdf->articleColi=$Order->articleArticle->article_colli * $pdf->articleAmount;
+					}
 					$articleAmountSum=$articleAmountSum+$pdf->articleAmount;
-					$pdf->articleColi=$Order->articleArticle->article_colli * $pdf->articleAmount;
 					$articleColiSum=$articleColiSum+$pdf->articleColi;
 					
 					
