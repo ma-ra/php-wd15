@@ -120,8 +120,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
 		array(
 				'name' => 'article_manufactured',
 				'type' => 'raw',
-				//'value' => 'CHtml::encode(isset($data->article_manufactured)? (100*$data->article_manufactured)/($data->article_amount*$data->articleArticle->article_colli) . "%" . " (" . $data->article_manufactured . "/" . ($data->article_amount*$data->articleArticle->article_colli) . "Coli)" : "0%")'
-				'value' => 'CHtml::encode(isset($data->article_manufactured)?  $data->article_manufactured . "%" : "0%")'
+				'value' => 'CHtml::encode(isset($data->article_manufactured)? $data->article_manufactured . "/" . ($data->article_amount*$data->articleArticle->article_colli) . " Coli (" . (100*$data->article_manufactured)/($data->article_amount*$data->articleArticle->article_colli) . "%)" : "0%")'
 		),
 		'article_exported',
 		'article_canceled',
