@@ -335,24 +335,109 @@ class OrderController extends Controller
 	
 	public function actionMobileScaned() {
 		if (isset($_POST["data"])) {
+			#zdekodowanie otrzymanych danych
 			$json = json_decode($_POST["data"]);
-			#var_dump($json);
-			#echo $json->count . "\n";
-			#echo $json->coli . "\n";
-			#foreach ($json->values as $key => $value) {
-				#echo $value . "\n";
-			#}
+			
+			#liczymy ilości w tablicy, a dopiero póniej zapisujemy policzone do bazy
+			$orders=array();
+			foreach ($json->values as $key => $values) {
+				$id=substr($values, 0, 7);
+				$count=substr($values, 7, 3);
+				$coli=substr($values, 10, 1);
+				$coli_amount=substr($values, 11, 1);
+				
+				#inicjujemy indeks, na potrzeby dalszej inkrementacji
+				if (!array_key_exists($id, $orders)) {
+					$orders[$id]["count"] = 0;
+					$orders[$id]["coli"] = 0;
+				} 
+				
+				$orders[$id]["coli"]+=1;
+				
+				if ($coli_amount == 1) {
+					$orders[$id]["count"]+=1;
+				} else if ($coli_amount == 2) {
+					$orders[$id]["count"]+=0.5;
+				} else if ($coli_amount == 3) {
+					if ($coli == 3) {
+						$orders[$id]["count"]+=0.4;
+					} else {
+						$orders[$id]["count"]+=0.3;
+					}
+				} else if ($coli_amount == 4) {
+					$orders[$id]["count"]+=0.25;
+				}
+			}
+			
+			#zapis danych do bazy
+			$totalColi=0;
+			$totalCount=0;
+			$totalBadColi=0;
+			$totalBadCount=0;
+			$badOrders=array();
+			foreach ($orders as $key => $values) {
+				$order=Order::model()->find(array(
+					'condition'=>'order_id=:order_id',
+					'params'=>array(':order_id'=>$key),
+					#ostatni element
+					'order' => "order_id DESC",
+					'limit' => 1
+				));
+				
+				if (empty($order)) {
+					#przygotowanie odpowiedzi dla aplikacji w przypadku nieznanych kodów kreskowych
+					$totalBadCount+=$values["count"];
+					$totalBadColi+=$values["coli"];
+					
+					#pobranie listy kodów kreskowych
+					foreach ($json->values as $nothing => $barcode) {
+						$id=substr($barcode, 0, 7);
+						if ($id == $key) {
+							$badOrders[$barcode]=$barcode;
+						}
+					}
+				} else {
+					#zapis informacji do bazy
+					$order->article_manufactured+=$values["count"];
+					$order->save();
+					$totalCount+=$values["count"];
+					$totalColi+=$values["coli"];
+				}
+			}
+			
+			#odpowiedź do aplikacji mobilnej
+			if ($json->count == $totalCount * 100 && $json->coli == $totalColi * 100) {
+				$return=array(
+						'status' => 'OK',
+						'coli' => $totalColi * 100,
+						'count' =>$totalCount * 100,
+				);
+			} else {
+				$return=array(
+						'status' => 'PARTIAL',
+						'coli' => $totalBadColi * 100,
+						'count' =>$totalBadCount * 100,
+						'values' => $badOrders
+				);
+			}
+			echo json_encode($return, JSON_FORCE_OBJECT);
+		} else {
+			echo "Brak danych";
+		}
+		
+		/* if (isset($_POST["data"])) {
+			$json = json_decode($_POST["data"]);
 			
 			$return=array(
 				'status' => 'PARTIAL',
-				'coli' => 7,
-				'count' =>7,
+				'coli' => $json->coli -1 *100,
+				'count' =>$json->count -1 * 100,
 				'values' => $json->values
 			);
 			echo json_encode($return, JSON_FORCE_OBJECT);
 		} else {
 			echo "false";
-		}
+		} */
 	}
 	
 	public function actionPrint()
