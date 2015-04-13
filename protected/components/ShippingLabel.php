@@ -21,6 +21,7 @@ class ShippingLabel extends FPDF {
 	public $eanNummer;
 	public $number;
 	public $totalNumber;
+	public $order_term;
 	
 	// Page header
 	function Header() {
@@ -126,6 +127,9 @@ class ShippingLabel extends FPDF {
 		#Barcode
 		$number=$number = sprintf('%012d', $this->id);
 		$this->EAN13(5+$x+2, 53+$y+40,$number,7);
+		//numer tygodnia (termin) ukryty obok kodu kreskowego
+		$this->SetXY(5+$x+32, 53+$y+47);
+		$this->Cell(10, 5, $this->order_term, 0, 2, "L");
 		
 		#QRCode
 		//$ Qrcode = new QRCode ("Twoja wiadomość tutaj", "H");  // Poziom błędu: L, M, P, H

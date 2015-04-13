@@ -480,9 +480,20 @@ class OrderController extends Controller
 		
 				$pdf->AddPage();
 				$currentDate=date('Y-m-d H:i:s');
-		
+				
+				#Budujemy tablicę pod zapytanie wyszukujące chciane krotki
+				$pks=array();
 				foreach ($_POST["select"] as $id => $checked) {
-					$Order=$this->loadModel($id);
+					array_push($pks, $id);
+				}
+				#Kryteria wyszukiwania
+				$criteria=new CDbCriteria;
+				$criteria->with=array('articleArticle');
+				$criteria->order='t.order_term ASC, articleArticle.article_number ASC';
+				$Orders=Order::model()->findAllByPk($pks, $criteria);
+				
+				#Pętla po posortowanych zamówieniach i dodawanie etykiet na wydruk
+				foreach ($Orders as $id => $Order) {
 					for ($i = 1; $i <= $Order->article_amount; $i++) {
 						
 						$pdf->orderNumber=$Order->order_number;
@@ -547,9 +558,20 @@ class OrderController extends Controller
 				$i=0;
 				$articleAmountSum=0;
 				$articleColiSum=0;
+				
+				#Budujemy tablicę pod zapytanie wyszukujące chciane krotki
+				$pks=array();
 				foreach ($_POST["select"] as $id => $checked) {
-					$Order=$this->loadModel($id);
-					
+					array_push($pks, $id);
+				}
+				#Kryteria wyszukiwania
+				$criteria=new CDbCriteria;
+				$criteria->with=array('articleArticle');
+				$criteria->order='articleArticle.article_number ASC, order_id ASC';
+				$Orders=Order::model()->findAllByPk($pks, $criteria);
+				
+				#Pętla po posortowanych zamówieniach i dodawanie etykiet na wydruk
+				foreach ($Orders as $id => $Order) {
 					$pdf->orderNumber=$Order->order_number;
 					$pdf->modelName=$Order->articleArticle->model_name;
 					$pdf->modelType=$Order->articleArticle->model_type;
@@ -625,10 +647,21 @@ class OrderController extends Controller
 				$currentDate=date('Y-m-d H:i:s');
 				$pdf->DrawLine();
 				$quarter=0;
+				$old_order_term=0;
 				
-				#Pętla po zaznaczonych zamówieniach
+				#Budujemy tablicę pod zapytanie wyszukujące chciane krotki
+				$pks=array();
 				foreach ($_POST["select"] as $id => $checked) {
-					$Order=$this->loadModel($id);
+					array_push($pks, $id);
+				}
+				#Kryteria wyszukiwania
+				$criteria=new CDbCriteria;
+				$criteria->with=array('articleArticle');
+				$criteria->order='t.order_term ASC, articleArticle.article_number ASC';
+				$Orders=Order::model()->findAllByPk($pks, $criteria);
+				
+				#Pętla po posortowanych zamówieniach i dodawanie etykiet na wydruk
+				foreach ($Orders as $id => $Order) {
 					#Pętla po ilości
 					for ($i = 1; $i <= $Order->article_amount; $i++) {
 						#Pętla po colli
@@ -641,7 +674,20 @@ class OrderController extends Controller
 								$pdf->DrawLine();
 							}
 							
+							#Nowa strona w przypadku rozpoczęcia etykiet z nowego tygodnia
+							$order_term=str_replace("/","",$Order->order_term);
+							$order_term=str_replace(date('Y'),"",$order_term);
+							if ($old_order_term != 0 && $order_term != $old_order_term && $quarter != 1){
+								$quarter=1;
+								$pdf->AddPage();
+								$pdf->DrawLine();
+							}
+							$old_order_term=$order_term;
+							
+							
 							#Zebranie danych
+							
+							$pdf->order_term=$order_term;
 							$pdf->model=$Order->articleArticle->model_name . " " . $Order->articleArticle->model_type;
 							if(isset($Order->textil_pair)) {
 								$dess1=$Order->textil_pair . "; " . $Order->textile1Textile->textile_name;
