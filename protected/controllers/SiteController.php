@@ -46,6 +46,15 @@ class SiteController extends Controller
 	 */
 	public function actionLogin()
 	{
+		#Jak PHP działa na FastCGI/CGI, to w .htaccess dodajemy poniższy kod, a w php wykonujemy poniższą komendę
+			#Dodajemy w .htaccess
+			/* <IfModule mod_rewrite.c>
+			 RewriteEngine on
+			 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+			 </IfModule> */
+		if (!isset($_SERVER['PHP_AUTH_USER'])) {
+			list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':' , base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
+		}
 		
 		if (!isset($_SERVER['PHP_AUTH_USER'])) {
 			header('WWW-Authenticate: Basic realm="Logowanie do aplikacji WD15"');
