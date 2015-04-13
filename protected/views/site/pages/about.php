@@ -1,12 +1,11 @@
 <?php
 /* @var $this SiteController */
 
-$this->pageTitle=Yii::app()->name . ' - About';
+$this->pageTitle=Yii::app()->name . ' - O aplikacji';
 $this->breadcrumbs=array(
-	'About',
+	'O aplikacji',
 );
 ?>
-<h1>About</h1>
+<h1>O aplikacji</h1>
 
-<p>This is a "static" page. You may change the content of this page
-by updating the file <code><?php echo __FILE__; ?></code>.</p>
+<p>Aplikacja tworzona przez Marka Ramotowskiego na potrzeby firmy Daniel Wyrwał.</p>

@@ -2,47 +2,34 @@
 /* @var $model Order */
 
 $this->breadcrumbs=array(
-	'Orders'=>array('index'),
-	'Manage',
+	'Zamówienia'=>array('index'),
 );
 
 $this->menu=array(
-	array('label'=>'List Order', 'url'=>array('index')),
-	array('label'=>'Create Order', 'url'=>array('create')),
-	array('label'=>'Upload', 'url'=>array('upload')),
+	array('label'=>'--------------------------------------------------'),
+	array('label'=>'Zaznacz wszystkie widoczne', 'url'=>'#', 'itemOptions'=>array('id' => 'check')),
+	array('label'=>'Zapisz/Usuń zaznaczenie', 'url'=>'#', 'itemOptions'=>array('id' => 'save_check')),
+	array('label'=>'--------------------------------------------------'),
+	array('label'=>'Dodaj zamówienie', 'url'=>array('create')),
+	array('label'=>'Wgraj zamówienia', 'url'=>array('upload')),
+	array('label'=>'--------------------------------------------------'),
 	array('label'=>'Drukuj etykiety na wykroje', 'url'=>'#', 'itemOptions'=>array('id' => 'print_minilabel')),
 	array('label'=>'Drukuj etykiety transportowe', 'url'=>'#', 'itemOptions'=>array('id' => 'print_label')),
 	array('label'=>'Drukuj ladeliste', 'url'=>'#', 'itemOptions'=>array('id' => 'print_transport_list')),
-	array('label'=>'Zaznacz wszystkie widoczne', 'url'=>'#', 'itemOptions'=>array('id' => 'check')),
-	array('label'=>'Zapisz/Usuń zaznaczenie', 'url'=>'#', 'itemOptions'=>array('id' => 'save_check')),
+	array('label'=>'--------------------------------------------------'),
 	array('label'=>'Wykrojono (Zaznacz/Odznacz)', 'url'=>'#', 'itemOptions'=>array('id' => 'prepared')),
 	array('label'=>'Wyprodukowano (Zaznacz/Odznacz)', 'url'=>'#', 'itemOptions'=>array('id' => 'manufactured')),
 	array('label'=>'Storno (Zaznacz/Odznacz)', 'url'=>'#', 'itemOptions'=>array('id' => 'canceled')),
+	array('label'=>'--------------------------------------------------'),
 );
 ?>
 
-<h1>Manage Orders</h1>
+<h1>Zamówienia</h1>
 
 <p>
-You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
-or <b>=</b>) at the beginning of each of your search values to specify how the comparison should be done.
+Można dodatkowo używać operatorów (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
+lub <b>=</b>) na początku każdej wyszukiwanej wartości aby sprecyzować sposób działania porównania.
 </p>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
 <?php 
 echo CHtml::beginForm(array('Order/print'),'post', array('enctype'=>'multipart/form-data', 'id'=>'check_form'));
 
@@ -273,7 +260,7 @@ echo CHtml::endForm();
 		})
 		
 		//Rozszeżanie kontenera
-		$('div#page').css("width","2100px");
+		$('div#page').css("width","2600px");
 		
 	});
 /*]]>*/

@@ -7,27 +7,16 @@
  */
 class UserIdentity extends CUserIdentity
 {
-	/**
-	 * Authenticates a user.
-	 * The example implementation makes sure if the username and password
-	 * are both 'demo'.
-	 * In practical applications, this should be changed to authenticate
-	 * against some persistent user identity storage (e.g. database).
-	 * @return boolean whether authentication succeeds.
-	 */
 	public function authenticate()
 	{
-		$users=array(
-			// username => password
-			'demo'=>'demo',
-			'admin'=>'admin',
-		);
-		if(!isset($users[$this->username]))
-			$this->errorCode=self::ERROR_USERNAME_INVALID;
-		elseif($users[$this->username]!==$this->password)
-			$this->errorCode=self::ERROR_PASSWORD_INVALID;
-		else
+		//sprawdzaj tylko, czy zostały podane: login i hasło w HTTP BASIC AUTH
+		//prawdziwym uwierzytelnianiem zajmuje się Apache i odpowiednia konfiguracja w .htaccess
+		if (isset($_SERVER['PHP_AUTH_USER'])) {
 			$this->errorCode=self::ERROR_NONE;
+		} else {
+			$this->errorCode=self::ERROR_UNKNOWN_IDENTITY;
+		}
+		
 		return !$this->errorCode;
 	}
 }

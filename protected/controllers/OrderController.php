@@ -28,8 +28,12 @@ class OrderController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print','upload', 'mobileScaned', 'checked'),
-				'users'=>array('*'),
+				'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print', 'mobileScaned', 'checked'),
+				'users'=>array('@'),
+			),
+			array('allow',  // allow all users to perform 'index' and 'view' actions
+					'actions'=>array('upload'),
+					'users'=>array('asia'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -266,6 +270,7 @@ class OrderController extends Controller
 	 */
 	public function actionAdmin()
 	{
+		$this->layout='//layouts/orderAdmin';
 		$model=new Order('search');
 		$model->unsetAttributes();  // clear any default values
 		$model->article_exported=0;
