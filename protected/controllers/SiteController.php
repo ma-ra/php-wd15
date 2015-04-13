@@ -52,7 +52,7 @@ class SiteController extends Controller
 			 RewriteEngine on
 			 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
 			 </IfModule> */
-		if (!isset($_SERVER['PHP_AUTH_USER'])) {
+		if (!isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['HTTP_AUTHORIZATION'])) {
 			list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':' , base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
 		}
 		

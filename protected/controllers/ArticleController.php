@@ -29,7 +29,7 @@ class ArticleController extends Controller
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
 				'actions'=>array('index','view', 'create', 'update', 'admin', 'delete'),
-				'users'=>array('*'),
+				'users'=>array('mara','asia'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),

@@ -28,12 +28,20 @@ class OrderController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print', 'mobileScaned', 'checked'),
-				'users'=>array('@'),
+				'actions'=>array('admin','checked', 'manufactured'),
+				'users'=>array('mariola','pawel'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-					'actions'=>array('upload'),
-					'users'=>array('asia'),
+					'actions'=>array('prepared'),
+					'users'=>array('mariola'),
+			),
+			array('allow',  // allow all users to perform 'index' and 'view' actions
+					'actions'=>array('mobileScaned'),
+					'users'=>array('mobile'),
+			),
+			array('allow',  // allow all users to perform 'index' and 'view' actions
+					'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print', 'mobileScaned', 'checked', 'manufactured', 'prepared', 'canceled', 'upload'),
+					'users'=>array('mara','asia'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -297,7 +305,10 @@ class OrderController extends Controller
 			}
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 		}
-		
+	}
+	
+	public function actionPrepared()
+	{
 		if (isset($_POST["prepared"]) && isset($_POST["select"])) {
 			foreach ($_POST["select"] as $id => $checked) {
 				$Order=$this->loadModel($id);
@@ -310,7 +321,10 @@ class OrderController extends Controller
 			}
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 		}
-		
+	}
+	
+	public function actionManufactured()
+	{	
 		if (isset($_POST["manufactured"]) && isset($_POST["select"])) {
 			foreach ($_POST["select"] as $id => $checked) {
 				$Order=$this->loadModel($id);
@@ -323,7 +337,10 @@ class OrderController extends Controller
 			}
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 		}
-		
+	}
+
+	public function actionCanceled()
+	{
 		if (isset($_POST["canceled"]) && isset($_POST["select"])) {
 			foreach ($_POST["select"] as $id => $checked) {
 				$Order=$this->loadModel($id);

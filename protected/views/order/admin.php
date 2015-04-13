@@ -211,7 +211,7 @@ echo CHtml::endForm();
 	            .val("prepared");
 			$("form#check_form").append($(input));
 			//zmieniamy cel wysłania danych
-			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/checked")?>");
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/prepared")?>");
 			console.log($("form#check_form").attr("action"));
 			//zatwierdzenie formularza
 			$("form#check_form").submit();
@@ -224,7 +224,7 @@ echo CHtml::endForm();
 	            .val("manufactured");
 			$("form#check_form").append($(input));
 			//zmieniamy cel wysłania danych
-			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/checked")?>");
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/manufactured")?>");
 			console.log($("form#check_form").attr("action"));
 			//zatwierdzenie formularza
 			$("form#check_form").submit();
@@ -237,7 +237,7 @@ echo CHtml::endForm();
 	            .val("canceled");
 			$("form#check_form").append($(input));
 			//zmieniamy cel wysłania danych
-			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/checked")?>");
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/canceled")?>");
 			console.log($("form#check_form").attr("action"));
 			//zatwierdzenie formularza
 			$("form#check_form").submit();
@@ -260,7 +260,7 @@ echo CHtml::endForm();
 		})
 		
 		//Rozszeżanie kontenera
-		$('div#page').css("width","2600px");
+		$('div#page').css("width","2800px");
 		
 	});
 /*]]>*/
