@@ -21,6 +21,8 @@ $this->menu=array(
 	array('label'=>'Wyprodukowano (Zaznacz/Odznacz)', 'url'=>'#', 'itemOptions'=>array('id' => 'manufactured')),
 	array('label'=>'Storno (Zaznacz/Odznacz)', 'url'=>'#', 'itemOptions'=>array('id' => 'canceled')),
 	array('label'=>'--------------------------------------------------'),
+	array('label'=>'Podsumowanie', 'url'=>'#', 'itemOptions'=>array('id' => 'summary')),
+	array('label'=>'--------------------------------------------------'),
 );
 ?>
 
@@ -241,6 +243,21 @@ echo CHtml::endForm();
 			console.log($("form#check_form").attr("action"));
 			//zatwierdzenie formularza
 			$("form#check_form").submit();
+		})
+		$("li#summary a").click(function() {
+			//dodajemy informację do POST po przez ukryte pole
+			var input = $("<input>")
+	            .attr("type", "hidden")
+	            .attr("name", "summary")
+	            .val("summary");
+			$("form#check_form").append($(input));
+			//zmieniamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/summary")?>");
+			console.log($("form#check_form").attr("action"));
+			//zatwierdzenie formularza
+			$("form#check_form").attr("target","_blank")
+			$("form#check_form").submit();
+			$("form#check_form").attr("target","_self")
 		})
 		
 		

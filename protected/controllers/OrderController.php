@@ -28,7 +28,7 @@ class OrderController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('admin','checked', 'manufactured'),
+				'actions'=>array('admin','checked', 'manufactured', 'summary'),
 				'users'=>array('mariola','pawel'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
@@ -40,7 +40,7 @@ class OrderController extends Controller
 					'users'=>array('mobile'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-					'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print', 'mobileScaned', 'checked', 'manufactured', 'prepared', 'canceled', 'upload'),
+					'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print', 'mobileScaned', 'checked', 'manufactured', 'prepared', 'canceled', 'upload', 'summary'),
 					'users'=>array('mara','asia'),
 			),
 			array('deny',  // deny all users
@@ -352,6 +352,56 @@ class OrderController extends Controller
 				$Order->save();
 			}
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		}
+	}
+	
+	public function actionSummary()
+	{
+		if (isset($_POST["summary"]) && isset($_POST["select"])) {
+			#Budujemy tablicę pod zapytanie wyszukujące chciane krotki
+			$pks=array();
+			foreach ($_POST["select"] as $id => $checked) {
+				array_push($pks, $id);
+			}
+			#Pozycje na potrzeby faktury
+			$Orders1=Order::model()->findAllByPk($pks, array(
+				'select'=>array(
+					'articleArticle.model_name as articleArticle_model_name',
+					'articleArticle.model_type as articleArticle_model_type',
+					new CDbExpression('IFNULL(t.textilpair_price_group, textile1Textile.textile_price_group) as textilpair_price_group'),
+					new CDbExpression('SUM(t.article_amount) as article_amount'),
+				),
+				'with'=>array('articleArticle', 'textile1Textile'),
+				'together'=>true,
+				'group'=>'articleArticle.model_name, articleArticle.model_type, IFNULL(t.textilpair_price_group, textile1Textile.textile_price_group)',
+				'order'=>'articleArticle.article_number ASC, textilpair_price_group ASC',
+			));
+			
+			#Numery zamówień na potrzeby faktury
+			$Orders2=Order::model()->findAllByPk($pks, array(
+				'select'=>'DISTINCT order_number',
+				'order'=>'order_number ASC',
+			));
+			
+			#Rozkład tygodniowy poszczególnych modeli
+			$Orders3=Order::model()->findAllByPk($pks, array(
+				'select'=>array(
+					'articleArticle.model_name as articleArticle_model_name',
+					'articleArticle.model_type as articleArticle_model_type',
+					't.order_term',
+					new CDbExpression('SUM(t.article_amount) as article_amount'),
+				),
+				'with'=>array('articleArticle'),
+				'together'=>true,
+				'group'=>'articleArticle.model_name, articleArticle.model_type, t.order_term',
+				'order'=>'t.order_term ASC, articleArticle.article_number ASC',
+			));
+			
+			$this->render('summary',array(
+					'Orders1'=>$Orders1, 
+					'Orders2'=>$Orders2,
+					'Orders3'=>$Orders3,
+			));
 		}
 	}
 	
