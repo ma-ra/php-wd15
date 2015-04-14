@@ -107,25 +107,6 @@ class Article extends CActiveRecord
 		));
 	}
 	
-	public function beforeSave() {
-		#wyszukujemy, czy taki wpis już istnieje
-		$find=Article::model()->find(array(
-		'condition'=>'article_number=:number',
-		'params'=>array(':number'=>$this->article_number),
-		#ostatni element
-		'order' => "article_id DESC",
-		'limit' => 1
-		));
-		if (!empty($find) && $this->scenario === 'upload') {
-			#nie dublujemy, ale zwracamy id aby użyć dalej w budowaniu powiązania
-			$this->article_id=$find->article_id;
-			return false;
-		} else {
-			return parent::beforeSave();
-		}
-	
-	}
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!

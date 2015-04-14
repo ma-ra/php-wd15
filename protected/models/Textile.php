@@ -98,27 +98,6 @@ class Textile extends CActiveRecord
 		));
 	}
 	
-	public function beforeSave() {
-		#wyszukujemy, czy taki wpis już istnieje
-		$find=Textile::model()->find(array(
-		'condition'=>'textile_number=:number AND textile_name=:name AND textile_price_group=:group',
-		'params'=>array(':number'=>$this->textile_number,
-						':name'=>$this->textile_name,
-						':group'=>$this->textile_price_group,
-						),
-		#ostatni element
-		'order' => "textile_id DESC",
-		'limit' => 1
-		));
-		if (!empty($find) && $this->scenario === 'upload') {
-			#update
-			$this->textile_id=$find->textile_id;
-		} else {
-			return parent::beforeSave();
-		}
-	
-	}
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!

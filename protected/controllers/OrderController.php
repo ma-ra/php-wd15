@@ -161,51 +161,135 @@ class OrderController extends Controller
 							if ($line[0] != 75007) {
 								continue;
 							}
-							$buyer=new Buyer('upload');
+							
+							#buyer - update or insert
+							$buyer=Buyer::model()->find(array(
+								'condition'=>'buyer_name_1=:name1 AND buyer_name_2=:name2 AND buyer_street=:street AND buyer_zip_code=:zip_code',
+								'params'=>array(':name1'=>$line[5], 
+									':name2'=>$line[6],
+					 				':street'=>$line[7],
+									':zip_code'=>$line[8],
+								),
+								#ostatni element
+								'order' => "buyer_id DESC",
+								'limit' => 1
+							));
+							if (empty($buyer)) {
+								$buyer=new Buyer('upload');
+							}
 							$buyer->buyer_name_1=$line[5];
 							$buyer->buyer_name_2=$line[6];
 							$buyer->buyer_street=$line[7];
 							$buyer->buyer_zip_code=$line[8];
 							$buyer->save();
 							
-							$broker=new Broker('upload');
+							#broker - update or insert
+							$broker=Broker::model()->find(array(
+								'condition'=>'broker_name=:name',
+								'params'=>array(':name'=>'Reality Import GmbH'),
+								#ostatni element
+								'order' => "broker_id DESC",
+								'limit' => 1
+							));
+							if (empty($broker)) {
+								$broker=new Broker('upload');
+							}
 							$broker->broker_name="Reality Import GmbH";
 							$broker->save();
 							
-							$manufacturer=new Manufacturer('upload');
+							#manufacturer - update or insert
+							$manufacturer=Manufacturer::model()->find(array(
+								'condition'=>'manufacturer_name=:name AND manufacturer_number=:number',
+								'params'=>array(':name'=>$line[1],
+												':number'=>$line[0],
+								),
+								#ostatni element
+								'order' => "manufacturer_id DESC",
+								'limit' => 1
+							));
+							if (empty($manufacturer)) {
+								$manufacturer=new Manufacturer('upload');
+							}
 							$manufacturer->manufacturer_number=$line[0];
 							$manufacturer->manufacturer_name=$line[1];
 							$manufacturer->save();
 							
-							$leg=new Leg('upload');
+							#leg - update or insert
+							$leg=Leg::model()->find(array(
+								'condition'=>'leg_type=:leg',
+								'params'=>array(':leg'=>$line[14]),
+								#ostatni element
+								'order' => "leg_id DESC",
+								'limit' => 1
+							));
+							if (empty($leg)) {
+								$leg=new Leg('upload');
+							}
 							$leg->leg_type=$line[14];
 							$leg->save();
 							
-							$article=new Article('upload');
-							$article->article_colli=1;
+							#article - update or insert
+							$article=Article::model()->find(array(
+								'condition'=>'article_number=:number',
+								'params'=>array(':number'=>$line[11]),
+								#ostatni element
+								'order' => "article_id DESC",
+								'limit' => 1
+							));
+							if (empty($article)) {
+								$article=new Article('upload');
+								$article->article_colli=1;
+								$article->model_name=$line[12];
+								$article->model_type=$line[13];
+							}
 							$article->article_number=$line[11];
-							$article->model_name=$line[12];
-							$article->model_type=$line[13];
 							$article->save();
 							
-							
 							#Pierwszy deseń
-							$textile=new Textile('upload');
 							if ($line[15]>999) { #Jeden deseń na zamówieniu
-								$textile->textile_number=$line[15];
-								$textile->textile_price_group=$line[18];
+								$textile_number=$line[15];
+								$textile_price_group=$line[18];
 							} else { #Dwa desenie na zamówieniu
 								preg_match('/([0-9]{4})/i',$line[16],$matches);
-								$textile->textile_number=$matches[1];
-								$textile->textile_price_group=0; #przy dwuch, mamy grupę dla dwuch materiałów i zapisujemy gdzie indziej
+								$textile_number=$matches[1];
+								$textile_price_group=0; #przy dwuch, mamy grupę dla dwuch materiałów i zapisujemy gdzie indziej
 							}
+							#textile - update or insert
+							$textile=Textile::model()->find(array(
+								'condition'=>'textile_number=:number AND textile_name=:name AND textile_price_group=:group',
+								'params'=>array(':number'=>$textile_number,
+												':name'=>$line[16],
+												':group'=>$textile_price_group,
+								),
+								#ostatni element
+								'order' => "textile_id DESC",
+								'limit' => 1
+							));
+							if (empty($textile)) {
+								$textile=new Textile('upload');
+							}
+							$textile->textile_number=$textile_number;
+							$textile->textile_price_group=$textile_price_group;
 							$textile->textile_name=$line[16];
 							$textile->save();
 							
 							#Drugi deseń
 							if ($line[15]<=999) {
-								$textile2=new Textile('upload');
 								preg_match('/([0-9]{4})/i',$line[17],$matches);
+								#textile2 - update or insert
+								$textile2=Textile::model()->find(array(
+									'condition'=>'textile_number=:number AND textile_name=:name AND textile_price_group=:group',
+									'params'=>array(':number'=>$matches[1],
+									':name'=>$line[17],
+									':group'=>0,
+									),
+									#ostatni element
+									'order' => "textile_id DESC",
+									'limit' => 1
+								));
+								if (empty($textile2)) {
+									$textile2=new Textile('upload');
+								}
 								$textile2->textile_number=$matches[1];
 								$textile2->textile_name=$line[17];
 								$textile2->textile_price_group=0; #przy dwuch, mamy grupę dla dwuch materiałów i zapisujemy gdzie indziej
@@ -221,7 +305,7 @@ class OrderController extends Controller
 							'order' => "order_id DESC",
 							'limit' => 1
 							));
-							if (empty($order) && $this->scenario === 'upload') {
+							if (empty($order)) {
 								$order=new Order('upload');
 							}
 							$order->article_amount=$line[24];
@@ -279,7 +363,7 @@ class OrderController extends Controller
 				} catch(Exception $e) {
 					$transaction->rollBack();
 					Yii::app()->user->setFlash('2error','Nie udało się wgrać zamówień.');
-					//echo "<pre>; var_dump($e); echo "</pre>";
+					echo "<pre>"; var_dump($e); echo "</pre>";
 				}
 				
 				#Wyszukaj potencjalne storna

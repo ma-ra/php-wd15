@@ -85,24 +85,6 @@ class Leg extends CActiveRecord
 		));
 	}
 	
-	public function beforeSave() {
-		#wyszukujemy, czy taki wpis już istnieje
-		$find=Leg::model()->find(array(
-		'condition'=>'leg_type=:leg',
-		'params'=>array(':leg'=>$this->leg_type),
-		#ostatni element
-		'order' => "leg_id DESC",
-		'limit' => 1
-		));
-		if (!empty($find) && $this->scenario === 'upload') {
-			#update
-			$this->leg_id=$find->leg_id;
-		} else {
-			return parent::beforeSave();
-		}
-	
-	}
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!

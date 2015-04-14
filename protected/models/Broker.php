@@ -85,24 +85,6 @@ class Broker extends CActiveRecord
 		));
 	}
 	
-	public function beforeSave() {
-		#wyszukujemy, czy taki wpis już istnieje
-		$find=Broker::model()->find(array(
-		'condition'=>'broker_name=:name',
-		'params'=>array(':name'=>$this->broker_name),
-		#ostatni element
-		'order' => "broker_id DESC",
-		'limit' => 1
-		));
-		if (!empty($find) && $this->scenario === 'upload') {
-			#update
-			$this->broker_id=$find->broker_id;
-		} else {
-			return parent::beforeSave();
-		}
-	
-	}
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!

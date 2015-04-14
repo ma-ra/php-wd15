@@ -33,7 +33,6 @@ class Buyer extends CActiveRecord
 		return array(
 			array('buyer_name_1, buyer_street, buyer_zip_code', 'required'),
 			array('buyer_name_1, buyer_name_2, buyer_street, buyer_zip_code', 'length', 'max'=>150),
-			array('buyer_name_2', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('buyer_id, buyer_name_1, buyer_name_2, buyer_street, buyer_zip_code', 'safe', 'on'=>'search'),
@@ -95,28 +94,6 @@ class Buyer extends CActiveRecord
 		));
 	}
 	
-	public function beforeSave() {
-		#wyszukujemy, czy taki wpis już istnieje
-		$find=Buyer::model()->find(array(
-				'condition'=>'buyer_name_1=:name1 AND buyer_name_2=:name2 AND buyer_street=:street AND buyer_zip_code=:zip_code',
-				'params'=>array(':name1'=>$this->buyer_name_1, 
-								':name2'=>$this->buyer_name_2,
-				 				':street'=>$this->buyer_street,
-								':zip_code'=>$this->buyer_zip_code,
-								),
-				#ostatni element
-				'order' => "buyer_id DESC",
-				'limit' => 1
-		));
-		if (!empty($find) && $this->scenario === 'upload') {
-			#update
-			$this->buyer_id=$find->buyer_id;
-		} else {
-			return parent::beforeSave();
-		}
-		
-	}
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
