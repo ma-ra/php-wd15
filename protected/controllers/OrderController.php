@@ -308,6 +308,15 @@ class OrderController extends Controller
 							if (empty($order)) {
 								$order=new Order('upload');
 							}
+							#Oznacz zmianę ilości
+							if (isset($order->article_amount) && $order->article_amount != $line[24]) {
+								$error=explode("|", $order->order_error);
+								array_push ( $error , "amount-$order->article_amount");
+								$error=implode("|", $error);
+								$order->order_error=$error;
+							}
+							
+							#Dalsze przetwarzanie wczytywania zamówienia
 							$order->article_amount=$line[24];
 							$order->buyer_comments=$line[10];
 							$order->buyer_order_number=$line[9];
@@ -341,7 +350,7 @@ class OrderController extends Controller
 								$order->order_error=$error;
 							}
 							
-							#Oznacz nowe zamówienie dla wyjechanego
+							#Oznacz błąd typu "exported" - zamówienie dla towaru który wyjechał
 							if (isset($order->article_exported) && $order->article_exported != null) {
 								$error=explode("|", $order->order_error);
 								if (!in_array("exported", $error)) {
