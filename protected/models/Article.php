@@ -38,6 +38,7 @@ class Article extends CActiveRecord
 			array('article_colli, article_all_textile_amount, article_first_textile_amount, article_second_textile_amount', 'numerical', 'integerOnly'=>true),
 			array('article_number', 'length', 'max'=>50),
 			array('model_name, model_type', 'length', 'max'=>100),
+			array('article_all_textile_amount, article_first_textile_amount, article_second_textile_amount', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('article_id, article_number, model_name, model_type, article_colli, article_all_textile_amount, article_first_textile_amount, article_second_textile_amount', 'safe', 'on'=>'search'),

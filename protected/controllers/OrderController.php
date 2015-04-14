@@ -120,10 +120,34 @@ class OrderController extends Controller
 			$model->file_mime=isset($model->file->type)? $model->file->type : " ";
 			$model->file_size=isset($model->file->size)? $model->file->size : " ";
 			if ($model->validate()) {
-				$file=$model->file->tempName;
+				#Usuń dotychczasowe błędy typu: exported
+				$exported=Order::model()->findAll(array(
+					'condition'=>'order_error like :exported',
+					'params'=>array(':exported'=>'%exported%'),
+				));
 				
+				$transaction = Yii::app()->db->beginTransaction();
+				try {
+					foreach ($exported as $key => $order) {
+						$error=explode("|", $order->order_error);
+						if (in_array("exported", $error)) {
+							$error = array_diff($error, array("exported"));
+							$error=implode("|", $error);
+							$order->order_error=$error;
+							$order->save();
+						}
+					}
+					
+					$transaction->commit();
+					Yii::app()->user->setFlash('1success','Poprawnie skasowane stare błędy typu: "exported".');
+				} catch(Exception $e) {
+					$transaction->rollBack();
+					Yii::app()->user->setFlash('1error','Nie udało się skasować błędów typu: "exported".');
+				}
+				
+				
+				$file=$model->file->tempName;
 				#Odczytywanie pliku i zapis zamówień do bazy
-				echo "<pre>";
 				$handle = @fopen($file, "r");
 				$i=1;
 				$currentDate=date('Y-m-d H:i:s');
@@ -137,12 +161,6 @@ class OrderController extends Controller
 							if ($line[0] != 75007) {
 								continue;
 							}
-							/* echo $i++ . " ### " . $buffer;
-							echo "          ";
-							foreach ($line as $key => $value) {
-								echo $key . "=>" . $value . "   ";
-							} */
-					
 							$buyer=new Buyer('upload');
 							$buyer->buyer_name_1=$line[5];
 							$buyer->buyer_name_2=$line[6];
@@ -228,6 +246,27 @@ class OrderController extends Controller
 							$order->buyer_buyer_id=$buyer->buyer_id;
 							$order->broker_broker_id=$broker->broker_id;
 							$order->manufacturer_manufacturer_id=$manufacturer->manufacturer_id;
+							
+							#Oznacz niepoprawne storno
+							if (isset($order->article_canceled) && $order->article_canceled != 0) {
+								$error=explode("|", $order->order_error);
+								if (!in_array("false storno", $error)) {
+									array_push ( $error , "false storno");
+								}
+								$error=implode("|", $error);
+								$order->order_error=$error;
+							}
+							
+							#Oznacz nowe zamówienie dla wyjechanego
+							if (isset($order->article_exported) && $order->article_exported != null) {
+								$error=explode("|", $order->order_error);
+								if (!in_array("exported", $error)) {
+									array_push ( $error , "exported");
+								}
+								$error=implode("|", $error);
+								$order->order_error=$error;
+							}
+							
 							$order->order_add_date=$currentDate;
 							$order->save();
 							
@@ -235,14 +274,43 @@ class OrderController extends Controller
 						fclose($handle);
 						unlink($file);
 					}
-					echo "</pre>";
 					$transaction->commit();
-					echo "Done";
+					Yii::app()->user->setFlash('2success','Zamówienia wgrane bez błędów.');
 				} catch(Exception $e) {
 					$transaction->rollBack();
-					echo "Nie udało się: " . var_dump($e);
+					Yii::app()->user->setFlash('2error','Nie udało się wgrać zamówień.');
+					//echo "<pre>; var_dump($e); echo "</pre>";
+				}
+				
+				#Wyszukaj potencjalne storna
+				$stornos=Order::model()->findAll(array(
+				'condition'=>'article_exported is NULL AND article_canceled = 0 AND order_add_date != :currentDate',
+				'params'=>array(':currentDate'=>$currentDate),
+				));
+		
+				#Oznacz odnalezione storna za pomocą błędu: storno
+				$transaction = Yii::app()->db->beginTransaction();
+				try {
+					foreach ($stornos as $key => $storno) {
+						#Dodanie kolejnego błędu (bez dubli)
+						$error=explode("|", $storno->order_error);
+						if (!in_array("storno", $error)) {
+							array_push ( $error , "storno");
+						}
+						$error=implode("|", $error);
+						$storno->order_error=$error;
+						$storno->save();
+					}
+						
+					$transaction->commit();
+					Yii::app()->user->setFlash('3success','Wyszukiwanie potencjalnych "storn" zakońcone powodzeniem.');
+				} catch(Exception $e) {
+					$transaction->rollBack();
+					Yii::app()->user->setFlash('3error','Nie udało się wyszukiwanie potencjalnych "storn"');
 				}
 			}
+			#Przeładowanie strony wgrywania (strona wykryje potencjalne błędy (setFlash) i wyświetli je
+			$this->refresh();
 		}
 		
 		$this->render('upload',array('model'=>$model));

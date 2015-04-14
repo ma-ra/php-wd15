@@ -27,7 +27,7 @@
  * @property integer $article_manufactured
  * @property string $article_exported
  * @property integer $article_canceled
- * @property integer $order_error
+ * @property string $order_error
  * @property string $order_add_date
  * @property integer $checked
  *
@@ -75,8 +75,8 @@ class Order extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('order_number, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textile1_textile_id', 'required'),
-			array('article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id,  textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, textile_prepared, article_manufactured, article_canceled, order_error, checked', 'numerical', 'integerOnly'=>true),
-			array('order_number, buyer_order_number, order_term, article_exported', 'length', 'max'=>50),
+			array('article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id,  textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, textile_prepared, article_manufactured, article_canceled, checked', 'numerical', 'integerOnly'=>true),
+			array('order_number, buyer_order_number, order_term, article_exported, order_error', 'length', 'max'=>50),
 			array('buyer_comments, order_reference', 'length', 'max'=>150),
 			array('order_date, order_add_date, printed_minilabel, printed_shipping_label', 'safe'),
 			array('order_date, buyer_order_number, buyer_comments, order_reference, textil_pair, textilpair_price_group, textile2_textile_id, printed_minilabel, printed_shipping_label, article_exported', 'default', 'setOnEmpty' => true, 'value' => null),
@@ -195,7 +195,7 @@ class Order extends CActiveRecord
 			$criteria->compare('article_exported',$this->article_exported,true);
 		}
 		$criteria->compare('article_canceled',$this->article_canceled);
-		$criteria->compare('order_error',$this->order_error);
+		$criteria->compare('order_error',$this->order_error,true);
 		$criteria->compare('order_add_date',$this->order_add_date,true);
 		$criteria->compare('checked',$this->checked);
 		
@@ -245,12 +245,31 @@ class Order extends CActiveRecord
 	}
 	
 	public function beforeSave() {
-		//wyprodukowano != 100% => zgłoś błąd
+		#wyprodukowano != 100% => zgłoś błąd, w przeciwnym wypadku usuń potencjalny bład
 		if ($this->article_manufactured != $this->article_amount * $this->articleArticle->article_colli && $this->article_manufactured != 0) {
-			$this->order_error=Constants::NOT_100PERCENT_MANUFACTURED;
-		} else if ($this->article_manufactured == $this->article_amount * $this->articleArticle->article_colli ||  $this->article_manufactured == 0) {
-			$this->order_error=Constants::NO_ERROR;
+			$error=explode("|", $this->order_error);
+			if (!in_array("not all", $error)) {
+				array_push ( $error , "not all");
+			}
+			$error=implode("|", $error);
+			$this->order_error=$error;
+		} else {
+			$error=explode("|", $this->order_error);
+			if (in_array("not all", $error)) {
+				$error = array_diff($error, array("not all"));
+			}
+			$error=implode("|", $error);
+			$this->order_error=$error;
 		}
+		
+		#kasowanie błędu storno (nie kasujmy podczas wgrywania)
+		$error=explode("|", $this->order_error);
+		if ($this->scenario !== 'upload' && in_array("storno", $error) && $this->article_canceled == 1) {
+			$error = array_diff($error, array("storno"));
+			$error=implode("|", $error);
+			$this->order_error=$error;
+		}
+			
 		return parent::beforeSave();
 	}
 	

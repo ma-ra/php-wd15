@@ -35,6 +35,7 @@ class Supplier extends CActiveRecord
 			array('textile_textile_id', 'numerical', 'integerOnly'=>true),
 			array('supplier_name', 'length', 'max'=>150),
 			array('supplier_tel, supplier_email', 'length', 'max'=>45),
+			array('supplier_tel, supplier_email', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('supplier_id, supplier_name, supplier_tel, supplier_email, textile_textile_id', 'safe', 'on'=>'search'),

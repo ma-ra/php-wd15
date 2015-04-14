@@ -33,6 +33,7 @@ class Buyer extends CActiveRecord
 		return array(
 			array('buyer_name_1, buyer_street, buyer_zip_code', 'required'),
 			array('buyer_name_1, buyer_name_2, buyer_street, buyer_zip_code', 'length', 'max'=>150),
+			array('buyer_name_2', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('buyer_id, buyer_name_1, buyer_name_2, buyer_street, buyer_zip_code', 'safe', 'on'=>'search'),

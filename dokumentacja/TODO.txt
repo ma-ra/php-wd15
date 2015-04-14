@@ -1,6 +1,13 @@
+* update `order` set `order_error` = null WHERE `order_error` LIKE '0';
+* Tłumaczenia
 * Teraz mamy nic nie rób lub insert podczas wgrywania. Zmienić na update lub insert (Na razie poprawione tylko dla Order).
-* Jeżeli puste pole to null do bazy (Na razie poprawione tylko w Order).
-* Ustaleanie storno podczas wgrywania.
+
 * Dokończenie z kodami kreskowymi.
 * Obliczanie materiałów.
-* Informacje na podstawie faktury.
+
++ Informacje do faktury.
++ Jeżeli puste pole to null do bazy.
++ Ładny komunikat informujący o poprawnym wgraniu, lub komunikat błędu.
++ Ustaleanie storno podczas wgrywania.
++ Obsługa błędów: storno, niepoprawne storno, wgranie zamówienia które wyjechało, niepełna produkcja. 
+  Inteligentne kasowanie błędów: storno, niepełna produkcja,  wgranie zamówienia które wyjechało. Reszta kasowana przez edycję.
