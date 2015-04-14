@@ -576,23 +576,52 @@ class OrderController extends Controller
 			}
 				
 			#Rozkład tygodniowy poszczególnych modeli
-			$Orders3=Order::model()->findAllByPk($pks, array(
+			$textiles_pair=Order::model()->findAllByPk($pks, array(
 				'select'=>array(
 					't.order_term',
 					't.textil_pair',
 					'textile1Textile.textile_number as textiles1_textile_number',
-					new CDbExpression('SUM(IF(t.textil_pair, articleArticle.article_first_textile_amount, articleArticle.article_all_textile_amount)) as textiles1_textile_name'),
+					new CDbExpression('SUM(IF(t.textil_pair, articleArticle.article_first_textile_amount * t.article_amount, articleArticle.article_all_textile_amount * t.article_amount)) as textiles1_textile_name'),
 					'textile2Textile.textile_number as textiles2_textile_number',
-					new CDbExpression('SUM(IF(t.textil_pair, articleArticle.article_second_textile_amount, null)) as textiles2_textile_name'),
+					new CDbExpression('SUM(IF(t.textil_pair, articleArticle.article_second_textile_amount * t.article_amount, null)) as textiles2_textile_name'),
+					new CDbExpression('GROUP_CONCAT(CONCAT(" ", CAST(t.article_amount AS CHAR), "x ", t.order_number)) as order_number'),
 				),
 				'with'=>array('articleArticle', 'textile1Textile', 'textile2Textile'),
 				'together'=>true,
 				'group'=>'t.order_term, t.textil_pair, textile1Textile.textile_number, textile2Textile.textile_number',
-				'order'=>'t.order_term ASC, t.textil_pair ASC, textile1Textile.textile_number ASC, textile2Textile.textile_number ASC',
+				'order'=>'t.order_term ASC, textile1Textile.textile_number ASC, textile2Textile.textile_number ASC',
 			));
+			
+			#z powyższego zapytania mamy pare materiałów oraz ich sumy (textile1, textile1 - sum, textile2, textile2 - sum)
+			#dlatego w tej pętli zostaną posumowane (textile, sum)
+			$textiles=array();
+			foreach ($textiles_pair as $key => $textil_pair) {
+				#inicjalizacja pierwszego poziomu (tygodni)
+				if (!array_key_exists($textil_pair->order_term, $textiles)) {
+					$textiles[$textil_pair->order_term]=array();
+				}
+				
+				#inicjalizacja drugiego poziomu (numerów materiałów)
+				if (!array_key_exists($textil_pair->textiles1_textile_number, $textiles[$textil_pair->order_term])) {
+					$textiles[$textil_pair->order_term][$textil_pair->textiles1_textile_number]=0;
+				}
+				if (!array_key_exists($textil_pair->textiles2_textile_number, $textiles[$textil_pair->order_term]) && !empty($textil_pair->textiles2_textile_number)) {
+					$textiles[$textil_pair->order_term][$textil_pair->textiles2_textile_number]=0;
+				}
+				
+				#sumowanie
+				$textiles[$textil_pair->order_term][$textil_pair->textiles1_textile_number]+=$textil_pair->textiles1_textile_name;
+				if (!empty($textil_pair->textiles2_textile_number)) {
+					$textiles[$textil_pair->order_term][$textil_pair->textiles2_textile_number]+=$textil_pair->textiles2_textile_name;
+				}
+			}
+			
+			//echo "<pre>"; var_dump($textiles); echo "</pre>";
+			//die();
 				
 			$this->render('textile_summary',array(
-					'Orders3'=>$Orders3,
+					'textiles_pair'=>$textiles_pair,
+					'textiles'=>$textiles
 			));
 			}
 		}
