@@ -22,6 +22,7 @@ $this->menu=array(
 	array('label'=>'Storno (Zaznacz/Odznacz)', 'url'=>'#', 'itemOptions'=>array('id' => 'canceled')),
 	array('label'=>'--------------------------------------------------'),
 	array('label'=>'Podsumowanie', 'url'=>'#', 'itemOptions'=>array('id' => 'summary')),
+	array('label'=>'Wyliczenie materiałów', 'url'=>'#', 'itemOptions'=>array('id' => 'textile_summary')),
 	array('label'=>'--------------------------------------------------'),
 );
 ?>
@@ -258,6 +259,25 @@ echo CHtml::endForm();
 			$("form#check_form").attr("target","_blank")
 			$("form#check_form").submit();
 			$("form#check_form").attr("target","_self")
+			//przywracamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
+		})
+		$("li#textile_summary a").click(function() {
+			//dodajemy informację do POST po przez ukryte pole
+			var input = $("<input>")
+	            .attr("type", "hidden")
+	            .attr("name", "textile_summary")
+	            .val("textile_summary");
+			$("form#check_form").append($(input));
+			//zmieniamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/textileSummary")?>");
+			console.log($("form#check_form").attr("action"));
+			//zatwierdzenie formularza
+			$("form#check_form").attr("target","_blank")
+			$("form#check_form").submit();
+			$("form#check_form").attr("target","_self")
+			//przywracamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
 		})
 		
 		

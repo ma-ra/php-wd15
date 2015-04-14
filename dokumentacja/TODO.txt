@@ -1,6 +1,6 @@
 * update `order` set `order_error` = null WHERE `order_error` LIKE '0';
 * Tłumaczenia
-* Teraz mamy nic nie rób lub insert podczas wgrywania. Zmienić na update lub insert (Na razie poprawione tylko dla Order).
++ Teraz mamy nic nie rób lub insert podczas wgrywania. Zmienić na update lub insert (Na razie poprawione tylko dla Order).
 
 * Dokończenie z kodami kreskowymi.
 * Obliczanie materiałów.

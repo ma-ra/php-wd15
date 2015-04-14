@@ -28,7 +28,7 @@ class OrderController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('admin','checked', 'manufactured', 'summary'),
+				'actions'=>array('admin','checked', 'manufactured', 'summary', 'textileSummary'),
 				'users'=>array('mariola','pawel'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
@@ -40,7 +40,7 @@ class OrderController extends Controller
 					'users'=>array('mobile'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-					'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print', 'mobileScaned', 'checked', 'manufactured', 'prepared', 'canceled', 'upload', 'summary'),
+					'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print', 'mobileScaned', 'checked', 'manufactured', 'prepared', 'canceled', 'upload', 'summary', 'textileSummary'),
 					'users'=>array('mara','asia'),
 			),
 			array('deny',  // deny all users
@@ -565,6 +565,37 @@ class OrderController extends Controller
 			));
 		}
 	}
+	
+	public function actionTextileSummary()
+	{
+		if (isset($_POST["textile_summary"]) && isset($_POST["select"])) {
+			#Budujemy tablicę pod zapytanie wyszukujące chciane krotki
+			$pks=array();
+			foreach ($_POST["select"] as $id => $checked) {
+				array_push($pks, $id);
+			}
+				
+			#Rozkład tygodniowy poszczególnych modeli
+			$Orders3=Order::model()->findAllByPk($pks, array(
+				'select'=>array(
+					't.order_term',
+					't.textil_pair',
+					'textile1Textile.textile_number as textiles1_textile_number',
+					new CDbExpression('SUM(IF(t.textil_pair, articleArticle.article_first_textile_amount, articleArticle.article_all_textile_amount)) as textiles1_textile_name'),
+					'textile2Textile.textile_number as textiles2_textile_number',
+					new CDbExpression('SUM(IF(t.textil_pair, articleArticle.article_second_textile_amount, null)) as textiles2_textile_name'),
+				),
+				'with'=>array('articleArticle', 'textile1Textile', 'textile2Textile'),
+				'together'=>true,
+				'group'=>'t.order_term, t.textil_pair, textile1Textile.textile_number, textile2Textile.textile_number',
+				'order'=>'t.order_term ASC, t.textil_pair ASC, textile1Textile.textile_number ASC, textile2Textile.textile_number ASC',
+			));
+				
+			$this->render('textile_summary',array(
+					'Orders3'=>$Orders3,
+			));
+			}
+		}
 	
 	public function actionMobileScaned() {
 		if (isset($_POST["data"])) {
