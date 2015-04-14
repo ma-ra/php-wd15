@@ -36,6 +36,7 @@
 			<td style="border: 1px solid black;">Materiał 2:</td>
 			<td style="border: 1px solid black;">Materiał 2 - suma:</td>
 			<td style="border: 1px solid black;">Zamówienia:</td>
+			<td style="border: 1px solid black;">Nazwy materiałów:</td>
 		</tr>
 		<?php 
 			$suma=0;
@@ -53,6 +54,7 @@
 				echo "<td style=\"border: 1px solid black;\">$Order->textiles2_textile_number</td>";
 				echo "<td style=\"border: 1px solid black;\">$Order->textiles2_textile_name</td>";
 				echo "<td style=\"border: 1px solid black;\">$Order->order_number</td>";
+				echo "<td style=\"border: 1px solid black;\">$Order->order_reference</td>";
 				$oldTerm=$Order->order_term;
 				echo "</tr>";
 			}

@@ -585,6 +585,7 @@ class OrderController extends Controller
 					'textile2Textile.textile_number as textiles2_textile_number',
 					new CDbExpression('SUM(IF(t.textil_pair, articleArticle.article_second_textile_amount * t.article_amount, null)) as textiles2_textile_name'),
 					new CDbExpression('GROUP_CONCAT(CONCAT(" ", CAST(t.article_amount AS CHAR), "x ", t.order_number)) as order_number'),
+					new CDbExpression('GROUP_CONCAT(CONCAT(" ", textile1Textile.textile_name, IFNULL(CONCAT(" ", textile2Textile.textile_name),""))) as order_reference'),
 				),
 				'with'=>array('articleArticle', 'textile1Textile', 'textile2Textile'),
 				'together'=>true,
