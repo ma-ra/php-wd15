@@ -1,0 +1,4 @@
+mysql <<< '
+DROP SCHEMA wd15;
+CREATE SCHEMA IF NOT EXISTS `wd15` DEFAULT CHARACTER SET utf8 COLLATE utf8_polish_ci;
+'

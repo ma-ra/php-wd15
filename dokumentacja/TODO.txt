@@ -1,9 +1,7 @@
-* update `order` set `order_error` = null WHERE `order_error` LIKE '0';
+* kode kreskowe dla działu wykrojów
+* rozbudowa bazy o: plan, zamówiono, dotarło
 * Tłumaczenia
-+ Teraz mamy nic nie rób lub insert podczas wgrywania. Zmienić na update lub insert (Na razie poprawione tylko dla Order).
-
 * Dokończenie z kodami kreskowymi.
-* Obliczanie materiałów.
 
 + Informacje do faktury.
 + Jeżeli puste pole to null do bazy.
@@ -11,3 +9,6 @@
 + Ustaleanie storno podczas wgrywania.
 + Obsługa błędów: storno, niepoprawne storno, wgranie zamówienia które wyjechało, niepełna produkcja. 
   Inteligentne kasowanie błędów: storno, niepełna produkcja,  wgranie zamówienia które wyjechało. Reszta kasowana przez edycję.
++ update `order` set `order_error` = null WHERE `order_error` LIKE '0';
++ Obliczanie materiałów.
++ Teraz mamy nic nie rób lub insert podczas wgrywania. Zmienić na update lub insert (Na razie poprawione tylko dla Order).
