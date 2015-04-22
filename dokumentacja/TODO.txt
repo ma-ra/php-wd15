@@ -1,7 +1,8 @@
-* kode kreskowe dla działu wykrojów
-* rozbudowa bazy o: plan, zamówiono, dotarło
-* Tłumaczenia
+* Kody kreskowe dla działu wykrojów.
+* Rozbudowa bazy o: plan, zamówiono, dotarło.
+* Tłumaczenia.
 * Dokończenie z kodami kreskowymi.
+* Podczas powtórnego drukowania ladeliste odznacz te które nie zostały ponownie wydane.
 
 + Informacje do faktury.
 + Jeżeli puste pole to null do bazy.
