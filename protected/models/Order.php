@@ -21,10 +21,13 @@
  * @property integer $textilpair_price_group
  * @property integer $textile1_textile_id
  * @property integer $textile2_textile_id
+ * @property integer $shopping_shopping_id
  * @property string $printed_minilabel
  * @property string $printed_shipping_label
  * @property integer $textile_prepared
+ * @property integer $article_planed
  * @property integer $article_manufactured
+ * @property integer $article_prepared_to_export
  * @property string $article_exported
  * @property integer $article_canceled
  * @property string $order_error
@@ -39,6 +42,7 @@
  * @property Article $articleArticle
  * @property Textile $textile1Textile
  * @property Textile $textile2Textile
+ * @property Shopping $shoppingShopping
  */
 class Order extends CActiveRecord
 {
@@ -75,14 +79,14 @@ class Order extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('order_number, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textile1_textile_id', 'required'),
-			array('article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id,  textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, textile_prepared, article_manufactured, article_canceled, checked', 'numerical', 'integerOnly'=>true),
+			array('article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id,  textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, textile_prepared, article_manufactured, article_canceled, checked, shopping_shopping_id, article_planed, article_prepared_to_export', 'numerical', 'integerOnly'=>true),
 			array('order_number, buyer_order_number, order_term, article_exported, order_error', 'length', 'max'=>50),
 			array('buyer_comments, order_reference', 'length', 'max'=>150),
 			array('order_date, order_add_date, printed_minilabel, printed_shipping_label', 'safe'),
 			array('order_date, buyer_order_number, buyer_comments, order_reference, textil_pair, textilpair_price_group, textile2_textile_id, printed_minilabel, printed_shipping_label, article_exported', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, printed_minilabel, printed_shipping_label, article_manufactured, article_exported, manufacturerManufacturer_manufacturer_name, brokerBroker_broker_name, buyerBuyer_buyer_name_1, articleArticle_article_number, articleArticle_model_name, articleArticle_model_type, articleArticle_article_colli, legLeg_leg_type, textiles1_textile_number, textiles1_textile_name, textiles1_textile_price_groupe, textiles2_textile_number, textiles2_textile_name, textiles2_textile_price_group, textile1_textile_id, textile2_textile_id, checked', 'safe', 'on'=>'search'),
+			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, printed_minilabel, printed_shipping_label, article_manufactured, article_exported, manufacturerManufacturer_manufacturer_name, brokerBroker_broker_name, buyerBuyer_buyer_name_1, articleArticle_article_number, articleArticle_model_name, articleArticle_model_type, articleArticle_article_colli, legLeg_leg_type, textiles1_textile_number, textiles1_textile_name, textiles1_textile_price_groupe, textiles2_textile_number, textiles2_textile_name, textiles2_textile_price_group, textile1_textile_id, textile2_textile_id, checked, shopping_shopping_id, article_planed, article_prepared_to_export', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -101,6 +105,7 @@ class Order extends CActiveRecord
 			'articleArticle' => array(self::BELONGS_TO, 'Article', 'article_article_id'),
 			'textile1Textile' => array(self::BELONGS_TO, 'Textile', 'textile1_textile_id'),
 			'textile2Textile' => array(self::BELONGS_TO, 'Textile', 'textile2_textile_id'),
+			'shoppingShopping' => array(self::BELONGS_TO, 'Shopping', 'shopping_shopping_id'),
 		);
 	}
 
@@ -136,6 +141,9 @@ class Order extends CActiveRecord
 			'order_error' => 'błąd',
 			'order_add_date' => 'data wgrania',
 			'checked' => '&nbsp&nbsp&nbsp&nbsp',
+			'shopping_shopping_id' => 'id zakupów',
+			'article_planed' => 'zaplanowano',
+			'article_prepared_to_export' => 'załadowano',
 		);
 	}
 
@@ -174,6 +182,9 @@ class Order extends CActiveRecord
 		$criteria->compare('textilpair_price_group',$this->textilpair_price_group);
 		$criteria->compare('textile1_textile_id',$this->textile1_textile_id);
 		$criteria->compare('textile2_textile_id',$this->textile2_textile_id);
+		$criteria->compare('shopping_shopping_id',$this->shopping_shopping_id);
+		$criteria->compare('article_planed',$this->article_planed);
+		$criteria->compare('article_prepared_to_export',$this->article_prepared_to_export);
 		if ($this->printed_minilabel == "0") {
 			$criteria->addCondition('printed_minilabel is :printed_minilabel' );
 			$criteria->params=array_merge($criteria->params,array(':printed_minilabel'=>null));

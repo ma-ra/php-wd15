@@ -35,6 +35,11 @@
 		<?php echo $form->label($model,'textile_textile_id'); ?>
 		<?php echo $form->textField($model,'textile_textile_id'); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->label($model,'supplier_lang'); ?>
+		<?php echo $form->textField($model,'supplier_lang',array('size'=>45,'maxlength'=>45)); ?>
+	</div>
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Search'); ?>

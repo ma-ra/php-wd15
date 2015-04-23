@@ -1,27 +1,26 @@
 <?php
 
 /**
- * This is the model class for table "supplier".
+ * This is the model class for table "log".
  *
- * The followings are the available columns in table 'supplier':
- * @property integer $supplier_id
- * @property string $supplier_name
- * @property string $supplier_tel
- * @property string $supplier_email
- * @property integer $textile_textile_id
- * @property string $supplier_lang
- *
- * The followings are the available model relations:
- * @property Textile $textileTextile
+ * The followings are the available columns in table 'log':
+ * @property integer $log_id
+ * @property string $creation_time
+ * @property integer $user_id
+ * @property string $user_name
+ * @property string $route
+ * @property string $actionaction
+ * @property string $params
+ * @property string $info
  */
-class Supplier extends CActiveRecord
+class Log extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'supplier';
+		return 'log';
 	}
 
 	/**
@@ -32,14 +31,13 @@ class Supplier extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('supplier_name, textile_textile_id, supplier_lang', 'required'),
-			array('textile_textile_id', 'numerical', 'integerOnly'=>true),
-			array('supplier_name', 'length', 'max'=>150),
-			array('supplier_tel, supplier_email, supplier_lang', 'length', 'max'=>45),
-			array('supplier_tel, supplier_email', 'default', 'setOnEmpty' => true, 'value' => null),
+			array('log_id, creation_time, user_id, user_name, route, actionaction', 'required'),
+			array('log_id, user_id', 'numerical', 'integerOnly'=>true),
+			array('user_name, route, actionaction', 'length', 'max'=>50),
+			array('params, info', 'length', 'max'=>500),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('supplier_id, supplier_name, supplier_tel, supplier_email, textile_textile_id, supplier_lang', 'safe', 'on'=>'search'),
+			array('log_id, creation_time, user_id, user_name, route, actionaction, params, info', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -51,7 +49,6 @@ class Supplier extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'textileTextile' => array(self::BELONGS_TO, 'Textile', 'textile_textile_id'),
 		);
 	}
 
@@ -61,12 +58,14 @@ class Supplier extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'supplier_id' => 'dostawca',
-			'supplier_name' => 'nazwa dostawcy',
-			'supplier_tel' => 'tel dostawcy',
-			'supplier_email' => 'email dostawcy',
-			'textile_textile_id' => 'id materiału',
-			'supplier_lang' => 'język',
+			'log_id' => 'Log',
+			'creation_time' => 'Creation Time',
+			'user_id' => 'User',
+			'user_name' => 'User Name',
+			'route' => 'Route',
+			'actionaction' => 'Actionaction',
+			'params' => 'Params',
+			'info' => 'Info',
 		);
 	}
 
@@ -88,12 +87,14 @@ class Supplier extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('supplier_id',$this->supplier_id);
-		$criteria->compare('supplier_name',$this->supplier_name,true);
-		$criteria->compare('supplier_tel',$this->supplier_tel,true);
-		$criteria->compare('supplier_email',$this->supplier_email,true);
-		$criteria->compare('textile_textile_id',$this->textile_textile_id);
-		$criteria->compare('supplier_lang',$this->supplier_lang,true);
+		$criteria->compare('log_id',$this->log_id);
+		$criteria->compare('creation_time',$this->creation_time,true);
+		$criteria->compare('user_id',$this->user_id);
+		$criteria->compare('user_name',$this->user_name,true);
+		$criteria->compare('route',$this->route,true);
+		$criteria->compare('actionaction',$this->actionaction,true);
+		$criteria->compare('params',$this->params,true);
+		$criteria->compare('info',$this->info,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -104,7 +105,7 @@ class Supplier extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Supplier the static model class
+	 * @return Log the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

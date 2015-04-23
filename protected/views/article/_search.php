@@ -38,17 +38,17 @@
 
 	<div class="row">
 		<?php echo $form->label($model,'article_all_textile_amount'); ?>
-		<?php echo $form->textField($model,'article_all_textile_amount'); ?>
+		<?php echo $form->textField($model,'article_all_textile_amount', array('size'=>9,'maxlength'=>9)); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->label($model,'article_first_textile_amount'); ?>
-		<?php echo $form->textField($model,'article_first_textile_amount'); ?>
+		<?php echo $form->textField($model,'article_first_textile_amount', array('size'=>9,'maxlength'=>9)); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->label($model,'article_second_textile_amount'); ?>
-		<?php echo $form->textField($model,'article_second_textile_amount'); ?>
+		<?php echo $form->textField($model,'article_second_textile_amount', array('size'=>9,'maxlength'=>9)); ?>
 	</div>
 
 	<div class="row buttons">

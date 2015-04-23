@@ -104,14 +104,17 @@ $this->widget('zii.widgets.grid.CGridView', array(
 				'type' => 'raw',
 				'value' => 'CHtml::encode(isset($data->textile2Textile->textile_name)? $data->textile2Textile->textile_name : "")'
 		),
+		'shopping_shopping_id',
 		'printed_minilabel',
 		'printed_shipping_label',
 		'textile_prepared',
+		'article_planed',
 		array(
 				'name' => 'article_manufactured',
 				'type' => 'raw',
 				'value' => 'CHtml::encode(isset($data->article_manufactured)? $data->article_manufactured . "/" . ($data->article_amount*$data->articleArticle->article_colli) . " Coli (" . (100*$data->article_manufactured)/($data->article_amount*$data->articleArticle->article_colli) . "%)" : "0%")'
 		),
+		'article_prepared_to_export',
 		'article_exported',
 		'article_canceled',
 		'order_error',

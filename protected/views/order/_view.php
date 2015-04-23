@@ -73,6 +73,10 @@
 	<b><?php echo CHtml::encode($data->getAttributeLabel('textile2_textile_id')); ?>:</b>
 	<?php echo CHtml::encode($data->textile2_textile_id); ?>
 	<br />
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping_shopping_id')); ?>:</b>
+	<?php echo CHtml::encode($data->shopping_shopping_id); ?>
+	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('printed_minilabel')); ?>:</b>
 	<?php echo CHtml::encode($data->printed_minilabel); ?>
@@ -85,9 +89,17 @@
 	<b><?php echo CHtml::encode($data->getAttributeLabel('textile_prepared')); ?>:</b>
 	<?php echo CHtml::encode($data->textile_prepared); ?>
 	<br />
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('article_planed')); ?>:</b>
+	<?php echo CHtml::encode($data->article_planed); ?>
+	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('article_manufactured')); ?>:</b>
 	<?php echo CHtml::encode($data->article_manufactured); ?>
+	<br />
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('article_prepared_to_export')); ?>:</b>
+	<?php echo CHtml::encode($data->article_prepared_to_export); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('article_exported')); ?>:</b>

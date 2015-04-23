@@ -9,9 +9,9 @@
  * @property string $model_name
  * @property string $model_type
  * @property integer $article_colli
- * @property integer $article_all_textile_amount
- * @property integer $article_first_textile_amount
- * @property integer $article_second_textile_amount
+ * @property string $article_all_textile_amount
+ * @property string $article_first_textile_amount
+ * @property string $article_second_textile_amount
  *
  * The followings are the available model relations:
  * @property Order[] $orders
@@ -35,9 +35,10 @@ class Article extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('article_number, model_name, model_type', 'required'),
-			array('article_colli, article_all_textile_amount, article_first_textile_amount, article_second_textile_amount', 'numerical', 'integerOnly'=>true),
+			array('article_colli', 'numerical', 'integerOnly'=>true),
 			array('article_number', 'length', 'max'=>50),
 			array('model_name, model_type', 'length', 'max'=>100),
+			array('article_all_textile_amount, article_first_textile_amount, article_second_textile_amount', 'length', 'max'=>9),
 			array('article_all_textile_amount, article_first_textile_amount, article_second_textile_amount', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -68,9 +69,9 @@ class Article extends CActiveRecord
 			'model_name' => 'model',
 			'model_type' => 'typ',
 			'article_colli' => 'colli',
-			'article_all_textile_amount' => 'ilość materiału',
-			'article_first_textile_amount' => 'Deseń 1 - ilość materiału',
-			'article_second_textile_amount' => 'Deseń 2 - ilość materiału',
+			'article_all_textile_amount' => 'ilość materiału (m)',
+			'article_first_textile_amount' => 'Deseń 1 - ilość materiału (m)',
+			'article_second_textile_amount' => 'Deseń 2 - ilość materiału (m)',
 		);
 	}
 

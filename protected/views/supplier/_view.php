@@ -24,6 +24,10 @@
 	<b><?php echo CHtml::encode($data->getAttributeLabel('textile_textile_id')); ?>:</b>
 	<?php echo CHtml::encode($data->textile_textile_id); ?>
 	<br />
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('supplier_lang')); ?>:</b>
+	<?php echo CHtml::encode($data->supplier_lang); ?>
+	<br />
 
 
 </div>

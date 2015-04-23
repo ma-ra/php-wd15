@@ -114,6 +114,12 @@
 		<?php echo $form->textField($model,'textile2_textile_id'); ?>
 		<?php echo $form->error($model,'textile2_textile_id'); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'shopping_shopping_id'); ?>
+		<?php echo $form->textField($model,'shopping_shopping_id'); ?>
+		<?php echo $form->error($model,'shopping_shopping_id'); ?>
+	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'printed_minilabel'); ?>
@@ -134,9 +140,21 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->labelEx($model,'article_planed'); ?>
+		<?php echo $form->textField($model,'article_planed'); ?>
+		<?php echo $form->error($model,'article_planed'); ?>
+	</div>
+	
+	<div class="row">
 		<?php echo $form->labelEx($model,'article_manufactured'); ?>
 		<?php echo $form->textField($model,'article_manufactured'); ?>
 		<?php echo $form->error($model,'article_manufactured'); ?>
+	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'article_prepared_to_export'); ?>
+		<?php echo $form->textField($model,'article_prepared_to_export'); ?>
+		<?php echo $form->error($model,'article_prepared_to_export'); ?>
 	</div>
 
 	<div class="row">
@@ -153,7 +171,7 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'order_error'); ?>
-		<?php echo $form->textField($model,'order_error'); ?>
+		<?php echo $form->textField($model,'order_error', array('size'=>50,'maxlength'=>50)); ?>
 		<?php echo $form->error($model,'order_error'); ?>
 	</div>
 
