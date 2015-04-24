@@ -68,15 +68,15 @@ class Shopping extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'shopping_id' => 'Shopping',
-			'shopping_type' => 'Shopping Type',
-			'textile_textile_id' => 'Textile Textile',
-			'article_amount' => 'Article Amount',
-			'article_calculated_amount' => 'Article Calculated Amount',
-			'shopping_term' => 'Shopping Term',
-			'shopping_status' => 'Shopping Status',
-			'shopping_printed' => 'Shopping Printed',
-			'creation_time' => 'Creation Time',
+			'shopping_id' => 'id',
+			'shopping_type' => 'typ',
+			'textile_textile_id' => 'it materiału',
+			'article_amount' => 'ilość',
+			'article_calculated_amount' => 'wyliczona ilość',
+			'shopping_term' => 'termin',
+			'shopping_status' => 'status',
+			'shopping_printed' => 'wydrukowane',
+			'creation_time' => 'data utworzenia',
 		);
 	}
 

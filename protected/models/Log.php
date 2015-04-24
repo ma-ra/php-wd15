@@ -58,14 +58,14 @@ class Log extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'log_id' => 'Log',
-			'creation_time' => 'Creation Time',
-			'user_id' => 'User',
-			'user_name' => 'User Name',
-			'route' => 'Route',
-			'actionaction' => 'Actionaction',
-			'params' => 'Params',
-			'info' => 'Info',
+			'log_id' => 'id',
+			'creation_time' => 'data wpisu',
+			'user_id' => 'id użytkownika',
+			'user_name' => 'użytkownik',
+			'route' => 'route',
+			'actionaction' => 'akcja',
+			'params' => 'parametry',
+			'info' => 'info',
 		);
 	}
 

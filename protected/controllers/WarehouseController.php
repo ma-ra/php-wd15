@@ -28,16 +28,12 @@ class WarehouseController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
-				'users'=>array('*'),
-			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
+				'actions'=>array('index','view', 'admin'),
 				'users'=>array('@'),
 			),
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
+			array('allow', // allow authenticated user to perform 'create' and 'update' actions
+				'actions'=>array('create','update', 'delete'),
+				'users'=>array('mara', 'asia'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -62,20 +58,48 @@ class WarehouseController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Warehouse;
-
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-
+		
+		# http://www.yiiframework.com/wiki/362/how-to-use-multiple-instances-of-the-same-model-in-the-same-form/
+		$models=array();
+		
 		if(isset($_POST['Warehouse']))
 		{
-			$model->attributes=$_POST['Warehouse'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->warehouse_id));
+			# pętla po otrzymanych wierszach, tworzenie modelu do każdego wiersza i przypisanie atrybutów
+			foreach ($_POST['Warehouse'] as $key => $model) {
+				$models[$key]=new Warehouse;
+				$models[$key]->attributes=$_POST['Warehouse'][$key];
+				# nie weryfikuj oraz nie usówaj całkowicie pustych wierszy
+				$attributes_count=0;
+				foreach ($models[$key] as $attr_key => $attribute) {
+					if (!empty($attribute)) {
+						$attributes_count+=1;
+					}
+				}
+				if ($attributes_count > 0) {
+					if($models[$key]->save()) {
+						# po poprawnym zapisie wyczyść prezentowany wiersz lub usuń 
+						# wyczyść
+						$models[$key]=new Warehouse();
+						# usuń
+						//unset($models[$key]);
+					}
+				}
+			}
+		} else {
+			# jak nie otrzymaliśmy wierszy, to sami je generujemy
+			for ($i = 1; $i <= 15; $i++) {
+				$models[$i]=new Warehouse;
+			}
 		}
 
+		#jeżeli $models jest puste, to znaczy, że wszystko udało sie zapisać
+		if (empty($models)) {
+			$this->redirect(array('Warehouse/admin'));
+		}
 		$this->render('create',array(
-			'model'=>$model,
+			'models'=>$models,
 		));
 	}
 

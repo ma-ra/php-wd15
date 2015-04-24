@@ -13,6 +13,10 @@
 	<?php echo CHtml::encode($data->warehouse_type); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('article_number')); ?>:</b>
+	<?php echo CHtml::encode($data->article_number); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('article_name')); ?>:</b>
 	<?php echo CHtml::encode($data->article_name); ?>
 	<br />
@@ -29,11 +33,11 @@
 	<?php echo CHtml::encode($data->document_name); ?>
 	<br />
 
+	<?php /*
 	<b><?php echo CHtml::encode($data->getAttributeLabel('warehouse_error')); ?>:</b>
 	<?php echo CHtml::encode($data->warehouse_error); ?>
 	<br />
 
-	<?php /*
 	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping_shopping_id')); ?>:</b>
 	<?php echo CHtml::encode($data->shopping_shopping_id); ?>
 	<br />

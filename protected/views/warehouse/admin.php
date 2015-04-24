@@ -47,11 +47,12 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'columns'=>array(
 		'warehouse_id',
 		'warehouse_type',
+		'article_number',
 		'article_name',
 		'article_count',
 		'article_price',
-		'document_name',
 		/*
+		'document_name',
 		'warehouse_error',
 		'shopping_shopping_id',
 		'creation_date',

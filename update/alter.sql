@@ -42,15 +42,16 @@ ALTER TABLE `supplier` ADD `supplier_lang` VARCHAR(45) NOT NULL ;
 
 -- dodanie tabeli warehouse
 CREATE TABLE `warehouse` (
-  `warehouse_id` int(11) NOT NULL,
-  `warehouse_type` varchar(50) NOT NULL,
-  `article_name` varchar(50) NOT NULL,
-  `article_count` decimal(9,2) NOT NULL,
-  `article_price` decimal(9,2) DEFAULT NULL,
-  `document_name` varchar(50) NOT NULL,
-  `warehouse_error` varchar(50) DEFAULT NULL,
-  `shopping_shopping_id` int(11) DEFAULT NULL,
-  `creation_date` datetime NOT NULL,
+  `warehouse_id` INT NOT NULL AUTO_INCREMENT,
+  `warehouse_type` VARCHAR(50) NOT NULL,
+  `article_number` VARCHAR(50) NOT NULL,
+  `article_name` VARCHAR(50) NOT NULL,
+  `article_count` DECIMAL(9,2) NOT NULL,
+  `article_price` DECIMAL(9,2) NULL,
+  `document_name` VARCHAR(50) NOT NULL,
+  `warehouse_error` VARCHAR(50) NULL,
+  `shopping_shopping_id` INT NULL,
+  `creation_date` DATETIME NOT NULL,
   PRIMARY KEY (`warehouse_id`),
   KEY `fk_warehouse_shopping1_idx` (`shopping_shopping_id`),
   CONSTRAINT `fk_warehouse_shopping1` FOREIGN KEY (`shopping_shopping_id`) REFERENCES `shopping` (`shopping_id`) ON DELETE NO ACTION ON UPDATE NO ACTION

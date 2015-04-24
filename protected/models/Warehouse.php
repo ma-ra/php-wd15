@@ -6,6 +6,7 @@
  * The followings are the available columns in table 'warehouse':
  * @property integer $warehouse_id
  * @property string $warehouse_type
+ * @property string $article_number
  * @property string $article_name
  * @property string $article_count
  * @property string $article_price
@@ -35,13 +36,14 @@ class Warehouse extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('warehouse_id, warehouse_type, article_name, article_count, document_name, creation_date', 'required'),
-			array('warehouse_id, shopping_shopping_id', 'numerical', 'integerOnly'=>true),
-			array('warehouse_type, article_name, document_name, warehouse_error', 'length', 'max'=>50),
+			array('warehouse_type, article_number, article_name, article_count, document_name, creation_date', 'required'),
+			array('shopping_shopping_id', 'numerical', 'integerOnly'=>true),
+			array('warehouse_type, article_number, article_name, document_name, warehouse_error', 'length', 'max'=>50),
 			array('article_count, article_price', 'length', 'max'=>9),
+			array('shopping_shopping_id, warehouse_error, article_price', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('warehouse_id, warehouse_type, article_name, article_count, article_price, document_name, warehouse_error, shopping_shopping_id, creation_date', 'safe', 'on'=>'search'),
+			array('warehouse_id, warehouse_type, article_number, article_name, article_count, article_price, document_name, warehouse_error, shopping_shopping_id, creation_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -63,15 +65,16 @@ class Warehouse extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'warehouse_id' => 'Warehouse',
-			'warehouse_type' => 'Warehouse Type',
-			'article_name' => 'Article Name',
-			'article_count' => 'Article Count',
-			'article_price' => 'Article Price',
-			'document_name' => 'Document Name',
-			'warehouse_error' => 'Warehouse Error',
-			'shopping_shopping_id' => 'Shopping Shopping',
-			'creation_date' => 'Creation Date',
+			'warehouse_id' => 'id',
+			'warehouse_type' => 'typ',
+			'article_number' => 'numer',
+			'article_name' => 'nazwa',
+			'article_count' => 'ilość',
+			'article_price' => 'cena',
+			'document_name' => 'dokument',
+			'warehouse_error' => 'error',
+			'shopping_shopping_id' => 'id zakupu',
+			'creation_date' => 'data utworzenia',
 		);
 	}
 
@@ -95,6 +98,7 @@ class Warehouse extends CActiveRecord
 
 		$criteria->compare('warehouse_id',$this->warehouse_id);
 		$criteria->compare('warehouse_type',$this->warehouse_type,true);
+		$criteria->compare('article_number',$this->article_number,true);
 		$criteria->compare('article_name',$this->article_name,true);
 		$criteria->compare('article_count',$this->article_count,true);
 		$criteria->compare('article_price',$this->article_price,true);
@@ -106,6 +110,13 @@ class Warehouse extends CActiveRecord
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
+	}
+	
+	public function beforeValidate() {
+		$this->warehouse_type='textil';
+		$this->creation_date=date('Y-m-d H:i:s');
+			
+		return parent::beforeSave();
 	}
 
 	/**

@@ -13,5 +13,8 @@ $this->pageTitle=Yii::app()->name . " - Wyrwał Daniel 2015";
 	<li><?php echo CHtml::link('Zamówienia',array('Order/admin')); ?></li>
 	<li><?php echo CHtml::link('Materiały',array('Textile/admin')); ?></li>
 	<li><?php echo CHtml::link('Dostawcy',array('Supplier/admin')); ?></li>
+	<li><?php echo CHtml::link('Zakupy',array('Shopping/admin')); ?></li>
+	<li><?php echo CHtml::link('Magazyn',array('Warehouse/admin')); ?></li>
+	<li><?php echo CHtml::link('Logi',array('Log/admin')); ?></li>
 	<li><?php echo CHtml::link('Konfiguracja',array('Configuration/admin')); ?></li>
 </ul>

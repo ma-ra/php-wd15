@@ -23,6 +23,7 @@ $this->menu=array(
 	'attributes'=>array(
 		'warehouse_id',
 		'warehouse_type',
+		'article_number',
 		'article_name',
 		'article_count',
 		'article_price',
