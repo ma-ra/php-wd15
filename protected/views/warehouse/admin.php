@@ -27,6 +27,18 @@ $('.search-form form').submit(function(){
 ?>
 
 <h1>Manage Warehouses</h1>
+<?php $this->widget('zii.widgets.grid.CGridView', array(
+	'id'=>'warehouse-grid2',
+	'dataProvider'=>$model->summary(),
+	'enableSorting' => false,
+	'filter'=>$model,
+	'columns'=>array(
+		'article_number',
+		'article_name',
+		'article_count',
+		'article_price',
+	),
+)); ?>
 
 <p>
 You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
@@ -41,7 +53,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 </div><!-- search-form -->
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
-	'id'=>'warehouse-grid',
+	'id'=>'warehouse-grid1',
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'columns'=>array(
@@ -51,12 +63,10 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'article_name',
 		'article_count',
 		'article_price',
-		/*
 		'document_name',
 		'warehouse_error',
 		'shopping_shopping_id',
 		'creation_date',
-		*/
 		array(
 			'class'=>'CButtonColumn',
 		),

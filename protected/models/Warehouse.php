@@ -109,6 +109,24 @@ class Warehouse extends CActiveRecord
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+			'pagination'=>array('pageSize'=>200),
+		));
+	}
+	
+	public function summary()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+	
+		$criteria=new CDbCriteria;
+		$criteria->select='article_number, SUM(article_count) as article_count, SUM(article_price) as article_price';
+		$criteria->group='article_number';
+		$criteria->order='article_number ASC';
+	
+		$criteria->compare('article_number',$this->article_number,true);
+	
+		return new CActiveDataProvider($this, array(
+				'criteria'=>$criteria,
+				'pagination'=>array('pageSize'=>200),
 		));
 	}
 	

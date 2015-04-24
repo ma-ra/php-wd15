@@ -15,4 +15,4 @@ $this->menu=array(
 
 <h1>Create Warehouse</h1>
 
-<?php $this->renderPartial('_form', array('models'=>$models)); ?>
+<?php $this->renderPartial('_form_create', array('models'=>$models)); ?>

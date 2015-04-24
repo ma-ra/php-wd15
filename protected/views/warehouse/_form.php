@@ -2,23 +2,7 @@
 /* @var $this WarehouseController */
 /* @var $model Warehouse */
 /* @var $form CActiveForm */
-
-/* echo "<pre>";
-var_dump($models);
-echo "</pre>";
-die(); */
 ?>
-
-<style>
-	table {
-   		border-collapse: collapse;
-	}
-	
-	table, th, td {
-	    border: 1px solid black;
-    	vertical-align: text-top;
-	}
-</style>
 
 <div class="form">
 
@@ -33,64 +17,66 @@ die(); */
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
 
-	<?php echo $form->errorSummary($models); ?>
-	<table>
-		<tr>
-			<td>
-					<?php echo $form->labelEx($models[key($models)],'article_number'); ?>
-			</td>
-			<td>
-					<?php echo $form->labelEx($models[key($models)],'article_name'); ?>
-			</td>
-			<td>
-					<?php echo $form->labelEx($models[key($models)],'article_count'); ?>
-			</td>
-			<td>
-					<?php echo $form->labelEx($models[key($models)],'article_price'); ?>
-			</td>
-			<td>
-					<?php echo $form->labelEx($models[key($models)],'document_name'); ?>
-			</td>
-			<td>							
-					<?php echo $form->labelEx($models[key($models)],'shopping_shopping_id'); ?>
-			</td>				
-		</tr>
-		
-		<?php
-		#http://www.yiiframework.com/wiki/362/how-to-use-multiple-instances-of-the-same-model-in-the-same-form/
-		foreach ($models as $key => $model) {
-			echo "<tr>\n";
-				echo "<td>\n";
-					echo $form->textField($model,"[$key]" . 'article_number',array('size'=>10,'maxlength'=>50));
-					echo $form->error($model,"[$key]" . 'article_number');
-				echo "</td>\n";
-				echo "<td>\n";
-					echo $form->textField($model,"[$key]" . 'article_name',array('size'=>25,'maxlength'=>50));
-					echo $form->error($model,"[$key]" . 'article_name');
-				echo "</td>\n";
-				echo "<td>\n";
-					echo $form->textField($model,"[$key]" . 'article_count',array('size'=>9,'maxlength'=>9));
-					echo $form->error($model,"[$key]" . 'article_count');
-				echo "</td>\n";
-				echo "<td>\n";
-					echo $form->textField($model,"[$key]" . 'article_price',array('size'=>9,'maxlength'=>9));
-					echo $form->error($model,"[$key]" . 'article_price');
-				echo "</td>\n";
-				echo "<td>\n";
-					echo $form->textField($model,"[$key]" . 'document_name',array('size'=>20,'maxlength'=>50));
-					echo $form->error($model,"[$key]" . 'document_name');
-				echo "</td>\n";
-				echo "<td>\n";							
-					echo $form->textField($model,"[$key]" . 'shopping_shopping_id');
-					echo $form->error($model,"[$key]" . 'shopping_shopping_id');
-				echo "</td>\n";
-			echo "</tr>\n";
-		}
-		?>
-	</table>
-<div class="row buttons">
-	<?php echo CHtml::submitButton('Zapisz'); ?>
-</div>
+	<?php echo $form->errorSummary($model); ?>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'warehouse_type'); ?>
+		<?php echo $form->textField($model,'warehouse_type',array('size'=>50,'maxlength'=>50)); ?>
+		<?php echo $form->error($model,'warehouse_type'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'article_number'); ?>
+		<?php echo $form->textField($model,'article_number',array('size'=>50,'maxlength'=>50)); ?>
+		<?php echo $form->error($model,'article_number'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'article_name'); ?>
+		<?php echo $form->textField($model,'article_name',array('size'=>50,'maxlength'=>50)); ?>
+		<?php echo $form->error($model,'article_name'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'article_count'); ?>
+		<?php echo $form->textField($model,'article_count',array('size'=>9,'maxlength'=>9)); ?>
+		<?php echo $form->error($model,'article_count'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'article_price'); ?>
+		<?php echo $form->textField($model,'article_price',array('size'=>9,'maxlength'=>9)); ?>
+		<?php echo $form->error($model,'article_price'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'document_name'); ?>
+		<?php echo $form->textField($model,'document_name',array('size'=>50,'maxlength'=>50)); ?>
+		<?php echo $form->error($model,'document_name'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'warehouse_error'); ?>
+		<?php echo $form->textField($model,'warehouse_error',array('size'=>50,'maxlength'=>50)); ?>
+		<?php echo $form->error($model,'warehouse_error'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'shopping_shopping_id'); ?>
+		<?php echo $form->textField($model,'shopping_shopping_id'); ?>
+		<?php echo $form->error($model,'shopping_shopping_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'creation_date'); ?>
+		<?php echo $form->textField($model,'creation_date'); ?>
+		<?php echo $form->error($model,'creation_date'); ?>
+	</div>
+
+	<div class="row buttons">
+		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
+	</div>
+
 <?php $this->endWidget(); ?>
 
 </div><!-- form -->
