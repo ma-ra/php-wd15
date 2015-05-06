@@ -20,12 +20,6 @@
 	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'log_id'); ?>
-		<?php echo $form->textField($model,'log_id'); ?>
-		<?php echo $form->error($model,'log_id'); ?>
-	</div>
-
-	<div class="row">
 		<?php echo $form->labelEx($model,'creation_time'); ?>
 		<?php echo $form->textField($model,'creation_time'); ?>
 		<?php echo $form->error($model,'creation_time'); ?>

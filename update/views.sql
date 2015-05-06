@@ -1,4 +1,18 @@
 --
+-- Struktura widoku `rap_warehouse`
+--
+DROP TABLE IF EXISTS `rap_warehouse`;
+
+CREATE ALGORITHM=UNDEFINED SQL SECURITY INVOKER VIEW `rap_warehouse` AS select 
+`warehouse`.`article_number` AS `article_number`,
+sum(`warehouse`.`article_count`) AS `article_count_sum`,
+sum(`warehouse`.`article_price`) AS `article_price_sum` 
+
+from `warehouse` 
+group by `warehouse`.`article_number` 
+order by `warehouse`.`article_number`;
+
+--
 -- Struktura widoku `rap_textile`
 --
 DROP TABLE IF EXISTS `rap_textile`;
@@ -90,19 +104,3 @@ sum(`rap_textile2`.`textiles_selected`) AS `textiles_selected`,
 from `rap_textile2` 
 group by `rap_textile2`.`supplier_name`,`rap_textile2`.`textile_number`,`rap_textile2`.`textile1_warehouse`,`rap_textile2`.`textiles_ordered` 
 order by `rap_textile2`.`textile_number`;
-
-
---
--- Struktura widoku `rap_warehouse`
---
-DROP TABLE IF EXISTS `rap_warehouse`;
-
-CREATE ALGORITHM=UNDEFINED SQL SECURITY INVOKER VIEW `rap_warehouse` AS select 
-`warehouse`.`article_number` AS `article_number`,
-sum(`warehouse`.`article_count`) AS `article_count_sum`,
-sum(`warehouse`.`article_price`) AS `article_price_sum` 
-
-from `warehouse` 
-group by `warehouse`.`article_number` 
-order by `warehouse`.`article_number`;
-

@@ -1,4 +1,4 @@
--- zmiana typu atrybutów z przeliczeniem wartości pod nowy typ
+-- zmiana typu atrybutów w tabeli article z przeliczeniem wartości pod nowy typ
 ALTER TABLE `article` CHANGE `article_all_textile_amount` `article_all_textile_amount` DECIMAL(9,2) NULL DEFAULT NULL;
 UPDATE article SET article_all_textile_amount=article_all_textile_amount/10 WHERE 1;
 
@@ -7,6 +7,29 @@ UPDATE article SET article_first_textile_amount=article_first_textile_amount/10 
 
 ALTER TABLE `article` CHANGE `article_second_textile_amount` `article_second_textile_amount` DECIMAL(9,2) NULL DEFAULT NULL;
 UPDATE article SET article_second_textile_amount=article_second_textile_amount/10 WHERE 1;
+
+-- dodanie atrybutów do order
+ALTER TABLE `order` ADD `shopping_shopping_id` INT(11) NULL DEFAULT NULL AFTER `textile2_textile_id`;
+ALTER TABLE `order` ADD `article_planed` INT(11) NOT NULL DEFAULT '0' AFTER `textile_prepared`;
+ALTER TABLE `order` ADD `article_prepared_to_export` INT(11) NOT NULL DEFAULT '0' AFTER `article_manufactured`;
+
+ALTER TABLE `order` ADD INDEX `fk_order_shopping1_idx` (`shopping_shopping_id`);
+ALTER TABLE `order` ADD CONSTRAINT `fk_order_shopping1` FOREIGN KEY (`shopping_shopping_id`) REFERENCES `shopping`(`shopping_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- dodanie i usunięcie atrybutów do i z supplier; zmiana relacji z textile
+ALTER TABLE `supplier` ADD `supplier_lang` VARCHAR(45) NOT NULL ;
+
+ALTER TABLE `supplier` DROP FOREIGN KEY `fk_supplier_textile1`;
+ALTER TABLE `supplier` DROP INDEX fk_supplier_textile1_idx;
+ALTER TABLE `supplier` DROP `textile_textile_id`;
+
+-- dodanie atrybutów do textile; zmiana relacji z supplier i index pod nową relację z warehouse
+ALTER TABLE `textile` ADD `supplier_supplier_id` INT(11) NULL ;
+
+ALTER TABLE `textile` ADD INDEX `fk_textile_supplier1_idx` (`supplier_supplier_id`);
+ALTER TABLE `textile` ADD CONSTRAINT `fk_textile_supplier1` FOREIGN KEY (`supplier_supplier_id`) REFERENCES `supplier`(`supplier_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE `textile` ADD INDEX `fk_textile_warehouse1_idx` (`textile_number`);
 
 -- dodanie tabeli log
 CREATE TABLE `log` (
@@ -56,24 +79,3 @@ CREATE TABLE `warehouse` (
   CONSTRAINT `fk_warehouse_textile1` FOREIGN KEY (`article_number`) REFERENCES `textile` (`textile_number`) ON DELETE NO ACTION ON UPDATE NO ACTION
   
 );
-
--- dodanie atrybutów do order
-ALTER TABLE `order` ADD `shopping_shopping_id` INT(11) NULL DEFAULT NULL AFTER `textile2_textile_id`;
-ALTER TABLE `order` ADD `article_planed` INT(11) NOT NULL DEFAULT '0' AFTER `textile_prepared`;
-ALTER TABLE `order` ADD `article_prepared_to_export` INT(11) NOT NULL DEFAULT '0' AFTER `article_manufactured`;
-
-ALTER TABLE `order` ADD INDEX `fk_order_shopping1_idx` (`shopping_shopping_id`);
-ALTER TABLE `order` ADD CONSTRAINT `fk_order_shopping1` FOREIGN KEY (`shopping_shopping_id`) REFERENCES `shopping`(`shopping_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- dodanie i usunięcie atrybutów do/z supplier; zmiana relacji z textile
-ALTER TABLE `supplier` ADD `supplier_lang` VARCHAR(45) NOT NULL ;
-
-ALTER TABLE `supplier` DROP FOREIGN KEY `fk_supplier_textile1`;
-ALTER TABLE `supplier` DROP INDEX fk_supplier_textile1_idx;
-ALTER TABLE `supplier` DROP `textile_textile_id`;
-
--- dodanie atrybutów do textile; zmiana relacji z supplier
-ALTER TABLE `textile` ADD `supplier_supplier_id` INT(11) NULL ;
-
-ALTER TABLE `textile` ADD INDEX `fk_textile_supplier1_idx` (`supplier_supplier_id`);
-ALTER TABLE `textile` ADD CONSTRAINT `fk_textile_supplier1` FOREIGN KEY (`supplier_supplier_id`) REFERENCES `supplier`(`supplier_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;

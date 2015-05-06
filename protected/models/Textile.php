@@ -15,6 +15,7 @@
  * @property Order[] $orders2
  * @property Shopping[] $shoppings
  * @property Supplier $supplierSupplier
+ * @property Warehouse[] $warehouses
  */
 class Textile extends CActiveRecord
 {
@@ -57,6 +58,7 @@ class Textile extends CActiveRecord
 			'shoppings' => array(self::HAS_MANY,'Shopping', 'textile_textile_id'),
 			'supplierSupplier' => array(self::BELONGS_TO, 'Supplier', 'supplier_supplier_id'),
 			'supplierSupplier2' => array(self::BELONGS_TO, 'Supplier', 'supplier_supplier_id'),
+			'warehouses' => array(self::HAS_MANY, 'Warehouse', 'article_number'),
 		);
 	}
 

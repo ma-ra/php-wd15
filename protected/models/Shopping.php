@@ -37,8 +37,8 @@ class Shopping extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('shopping_id, shopping_type, textile_textile_id, article_calculated_amount, creation_time', 'required'),
-			array('shopping_id, textile_textile_id', 'numerical', 'integerOnly'=>true),
+			array('shopping_type, textile_textile_id, article_calculated_amount, creation_time', 'required'),
+			array('textile_textile_id', 'numerical', 'integerOnly'=>true),
 			array('shopping_type, article_calculated_amount, shopping_status', 'length', 'max'=>50),
 			array('article_amount', 'length', 'max'=>9),
 			array('shopping_term, shopping_printed', 'safe'),

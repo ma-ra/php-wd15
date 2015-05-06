@@ -17,6 +17,7 @@
  *
  * The followings are the available model relations:
  * @property Shopping $shoppingShopping
+ * @property Textile $articleNumber
  */
 class Warehouse extends CActiveRecord
 {
@@ -56,6 +57,7 @@ class Warehouse extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'shoppingShopping' => array(self::BELONGS_TO, 'Shopping', 'shopping_shopping_id'),
+			'articleNumber' => array(self::BELONGS_TO, 'Textile', 'article_number'),
 		);
 	}
 

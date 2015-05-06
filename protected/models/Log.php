@@ -31,8 +31,8 @@ class Log extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('log_id, creation_time, user_id, user_name, route, actionaction', 'required'),
-			array('log_id, user_id', 'numerical', 'integerOnly'=>true),
+			array('creation_time, user_id, user_name, route, actionaction', 'required'),
+			array('user_id', 'numerical', 'integerOnly'=>true),
 			array('user_name, route, actionaction', 'length', 'max'=>50),
 			array('params, info', 'length', 'max'=>500),
 			// The following rule is used by search().

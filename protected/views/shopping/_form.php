@@ -20,12 +20,6 @@
 	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'shopping_id'); ?>
-		<?php echo $form->textField($model,'shopping_id'); ?>
-		<?php echo $form->error($model,'shopping_id'); ?>
-	</div>
-
-	<div class="row">
 		<?php echo $form->labelEx($model,'shopping_type'); ?>
 		<?php echo $form->textField($model,'shopping_type',array('size'=>50,'maxlength'=>50)); ?>
 		<?php echo $form->error($model,'shopping_type'); ?>
