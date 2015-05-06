@@ -25,7 +25,6 @@ $this->menu=array(
 		'supplier_name',
 		'supplier_tel',
 		'supplier_email',
-		'textile_textile_id',
 		'supplier_lang',
 	),
 )); ?>

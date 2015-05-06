@@ -38,12 +38,6 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'textile_textile_id'); ?>
-		<?php echo $form->textField($model,'textile_textile_id'); ?>
-		<?php echo $form->error($model,'textile_textile_id'); ?>
-	</div>
-	
-	<div class="row">
 		<?php echo $form->labelEx($model,'supplier_lang'); ?>
 		<?php echo $form->textField($model,'supplier_lang',array('size'=>45,'maxlength'=>45)); ?>
 		<?php echo $form->error($model,'supplier_lang'); ?>

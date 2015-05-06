@@ -49,6 +49,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'textile_number',
 		'textile_name',
 		'textile_price_group',
+		'supplier_supplier_id',
 		array(
 			'class'=>'CButtonColumn',
 		),

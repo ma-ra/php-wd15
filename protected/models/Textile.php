@@ -8,11 +8,13 @@
  * @property string $textile_number
  * @property string $textile_name
  * @property integer $textile_price_group
+ * @property integer $supplier_supplier_id
  *
  * The followings are the available model relations:
  * @property Order[] $orders1
  * @property Order[] $orders2
- * @property Supplier[] $suppliers
+ * @property Shopping[] $shoppings
+ * @property Supplier $supplierSupplier
  */
 class Textile extends CActiveRecord
 {
@@ -33,12 +35,12 @@ class Textile extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('textile_number, textile_name, textile_price_group', 'required'),
-			array('textile_price_group', 'numerical', 'integerOnly'=>true),
+			array('textile_price_group, supplier_supplier_id', 'numerical', 'integerOnly'=>true),
 			array('textile_number', 'length', 'max'=>50),
 			array('textile_name', 'length', 'max'=>150),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('textile_id, textile_number, textile_name, textile_price_group', 'safe', 'on'=>'search'),
+			array('textile_id, textile_number, textile_name, textile_price_group, supplier_supplier_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -52,7 +54,9 @@ class Textile extends CActiveRecord
 		return array(
 			'orders1' => array(self::HAS_MANY, 'Order', 'textile1_textile_id'),
 			'orders2' => array(self::HAS_MANY, 'Order', 'textile2_textile_id'),
-			'suppliers' => array(self::HAS_MANY, 'Supplier', 'textile_textile_id'),
+			'shoppings' => array(self::HAS_MANY,'Shopping', 'textile_textile_id'),
+			'supplierSupplier' => array(self::BELONGS_TO, 'Supplier', 'supplier_supplier_id'),
+			'supplierSupplier2' => array(self::BELONGS_TO, 'Supplier', 'supplier_supplier_id'),
 		);
 	}
 
@@ -66,6 +70,7 @@ class Textile extends CActiveRecord
 			'textile_number' => 'numer materiału',
 			'textile_name' => 'nazwa materiału',
 			'textile_price_group' => 'grupa cenowa',
+			'supplier_supplier_id' => 'id dostawcy',
 		);
 	}
 
@@ -91,6 +96,7 @@ class Textile extends CActiveRecord
 		$criteria->compare('textile_number',$this->textile_number,true);
 		$criteria->compare('textile_name',$this->textile_name,true);
 		$criteria->compare('textile_price_group',$this->textile_price_group);
+		$criteria->compare('supplier_supplier_id',$this->supplier_supplier_id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

@@ -21,5 +21,9 @@
 	<?php echo CHtml::encode($data->textile_price_group); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('supplier_supplier_id')); ?>:</b>
+	<?php echo CHtml::encode($data->supplier_supplier_id); ?>
+	<br />
+
 
 </div>

@@ -8,11 +8,10 @@
  * @property string $supplier_name
  * @property string $supplier_tel
  * @property string $supplier_email
- * @property integer $textile_textile_id
  * @property string $supplier_lang
  *
  * The followings are the available model relations:
- * @property Textile $textileTextile
+ * @property Textile[] $textiles
  */
 class Supplier extends CActiveRecord
 {
@@ -32,14 +31,13 @@ class Supplier extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('supplier_name, textile_textile_id, supplier_lang', 'required'),
-			array('textile_textile_id', 'numerical', 'integerOnly'=>true),
+			array('supplier_name, supplier_lang', 'required'),
 			array('supplier_name', 'length', 'max'=>150),
 			array('supplier_tel, supplier_email, supplier_lang', 'length', 'max'=>45),
 			array('supplier_tel, supplier_email', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('supplier_id, supplier_name, supplier_tel, supplier_email, textile_textile_id, supplier_lang', 'safe', 'on'=>'search'),
+			array('supplier_id, supplier_name, supplier_tel, supplier_email, supplier_lang', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -51,7 +49,7 @@ class Supplier extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'textileTextile' => array(self::BELONGS_TO, 'Textile', 'textile_textile_id'),
+			'textiles' => array(self::HAS_MANY, 'Textile', 'supplier_supplier_id'),
 		);
 	}
 
@@ -65,7 +63,6 @@ class Supplier extends CActiveRecord
 			'supplier_name' => 'nazwa dostawcy',
 			'supplier_tel' => 'tel dostawcy',
 			'supplier_email' => 'email dostawcy',
-			'textile_textile_id' => 'id materiału',
 			'supplier_lang' => 'język',
 		);
 	}
@@ -92,7 +89,6 @@ class Supplier extends CActiveRecord
 		$criteria->compare('supplier_name',$this->supplier_name,true);
 		$criteria->compare('supplier_tel',$this->supplier_tel,true);
 		$criteria->compare('supplier_email',$this->supplier_email,true);
-		$criteria->compare('textile_textile_id',$this->textile_textile_id);
 		$criteria->compare('supplier_lang',$this->supplier_lang,true);
 
 		return new CActiveDataProvider($this, array(

@@ -575,25 +575,26 @@ class OrderController extends Controller
 				array_push($pks, $id);
 			}
 				
-			#Rozkład tygodniowy poszczególnych modeli
+			#Rozkład poszczególnych modeli
 			$textiles_pair=Order::model()->findAllByPk($pks, array(
 				'select'=>array(
-					't.order_term',
 					't.textil_pair',
+					'supplierSupplier.supplier_name as textiles1_textile_price_groupe',
 					'textile1Textile.textile_number as textiles1_textile_number',
 					new CDbExpression('SUM(IF(t.textil_pair, articleArticle.article_first_textile_amount * t.article_amount, articleArticle.article_all_textile_amount * t.article_amount)) as textiles1_textile_name'),
+					'supplierSupplier2.supplier_name as textiles2_textile_price_groupe',
 					'textile2Textile.textile_number as textiles2_textile_number',
 					new CDbExpression('SUM(IF(t.textil_pair, articleArticle.article_second_textile_amount * t.article_amount, null)) as textiles2_textile_name'),
 					new CDbExpression('GROUP_CONCAT(CONCAT(" ", CAST(t.article_amount AS CHAR), "x ", t.order_number)) as order_number'),
-					new CDbExpression('GROUP_CONCAT(CONCAT(" ", textile1Textile.textile_name, IFNULL(CONCAT(" ", textile2Textile.textile_name),""))) as order_reference'),
+					new CDbExpression('GROUP_CONCAT(CONCAT(" (", textile1Textile.textile_name, IFNULL(CONCAT(" ", textile2Textile.textile_name, ")"),")"))) as order_reference'),
 				),
-				'with'=>array('articleArticle', 'textile1Textile', 'textile2Textile'),
+				'with'=>array('articleArticle', 'textile1Textile'=>array('with'=>'supplierSupplier','together'=>true), 'textile2Textile'=>array('with'=>'supplierSupplier2','together'=>true)),
 				'together'=>true,
-				'group'=>'t.order_term, t.textil_pair, textile1Textile.textile_number, textile2Textile.textile_number',
-				'order'=>'t.order_term ASC, textile1Textile.textile_number ASC, textile2Textile.textile_number ASC',
+				'group'=>'t.textil_pair, textile1Textile.textile_number, textile2Textile.textile_number, textiles1_textile_price_groupe, textiles2_textile_price_groupe',
+				'order'=>'textiles1_textile_price_groupe ASC, textiles2_textile_price_groupe ASC, textile1Textile.textile_number ASC, textile2Textile.textile_number ASC',
 			));
 			
-			#z powyższego zapytania mamy pare materiałów oraz ich sumy (textile1, textile1 - sum, textile2, textile2 - sum)
+			/* #z powyższego zapytania mamy pare materiałów oraz ich sumy (textile1, textile1 - sum, textile2, textile2 - sum)
 			#dlatego w tej pętli zostaną posumowane (textile, sum)
 			$textiles=array();
 			foreach ($textiles_pair as $key => $textil_pair) {
@@ -615,14 +616,14 @@ class OrderController extends Controller
 				if (!empty($textil_pair->textiles2_textile_number)) {
 					$textiles[$textil_pair->order_term][$textil_pair->textiles2_textile_number]+=$textil_pair->textiles2_textile_name;
 				}
-			}
+			} */
 			
 			//echo "<pre>"; var_dump($textiles); echo "</pre>";
 			//die();
 				
 			$this->render('textile_summary',array(
 					'textiles_pair'=>$textiles_pair,
-					'textiles'=>$textiles
+					//'textiles'=>$textiles
 			));
 			}
 		}

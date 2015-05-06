@@ -33,7 +33,7 @@ class ShoppingController extends Controller
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
 				'actions'=>array('create','update', 'delete'),
-				'users'=>array('mara, asia'),
+				'users'=>array('mara', 'asia'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),

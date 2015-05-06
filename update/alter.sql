@@ -10,7 +10,7 @@ UPDATE article SET article_second_textile_amount=article_second_textile_amount/1
 
 -- dodanie tabeli log
 CREATE TABLE `log` (
-  `log_id` int(11) NOT NULL,
+  `log_id` int(11) NOT NULL AUTO_INCREMENT,
   `creation_time` datetime NOT NULL,
   `user_id` int(11) NOT NULL,
   `user_name` varchar(50) NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE `log` (
 
 -- dodanie tabeli shoping
 CREATE TABLE `shopping` (
-  `shopping_id` int(11) NOT NULL,
+  `shopping_id` int(11) NOT NULL AUTO_INCREMENT,
   `shopping_type` varchar(50) NOT NULL,
   `textile_textile_id` int(11) NOT NULL,
   `article_amount` decimal(9,2) DEFAULT NULL,
@@ -36,9 +36,6 @@ CREATE TABLE `shopping` (
   KEY `fk_shopping_textile1_idx` (`textile_textile_id`),
   CONSTRAINT `fk_shopping_textile1` FOREIGN KEY (`textile_textile_id`) REFERENCES `textile` (`textile_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
-
--- dodanie atrybutów do supplier
-ALTER TABLE `supplier` ADD `supplier_lang` VARCHAR(45) NOT NULL ;
 
 -- dodanie tabeli warehouse
 CREATE TABLE `warehouse` (
@@ -54,7 +51,10 @@ CREATE TABLE `warehouse` (
   `creation_date` DATETIME NOT NULL,
   PRIMARY KEY (`warehouse_id`),
   KEY `fk_warehouse_shopping1_idx` (`shopping_shopping_id`),
-  CONSTRAINT `fk_warehouse_shopping1` FOREIGN KEY (`shopping_shopping_id`) REFERENCES `shopping` (`shopping_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_warehouse_shopping1` FOREIGN KEY (`shopping_shopping_id`) REFERENCES `shopping` (`shopping_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  KEY `fk_warehouse_textile1_idx` (`article_number`),
+  CONSTRAINT `fk_warehouse_textile1` FOREIGN KEY (`article_number`) REFERENCES `textile` (`textile_number`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  
 );
 
 -- dodanie atrybutów do order
@@ -64,3 +64,16 @@ ALTER TABLE `order` ADD `article_prepared_to_export` INT(11) NOT NULL DEFAULT '0
 
 ALTER TABLE `order` ADD INDEX `fk_order_shopping1_idx` (`shopping_shopping_id`);
 ALTER TABLE `order` ADD CONSTRAINT `fk_order_shopping1` FOREIGN KEY (`shopping_shopping_id`) REFERENCES `shopping`(`shopping_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- dodanie i usunięcie atrybutów do/z supplier; zmiana relacji z textile
+ALTER TABLE `supplier` ADD `supplier_lang` VARCHAR(45) NOT NULL ;
+
+ALTER TABLE `supplier` DROP FOREIGN KEY `fk_supplier_textile1`;
+ALTER TABLE `supplier` DROP INDEX fk_supplier_textile1_idx;
+ALTER TABLE `supplier` DROP `textile_textile_id`;
+
+-- dodanie atrybutów do textile; zmiana relacji z supplier
+ALTER TABLE `textile` ADD `supplier_supplier_id` INT(11) NULL ;
+
+ALTER TABLE `textile` ADD INDEX `fk_textile_supplier1_idx` (`supplier_supplier_id`);
+ALTER TABLE `textile` ADD CONSTRAINT `fk_textile_supplier1` FOREIGN KEY (`supplier_supplier_id`) REFERENCES `supplier`(`supplier_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;

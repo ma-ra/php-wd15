@@ -31,6 +31,11 @@
 		<?php echo $form->textField($model,'textile_price_group'); ?>
 	</div>
 
+	<div class="row">
+		<?php echo $form->label($model,'supplier_supplier_id'); ?>
+		<?php echo $form->textField($model,'supplier_supplier_id'); ?>
+	</div>
+
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Search'); ?>
 	</div>
