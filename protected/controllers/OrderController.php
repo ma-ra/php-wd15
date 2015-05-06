@@ -575,51 +575,31 @@ class OrderController extends Controller
 				array_push($pks, $id);
 			}
 				
-			#Rozkład poszczególnych modeli
-			$textiles_pair=Order::model()->findAllByPk($pks, array(
-				'select'=>array(
-					't.textil_pair',
-					'supplierSupplier.supplier_name as textiles1_textile_price_groupe',
-					'textile1Textile.textile_number as textiles1_textile_number',
-					new CDbExpression('SUM(IF(t.textil_pair, articleArticle.article_first_textile_amount * t.article_amount, articleArticle.article_all_textile_amount * t.article_amount)) as textiles1_textile_name'),
-					'supplierSupplier2.supplier_name as textiles2_textile_price_groupe',
-					'textile2Textile.textile_number as textiles2_textile_number',
-					new CDbExpression('SUM(IF(t.textil_pair, articleArticle.article_second_textile_amount * t.article_amount, null)) as textiles2_textile_name'),
-					new CDbExpression('GROUP_CONCAT(CONCAT(" ", CAST(t.article_amount AS CHAR), "x ", t.order_number)) as order_number'),
-					new CDbExpression('GROUP_CONCAT(CONCAT(" (", textile1Textile.textile_name, IFNULL(CONCAT(" ", textile2Textile.textile_name, ")"),")"))) as order_reference'),
-				),
-				'with'=>array('articleArticle', 'textile1Textile'=>array('with'=>'supplierSupplier','together'=>true), 'textile2Textile'=>array('with'=>'supplierSupplier2','together'=>true)),
-				'together'=>true,
-				'group'=>'t.textil_pair, textile1Textile.textile_number, textile2Textile.textile_number, textiles1_textile_price_groupe, textiles2_textile_price_groupe',
-				'order'=>'textiles1_textile_price_groupe ASC, textiles2_textile_price_groupe ASC, textile1Textile.textile_number ASC, textile2Textile.textile_number ASC',
-			));
+			$criteria=new CDbCriteria;
+			$criteria->select=array(
+				'supplier_name',
+				'textile_number',
+				//new CDbExpression('GROUP_CONCAT(CONCAT(" * ", textile_name) SEPARATOR "<BR>\n") as textile_name'),
+				new CDbExpression('MAX(textile_name) as textile_name'),
+				new CDbExpression('SUM(textiles_selected) as textiles_selected'),
+				'textile1_warehouse',
+				'textiles_ordered',
+				new CDbExpression('IF((SUM(textiles_selected) - textile1_warehouse -  textiles_ordered)>0, SUM(textiles_selected) - textile1_warehouse -  textiles_ordered, NULL) as textile_yet_need'),
+				new CDbExpression('IF((SUM(textiles_selected) - textile1_warehouse -  textiles_ordered)<0, (SUM(textiles_selected) - textile1_warehouse -  textiles_ordered) * -1, NULL) as order1_id'),
+			);
+			$criteria->addInCondition('order1_id',$pks, 'AND');
+			$criteria->addInCondition('order2_id',$pks, 'OR');
+			$criteria->group='supplier_name, textile_number, textile1_warehouse, textiles_ordered';
+			$criteria->order='textile_number ASC';
+			$textiles_pair=RapTextile2::model()->findAll($criteria);
 			
-			/* #z powyższego zapytania mamy pare materiałów oraz ich sumy (textile1, textile1 - sum, textile2, textile2 - sum)
-			#dlatego w tej pętli zostaną posumowane (textile, sum)
-			$textiles=array();
-			foreach ($textiles_pair as $key => $textil_pair) {
-				#inicjalizacja pierwszego poziomu (tygodni)
-				if (!array_key_exists($textil_pair->order_term, $textiles)) {
-					$textiles[$textil_pair->order_term]=array();
-				}
-				
-				#inicjalizacja drugiego poziomu (numerów materiałów)
-				if (!array_key_exists($textil_pair->textiles1_textile_number, $textiles[$textil_pair->order_term])) {
-					$textiles[$textil_pair->order_term][$textil_pair->textiles1_textile_number]=0;
-				}
-				if (!array_key_exists($textil_pair->textiles2_textile_number, $textiles[$textil_pair->order_term]) && !empty($textil_pair->textiles2_textile_number)) {
-					$textiles[$textil_pair->order_term][$textil_pair->textiles2_textile_number]=0;
-				}
-				
-				#sumowanie
-				$textiles[$textil_pair->order_term][$textil_pair->textiles1_textile_number]+=$textil_pair->textiles1_textile_name;
-				if (!empty($textil_pair->textiles2_textile_number)) {
-					$textiles[$textil_pair->order_term][$textil_pair->textiles2_textile_number]+=$textil_pair->textiles2_textile_name;
-				}
-			} */
+			/* echo "<pre>";
+			var_dump($pks);
+			echo "\n\n############\n\n";
+			var_dump($textiles_pair);
+			echo "</pre>";
+			die(); */
 			
-			//echo "<pre>"; var_dump($textiles); echo "</pre>";
-			//die();
 				
 			$this->render('textile_summary',array(
 					'textiles_pair'=>$textiles_pair,

@@ -66,9 +66,9 @@ select
 `order2`.`order_id` AS `order2_id`,`order2`.`order_number` AS `order2_number`,
 (`article2`.`article_first_textile_amount` * `order2`.`article_amount`) AS `textile2_selected`,
 (ifnull((`article1`.`article_first_textile_amount` * `order1`.`article_amount`),0) + ifnull((`article2`.`article_first_textile_amount` * `order2`.`article_amount`),0)) AS `textiles_selected`,
-`rap_warehouse`.`article_count_sum` AS `textile1_warehouse`,
+ifnull(`rap_warehouse`.`article_count_sum`,0) AS `textile1_warehouse`,
 0 AS `textiles_ordered`,
-(((`rap_warehouse`.`article_count_sum` - ifnull((`article1`.`article_first_textile_amount` * `order1`.`article_amount`),0)) + ifnull((`article2`.`article_first_textile_amount` * `order2`.`article_amount`),0)) - 0) AS `textile_yet_need` 
+(ifnull((`article1`.`article_first_textile_amount` * `order1`.`article_amount`),0) + ifnull((`article2`.`article_first_textile_amount` * `order2`.`article_amount`),0)) - ifnull(`rap_warehouse`.`article_count_sum`,0) - 0 AS `textile_yet_need`
 
 from ((((((`textile` 
 
@@ -96,10 +96,11 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY INVOKER VIEW `rap_textile2-1` AS
 select 
 `rap_textile2`.`supplier_name` AS `supplier_name`,
 `rap_textile2`.`textile_number` AS `textile_number`,
+MAX(`rap_textile2`.`textile_name`) as `textile_name`,
 sum(`rap_textile2`.`textiles_selected`) AS `textiles_selected`,
 `rap_textile2`.`textile1_warehouse` AS `textile1_warehouse`,
 `rap_textile2`.`textiles_ordered` AS `textiles_ordered`,
-((`rap_textile2`.`textile1_warehouse` - sum(`rap_textile2`.`textiles_selected`)) - `rap_textile2`.`textiles_ordered`) AS `textile_yet_need` 
+sum(`rap_textile2`.`textiles_selected`) - `rap_textile2`.`textile1_warehouse` - `rap_textile2`.`textiles_ordered` AS `textile_yet_need` 
 
 from `rap_textile2` 
 group by `rap_textile2`.`supplier_name`,`rap_textile2`.`textile_number`,`rap_textile2`.`textile1_warehouse`,`rap_textile2`.`textiles_ordered` 

@@ -29,28 +29,26 @@
 	<b>Szczegółowe dane</b>
 	<table style="border-collapse: collapse; border: 1px solid black;">
 		<tr>
-			<td style="border: 1px solid black;">Para:</td>
-			<td style="border: 1px solid black;">Firma:</td>
-			<td style="border: 1px solid black;">Materiał 1:</td>
-			<td style="border: 1px solid black;">Materiał 1 - suma:</td>
-			<td style="border: 1px solid black;">Firma:</td>
-			<td style="border: 1px solid black;">Materiał 2:</td>
-			<td style="border: 1px solid black;">Materiał 2 - suma:</td>
-			<td style="border: 1px solid black;">Zamówienia:</td>
-			<td style="border: 1px solid black;">Nazwy materiałów:</td>
+			<td style="border: 1px solid black;">Dostawca:</td>
+			<td style="border: 1px solid black;">Nr. Mat.:</td>
+			<td style="border: 1px solid black;">Nazwa Mat.:</td>
+			<td style="border: 1px solid black;">Materiały - zaznaczone:</td>
+			<td style="border: 1px solid black;">Materiały - na magazynie</td>
+			<td style="border: 1px solid black;">Materiał - zamówione</td>
+			<td style="border: 1px solid black;">Materiał - jeszcze potrzeba</td>
+			<td style="border: 1px solid black;">Materiał - pozostało</td>
 		</tr>
 		<?php 
 			foreach ($textiles_pair as $key => $Order) {
 				echo "<tr>";
-					echo "<td style=\"border: 1px solid black;\">$Order->textil_pair</td>";
-					echo "<td style=\"border: 1px solid black;\">$Order->textiles1_textile_price_groupe</td>";
-					echo "<td style=\"border: 1px solid black;\">$Order->textiles1_textile_number</td>";
-					echo "<td style=\"border: 1px solid black;\">$Order->textiles1_textile_name</td>";
-					echo "<td style=\"border: 1px solid black;\">$Order->textiles2_textile_price_groupe</td>";
-					echo "<td style=\"border: 1px solid black;\">$Order->textiles2_textile_number</td>";
-					echo "<td style=\"border: 1px solid black;\">$Order->textiles2_textile_name</td>";
-					echo "<td style=\"border: 1px solid black;\">$Order->order_number</td>";
-					echo "<td style=\"border: 1px solid black;\">$Order->order_reference</td>";
+					echo "<td style=\"border: 1px solid black;\">$Order->supplier_name</td>";
+					echo "<td style=\"border: 1px solid black;\">$Order->textile_number</td>";
+					echo "<td style=\"border: 1px solid black;\">$Order->textile_name</td>";
+					echo "<td style=\"border: 1px solid black;\">$Order->textiles_selected</td>";
+					echo "<td style=\"border: 1px solid black;\">$Order->textile1_warehouse</td>";
+					echo "<td style=\"border: 1px solid black;\">$Order->textiles_ordered</td>";
+					echo "<td style=\"border: 1px solid black;\">$Order->textile_yet_need</td>";
+					echo "<td style=\"border: 1px solid black;\">$Order->order1_id</td>";
 				echo "</tr>";
 			}
 		?>
