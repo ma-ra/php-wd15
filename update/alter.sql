@@ -8,6 +8,22 @@ UPDATE article SET article_first_textile_amount=article_first_textile_amount/10 
 ALTER TABLE `article` CHANGE `article_second_textile_amount` `article_second_textile_amount` DECIMAL(9,2) NULL DEFAULT NULL;
 UPDATE article SET article_second_textile_amount=article_second_textile_amount/10 WHERE 1;
 
+-- dodanie tabeli shoping
+CREATE TABLE `shopping` (
+  `shopping_id` int(11) NOT NULL AUTO_INCREMENT,
+  `shopping_type` varchar(50) NOT NULL,
+  `textile_textile_id` int(11) NOT NULL,
+  `article_amount` decimal(9,2) DEFAULT NULL,
+  `article_calculated_amount` varchar(50) NOT NULL,
+  `shopping_term` datetime DEFAULT NULL,
+  `shopping_status` varchar(50) DEFAULT NULL,
+  `shopping_printed` datetime DEFAULT NULL,
+  `creation_time` datetime NOT NULL,
+  PRIMARY KEY (`shopping_id`),
+  KEY `fk_shopping_textile1_idx` (`textile_textile_id`),
+  CONSTRAINT `fk_shopping_textile1` FOREIGN KEY (`textile_textile_id`) REFERENCES `textile` (`textile_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
 -- dodanie atrybutów do order
 ALTER TABLE `order` ADD `shopping_shopping_id` INT(11) NULL DEFAULT NULL AFTER `textile2_textile_id`;
 ALTER TABLE `order` ADD `article_planed` INT(11) NOT NULL DEFAULT '0' AFTER `textile_prepared`;
@@ -42,22 +58,6 @@ CREATE TABLE `log` (
   `params` varchar(500) DEFAULT NULL,
   `info` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`log_id`)
-);
-
--- dodanie tabeli shoping
-CREATE TABLE `shopping` (
-  `shopping_id` int(11) NOT NULL AUTO_INCREMENT,
-  `shopping_type` varchar(50) NOT NULL,
-  `textile_textile_id` int(11) NOT NULL,
-  `article_amount` decimal(9,2) DEFAULT NULL,
-  `article_calculated_amount` varchar(50) NOT NULL,
-  `shopping_term` datetime DEFAULT NULL,
-  `shopping_status` varchar(50) DEFAULT NULL,
-  `shopping_printed` datetime DEFAULT NULL,
-  `creation_time` datetime NOT NULL,
-  PRIMARY KEY (`shopping_id`),
-  KEY `fk_shopping_textile1_idx` (`textile_textile_id`),
-  CONSTRAINT `fk_shopping_textile1` FOREIGN KEY (`textile_textile_id`) REFERENCES `textile` (`textile_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
 -- dodanie tabeli warehouse
