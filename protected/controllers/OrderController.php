@@ -591,19 +591,31 @@ class OrderController extends Controller
 			$criteria->addInCondition('order2_id',$pks, 'OR');
 			$criteria->group='supplier_name, textile_number, textile1_warehouse, textiles_ordered';
 			$criteria->order='textile_number ASC';
-			$textiles_pair=RapTextile2::model()->findAll($criteria);
+			#wyszukiwanie
+			$rapTextile=RapTextile2::model()->findAll($criteria);
 			
-			/* echo "<pre>";
-			var_dump($pks);
-			echo "\n\n############\n\n";
-			var_dump($textiles_pair);
-			echo "</pre>";
-			die(); */
+			#Budujemy model na potrzeby formularza dodającego zakup (zamówienie materiałów)
+			foreach ($rapTextile as $key => $textile) {
+				#tworzymy tablice modeli typu Shopping - tutaj będziemy zbierać dane, które zostaną zpaisane
+				$shopping[$key]=new Shopping;
+				$shopping[$key]->textile_textile_id=Textile::model()->find(array(
+					'condition'=>'textile_number = :textile_number',
+					'params'=>array(':textile_number'=>$textile->textile_number),
+					'order'=>'textile_name DESC',
+					'limit'=>1
+						
+				))->textile_id;
+				if($textile->textile_yet_need == null) {
+					$shopping[$key]->article_calculated_amount=0;
+				} else {
+					$shopping[$key]->article_calculated_amount=$textile->textile_yet_need;
+				}
+			}
 			
-				
+			
 			$this->render('textile_summary',array(
-					'textiles_pair'=>$textiles_pair,
-					//'textiles'=>$textiles
+					'rapTextile'=>$rapTextile,
+					'shopping'=>$shopping
 			));
 			}
 		}

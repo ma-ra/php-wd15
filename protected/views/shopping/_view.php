@@ -9,6 +9,10 @@
 	<?php echo CHtml::link(CHtml::encode($data->shopping_id), array('view', 'id'=>$data->shopping_id)); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping_number')); ?>:</b>
+	<?php echo CHtml::encode($data->shopping_number); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping_type')); ?>:</b>
 	<?php echo CHtml::encode($data->shopping_type); ?>
 	<br />
@@ -29,11 +33,11 @@
 	<?php echo CHtml::encode($data->shopping_term); ?>
 	<br />
 
+	<?php /*
 	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping_status')); ?>:</b>
 	<?php echo CHtml::encode($data->shopping_status); ?>
 	<br />
 
-	<?php /*
 	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping_printed')); ?>:</b>
 	<?php echo CHtml::encode($data->shopping_printed); ?>
 	<br />

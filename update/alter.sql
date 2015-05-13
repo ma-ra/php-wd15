@@ -11,10 +11,11 @@ UPDATE article SET article_second_textile_amount=article_second_textile_amount/1
 -- dodanie tabeli shoping
 CREATE TABLE `shopping` (
   `shopping_id` int(11) NOT NULL AUTO_INCREMENT,
+  `shopping_number` INT(11) NOT NULL,
   `shopping_type` varchar(50) NOT NULL,
   `textile_textile_id` int(11) NOT NULL,
   `article_amount` decimal(9,2) DEFAULT NULL,
-  `article_calculated_amount` varchar(50) NOT NULL,
+  `article_calculated_amount` decimal(9,2) NOT NULL,
   `shopping_term` datetime DEFAULT NULL,
   `shopping_status` varchar(50) DEFAULT NULL,
   `shopping_printed` datetime DEFAULT NULL,

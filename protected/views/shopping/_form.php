@@ -20,6 +20,12 @@
 	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
+		<?php echo $form->labelEx($model,'shopping_number'); ?>
+		<?php echo $form->textField($model,'shopping_number'); ?>
+		<?php echo $form->error($model,'shopping_number'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->labelEx($model,'shopping_type'); ?>
 		<?php echo $form->textField($model,'shopping_type',array('size'=>50,'maxlength'=>50)); ?>
 		<?php echo $form->error($model,'shopping_type'); ?>
@@ -39,7 +45,7 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'article_calculated_amount'); ?>
-		<?php echo $form->textField($model,'article_calculated_amount',array('size'=>50,'maxlength'=>50)); ?>
+		<?php echo $form->textField($model,'article_calculated_amount',array('size'=>9,'maxlength'=>9)); ?>
 		<?php echo $form->error($model,'article_calculated_amount'); ?>
 	</div>
 

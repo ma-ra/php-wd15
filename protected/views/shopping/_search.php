@@ -17,6 +17,11 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->label($model,'shopping_number'); ?>
+		<?php echo $form->textField($model,'shopping_number'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->label($model,'shopping_type'); ?>
 		<?php echo $form->textField($model,'shopping_type',array('size'=>50,'maxlength'=>50)); ?>
 	</div>
@@ -33,7 +38,7 @@
 
 	<div class="row">
 		<?php echo $form->label($model,'article_calculated_amount'); ?>
-		<?php echo $form->textField($model,'article_calculated_amount',array('size'=>50,'maxlength'=>50)); ?>
+		<?php echo $form->textField($model,'article_calculated_amount',array('size'=>9,'maxlength'=>9)); ?>
 	</div>
 
 	<div class="row">

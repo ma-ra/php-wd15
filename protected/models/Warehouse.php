@@ -136,7 +136,7 @@ class Warehouse extends CActiveRecord
 		$this->warehouse_type='textil';
 		$this->creation_date=date('Y-m-d H:i:s');
 			
-		return parent::beforeSave();
+		return parent::beforeValidate();
 	}
 
 	/**

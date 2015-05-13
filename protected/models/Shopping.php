@@ -5,6 +5,7 @@
  *
  * The followings are the available columns in table 'shopping':
  * @property integer $shopping_id
+ * @property integer $shopping_number
  * @property string $shopping_type
  * @property integer $textile_textile_id
  * @property string $article_amount
@@ -37,14 +38,15 @@ class Shopping extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('shopping_type, textile_textile_id, article_calculated_amount, creation_time', 'required'),
-			array('textile_textile_id', 'numerical', 'integerOnly'=>true),
-			array('shopping_type, article_calculated_amount, shopping_status', 'length', 'max'=>50),
-			array('article_amount', 'length', 'max'=>9),
+			array('shopping_number, shopping_type, textile_textile_id, article_calculated_amount, creation_time', 'required'),
+			array('shopping_number, textile_textile_id', 'numerical', 'integerOnly'=>true),
+			array('shopping_type, shopping_status', 'length', 'max'=>50),
+			array('article_amount, article_calculated_amount', 'length', 'max'=>9),
 			array('shopping_term, shopping_printed', 'safe'),
+			array('article_amount, shopping_term, shopping_status, shopping_printed', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('shopping_id, shopping_type, textile_textile_id, article_amount, article_calculated_amount, shopping_term, shopping_status, shopping_printed, creation_time', 'safe', 'on'=>'search'),
+			array('shopping_number, shopping_id, shopping_type, textile_textile_id, article_amount, article_calculated_amount, shopping_term, shopping_status, shopping_printed, creation_time', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -69,8 +71,9 @@ class Shopping extends CActiveRecord
 	{
 		return array(
 			'shopping_id' => 'id',
+			'shopping_number' => 'numer',
 			'shopping_type' => 'typ',
-			'textile_textile_id' => 'it materiału',
+			'textile_textile_id' => 'id materiału',
 			'article_amount' => 'ilość',
 			'article_calculated_amount' => 'wyliczona ilość',
 			'shopping_term' => 'termin',
@@ -99,6 +102,7 @@ class Shopping extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('shopping_id',$this->shopping_id);
+		$criteria->compare('shopping_number',$this->shopping_number);
 		$criteria->compare('shopping_type',$this->shopping_type,true);
 		$criteria->compare('textile_textile_id',$this->textile_textile_id);
 		$criteria->compare('article_amount',$this->article_amount,true);
@@ -111,6 +115,13 @@ class Shopping extends CActiveRecord
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
+	}
+	
+	public function beforeValidate() {
+		$this->shopping_type='textil';
+		$this->creation_time=date('Y-m-d H:i:s');
+			
+		return parent::beforeValidate();
 	}
 
 	/**

@@ -22,6 +22,7 @@ $this->menu=array(
 	'data'=>$model,
 	'attributes'=>array(
 		'shopping_id',
+		'shopping_number',
 		'shopping_type',
 		'textile_textile_id',
 		'article_amount',

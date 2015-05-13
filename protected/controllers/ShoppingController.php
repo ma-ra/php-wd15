@@ -58,20 +58,59 @@ class ShoppingController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Shopping;
-
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-
+		
+		# http://www.yiiframework.com/wiki/362/how-to-use-multiple-instances-of-the-same-model-in-the-same-form/
+		$models=array();
+		
 		if(isset($_POST['Shopping']))
 		{
-			$model->attributes=$_POST['Shopping'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->shopping_id));
+			# pętla po otrzymanych wierszach, tworzenie modelu do każdego wiersza i przypisanie atrybutów
+			foreach ($_POST['Shopping'] as $key => $model) {
+				$models[$key]=new Shopping;
+				$models[$key]->attributes=$_POST['Shopping'][$key];
+				
+				#jeżeli podano 0, to znaczy, że nie zamawiamy
+				if ($models[$key]->article_amount != null and $models[$key]->article_amount == 0) {
+					$models[$key]->unsetAttributes();
+				}
+				
+				#jeżeli nie zadeklarowano ilości oraz wyliczona ilość wynosi 0, to nie zamawiaj
+				if ($models[$key]->article_amount == null and $models[$key]->article_calculated_amount == 0) {
+					$models[$key]->unsetAttributes();
+				}
+				
+				# nie weryfikuj oraz nie usówaj całkowicie pustych wierszy
+				$attributes_count=0;
+				foreach ($models[$key] as $attr_key => $attribute) {
+					if (!empty($attribute)) {
+						$attributes_count+=1;
+					}
+				}
+				if ($attributes_count > 0) {
+					if($models[$key]->save()) {
+						# po poprawnym zapisie wyczyść prezentowany wiersz lub usuń 
+						# wyczyść
+						$models[$key]=new Shopping();
+						# usuń
+						//unset($models[$key]);
+					}
+				}
+			}
+		} else {
+			# jak nie otrzymaliśmy wierszy, to sami je generujemy
+			for ($i = 1; $i <= 15; $i++) {
+				$models[$i]=new Shopping;
+			}
 		}
 
+		#jeżeli $models jest puste, to znaczy, że wszystko udało sie zapisać
+		if (empty($models)) {
+			$this->redirect(array('Shopping/admin'));
+		}
 		$this->render('create',array(
-			'model'=>$model,
+			'models'=>$models,
 		));
 	}
 
