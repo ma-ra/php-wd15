@@ -111,9 +111,13 @@ class Shopping extends CActiveRecord
 		$criteria->compare('shopping_status',$this->shopping_status,true);
 		$criteria->compare('shopping_printed',$this->shopping_printed,true);
 		$criteria->compare('creation_time',$this->creation_time,true);
+		
+		$criteria->with=array('textileTextile'=>array('with'=>'supplierSupplier', 'together'=>true));
+		$criteria->together=true;
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+			'pagination'=>array('pageSize'=>200),
 		));
 	}
 	

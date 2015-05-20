@@ -77,36 +77,38 @@ IF(`order1`.`textil_pair`,`article1`.`article_first_textile_amount` * `order1`.`
 -- @textile2_selected := `article2`.`article_second_textile_amount` * `order2`.`article_amount` AS `textile2_selected`,
 `article2`.`article_second_textile_amount` * `order2`.`article_amount` AS `textile2_selected`,
 -- @textiles_selected := IFNULL(@textile1_selected,0) + IFNULL(@textile2_selected,0) AS `textiles_selected`,
-IFNULL(IF(`order1`.`textil_pair`,`article1`.`article_first_textile_amount` * `order1`.`article_amount`,`article1`.`article_all_textile_amount` * `order1`.`article_amount`),0) 
-    + IFNULL(`article2`.`article_second_textile_amount` * `order2`.`article_amount`,0) 
+IFNULL(IF(`order1`.`textil_pair`,`article1`.`article_first_textile_amount` * `order1`.`article_amount`,`article1`.`article_all_textile_amount` * `order1`.`article_amount`),0)
+    + IFNULL(`article2`.`article_second_textile_amount` * `order2`.`article_amount`,0)
     AS `textiles_selected`,
 -- @textile1_warehouse := ifnull(`rap_warehouse`.`article_count_sum`,0) AS `textile1_warehouse`,
 ifnull(`rap_warehouse`.`article_count_sum`,0) AS `textile1_warehouse`,
--- @textiles_ordered := 0 AS `textiles_ordered`,
- 0 AS `textiles_ordered`,
+-- @textiles_ordered := ifnull(`rap_shopping`.`article_amount_sum`,0) AS `textiles_ordered`,
+ifnull(`rap_shopping`.`article_amount_sum`,0) AS `textiles_ordered`,
 -- @textile_yet_need := @textiles_selected -  @textile1_warehouse - @textiles_ordered AS `textile_yet_need`
-IFNULL(IF(`order1`.`textil_pair`,`article1`.`article_first_textile_amount` * `order1`.`article_amount`,`article1`.`article_all_textile_amount` * `order1`.`article_amount`),0) 
-    + IFNULL(`article2`.`article_second_textile_amount` * `order2`.`article_amount`,0) 
-    -  ifnull(`rap_warehouse`.`article_count_sum`,0) 
-    - 0 
+IFNULL(IF(`order1`.`textil_pair`,`article1`.`article_first_textile_amount` * `order1`.`article_amount`,`article1`.`article_all_textile_amount` * `order1`.`article_amount`),0)
+    + IFNULL(`article2`.`article_second_textile_amount` * `order2`.`article_amount`,0)
+    - ifnull(`rap_warehouse`.`article_count_sum`,0)
+    - ifnull(`rap_shopping`.`article_amount_sum`,0)
     AS `textile_yet_need`
 
 FROM`textile`
 
 LEFT JOIN `supplier`
-    ON`textile`.`supplier_supplier_id` = `supplier`.`supplier_id`
+    ON `textile`.`supplier_supplier_id` = `supplier`.`supplier_id`
 LEFT JOIN `rap_warehouse`
-    ON`textile`.`textile_number` = `rap_warehouse`.`article_number`
+    ON `textile`.`textile_number` = `rap_warehouse`.`article_number`
+LEFT JOIN `rap_shopping`
+    ON `textile`.`textile_number` = `rap_shopping`.`textile_number`
 
 LEFT JOIN `order` `order1`
-    ON`textile`.`textile_id` = `order1`.`textile1_textile_id`
+    ON `textile`.`textile_id` = `order1`.`textile1_textile_id`
 LEFT JOIN `article` `article1`
-    ON`order1`.`article_article_id` = `article1`.`article_id`
+    ON `order1`.`article_article_id` = `article1`.`article_id`
 
 LEFT JOIN `order` `order2`
-    ON`textile`.`textile_id` = `order2`.`textile2_textile_id`
+    ON `textile`.`textile_id` = `order2`.`textile2_textile_id`
 LEFT JOIN `article` `article2`
-    ON`order2`.`article_article_id` = `article2`.`article_id`
+    ON `order2`.`article_article_id` = `article2`.`article_id`
 
 --
 -- Struktura widoku `rap_textile2-1`
@@ -128,3 +130,25 @@ FROM `rap_textile2`
 WHERE `order1_checked` = 1 OR `order2_checked` = 1
 GROUP BY `rap_textile2`.`supplier_name`,`rap_textile2`.`textile_number`,`rap_textile2`.`textile1_warehouse`,`rap_textile2`.`textiles_ordered`
 ORDER BY `rap_textile2`.`textile_number`
+
+--
+-- Struktura widoku `rap_textile2-1`
+--
+CREATE OR REPLACE
+ ALGORITHM = UNDEFINED
+ SQL SECURITY INVOKER
+ VIEW `rap_shopping`
+ AS SELECT
+`textile`.`textile_number`,
+SUM(`article_amount`) as article_amount_sum,
+SUM(`article_calculated_amount`) as article_calculated_amount_sum
+
+FROM `shopping`
+LEFT JOIN `textile`
+   ON `shopping`.`textile_textile_id` = `textile`.`textile_id`
+LEFT JOIN `warehouse`
+   ON `shopping`.`shopping_id` = `warehouse`.`shopping_shopping_id`
+
+WHERE `warehouse`.`article_count` IS NULL
+GROUP BY `textile`.`textile_number`
+ORDER BY `textile`.`textile_number` ASC

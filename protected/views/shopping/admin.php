@@ -47,8 +47,22 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'columns'=>array(
 		'shopping_id',
 		'shopping_number',
-		'shopping_type',
+		array(
+				'header' => 'dostawca',
+				'type' => 'raw',
+				'value' => 'CHtml::encode(isset($data->textileTextile->supplierSupplier->supplier_name) ? $data->textileTextile->supplierSupplier->supplier_name : "-" )'
+		),
 		'textile_textile_id',
+		array(
+				'name' => 'textileTextile.textile_number',
+				'type' => 'raw',
+				'value' => 'CHtml::encode($data->textileTextile->textile_number)'
+		),
+		array(
+				'name' => 'textileTextile.textile_name',
+				'type' => 'raw',
+				'value' => 'CHtml::encode($data->textileTextile->textile_name)'
+		),
 		'article_amount',
 		'article_calculated_amount',
 		'shopping_term',

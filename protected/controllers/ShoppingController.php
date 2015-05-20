@@ -66,10 +66,26 @@ class ShoppingController extends Controller
 		
 		if(isset($_POST['Shopping']))
 		{
+			# na początek ustalamy max numer zamówienia materiałów (zakupów)
+			# TO DO - przy niepoprawnej walidacji mamy dużo czasu do zapisu, co może sprzyjać dublą
+			$maxShoppingNumber = Shopping::model()->find(array(
+				'order'=>'shopping_number DESC',
+				'limit'=>1
+			))->shopping_number;
+			$shoppingNumber=array();
+			
 			# pętla po otrzymanych wierszach, tworzenie modelu do każdego wiersza i przypisanie atrybutów
 			foreach ($_POST['Shopping'] as $key => $model) {
 				$models[$key]=new Shopping;
+				$check[$key]=true;
 				$models[$key]->attributes=$_POST['Shopping'][$key];
+				
+				#nadajemy numer
+				$supplierId=isset(Textile::model()->findByPk($models[$key]->textile_textile_id)->supplierSupplier->supplier_id) ? Textile::model()->findByPk($models[$key]->textile_textile_id)->supplierSupplier->supplier_id : "-" ;
+				if (!isset($shoppingNumber[$supplierId])) {
+					$maxShoppingNumber+=1;
+					$shoppingNumber[$supplierId]=$maxShoppingNumber;
+				} 
 				
 				#jeżeli podano 0, to znaczy, że nie zamawiamy
 				if ($models[$key]->article_amount != null and $models[$key]->article_amount == 0) {
@@ -81,6 +97,12 @@ class ShoppingController extends Controller
 					$models[$key]->unsetAttributes();
 				}
 				
+				#article amount z wyliczonej wartości
+				$models[$key]->article_amount=$models[$key]->article_calculated_amount;
+				
+				#taki przytrzymywacz
+				#$models[$key]->article_calculated_amount=null;
+				
 				# nie weryfikuj oraz nie usówaj całkowicie pustych wierszy
 				$attributes_count=0;
 				foreach ($models[$key] as $attr_key => $attribute) {
@@ -89,13 +111,17 @@ class ShoppingController extends Controller
 					}
 				}
 				if ($attributes_count > 0) {
+					$models[$key]->shopping_number=$shoppingNumber[$supplierId];
 					if($models[$key]->save()) {
 						# po poprawnym zapisie wyczyść prezentowany wiersz lub usuń 
 						# wyczyść
-						$models[$key]=new Shopping();
+						//$models[$key]->unsetAttributes();
 						# usuń
-						//unset($models[$key]);
+						unset($check[$key]);
 					}
+				} else {
+					# usówamy puste wiersze
+					unset($check[$key]);
 				}
 			}
 		} else {
@@ -106,7 +132,7 @@ class ShoppingController extends Controller
 		}
 
 		#jeżeli $models jest puste, to znaczy, że wszystko udało sie zapisać
-		if (empty($models)) {
+		if (empty($check)) {
 			$this->redirect(array('Shopping/admin'));
 		}
 		$this->render('create',array(
