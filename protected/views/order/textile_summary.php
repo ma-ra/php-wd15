@@ -72,6 +72,7 @@
 			echo "\n" . $form->hiddenField($shopping[$key],"[$key]" . 'shopping_number');
 			echo "\n" . $form->hiddenField($shopping[$key],"[$key]" . 'textile_textile_id');
 			echo "\n" . $form->hiddenField($shopping[$key],"[$key]" . 'article_calculated_amount');
+			echo "\n" . $form->hiddenField($shopping[$key],"[$key]" . 'order2_id');
 		}
 	?>
 </table>

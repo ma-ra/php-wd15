@@ -71,7 +71,12 @@ class ShoppingController extends Controller
 			$maxShoppingNumber = Shopping::model()->find(array(
 				'order'=>'shopping_number DESC',
 				'limit'=>1
-			))->shopping_number;
+			));
+			if (isset($maxShoppingNumber)) {
+				$maxShoppingNumber=$maxShoppingNumber->shopping_number;
+			} else {
+				$maxShoppingNumber=0;
+			}
 			$shoppingNumber=array();
 			
 			# pętla po otrzymanych wierszach, tworzenie modelu do każdego wiersza i przypisanie atrybutów
@@ -97,11 +102,13 @@ class ShoppingController extends Controller
 					$models[$key]->unsetAttributes();
 				}
 				
-				#article amount z wyliczonej wartości
-				$models[$key]->article_amount=$models[$key]->article_calculated_amount;
+				#jeżeli nie podano article amount, to z wyliczonej wartości
+				if (!isset($models[$key]->article_amount)) {
+					$models[$key]->article_amount=$models[$key]->article_calculated_amount;
+				}
 				
 				#taki przytrzymywacz
-				#$models[$key]->article_calculated_amount=null;
+				$models[$key]->article_calculated_amount=null;
 				
 				# nie weryfikuj oraz nie usówaj całkowicie pustych wierszy
 				$attributes_count=0;
@@ -113,6 +120,9 @@ class ShoppingController extends Controller
 				if ($attributes_count > 0) {
 					$models[$key]->shopping_number=$shoppingNumber[$supplierId];
 					if($models[$key]->save()) {
+						# wiązemy zakupy (shopping) z zamówieniam (order)
+						!!!!!!!
+						
 						# po poprawnym zapisie wyczyść prezentowany wiersz lub usuń 
 						# wyczyść
 						//$models[$key]->unsetAttributes();

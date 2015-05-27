@@ -106,7 +106,9 @@ MAX(`rap_textile2`.`textile_name`) as `textile_name`,
 SUM(`rap_textile2`.`textiles_selected`) AS `textiles_selected`,
 `rap_textile2`.`textile1_warehouse` AS `textile1_warehouse`,
 `rap_textile2`.`textiles_ordered` AS `textiles_ordered`,
-SUM(`rap_textile2`.`textiles_selected`) - `rap_textile2`.`textile1_warehouse` - `rap_textile2`.`textiles_ordered` AS `textile_yet_need`
+IF((SUM(textiles_selected) - textile1_warehouse -  textiles_ordered)>0, SUM(textiles_selected) - textile1_warehouse -  textiles_ordered, NULL) as textile_yet_need,
+IF((SUM(textiles_selected) - textile1_warehouse -  textiles_ordered)<0, (SUM(textiles_selected) - textile1_warehouse -  textiles_ordered) * -1, NULL) as textile_yet_remained,
+CONCAT(IFNULL(GROUP_CONCAT(order1_id),""),IF(GROUP_CONCAT(order1_id),",",""),IFNULL(GROUP_CONCAT(order2_id),"")) as order_ids
 
 FROM `rap_textile2`
 WHERE `order1_checked` = 1 OR `order2_checked` = 1
