@@ -74,6 +74,7 @@
 					echo $form->error($model,"[$key]" . 'shopping_term');
 				echo "</td>\n";
 			echo "</tr>\n";
+		echo "\n" . $form->hiddenField($model,"[$key]" . 'order_ids');
 		}
 		?>
 	</table>

@@ -84,6 +84,8 @@ class ShoppingController extends Controller
 				$models[$key]=new Shopping;
 				$check[$key]=true;
 				$models[$key]->attributes=$_POST['Shopping'][$key];
+				# nie wiem dalczego, ale trzeba ręcznie przepisać
+				$models[$key]->order_ids=$_POST['Shopping'][$key]['order_ids'];
 				
 				#nadajemy numer
 				$supplierId=isset(Textile::model()->findByPk($models[$key]->textile_textile_id)->supplierSupplier->supplier_id) ? Textile::model()->findByPk($models[$key]->textile_textile_id)->supplierSupplier->supplier_id : "-" ;
@@ -108,7 +110,10 @@ class ShoppingController extends Controller
 				}
 				
 				#taki przytrzymywacz
-				$models[$key]->article_calculated_amount=null;
+				//$models[$key]->article_calculated_amount=null;
+				
+				# nadajemy status
+				$models[$key]->shopping_status="nowy";
 				
 				# nie weryfikuj oraz nie usówaj całkowicie pustych wierszy
 				$attributes_count=0;
@@ -119,10 +124,18 @@ class ShoppingController extends Controller
 				}
 				if ($attributes_count > 0) {
 					$models[$key]->shopping_number=$shoppingNumber[$supplierId];
+					# pozyskujemy id przemycony w polu status
+					$order_ids=explode(",",$models[$key]->order_ids);
+						
 					if($models[$key]->save()) {
 						# wiązemy zakupy (shopping) z zamówieniam (order)
-						!!!!!!!
-						
+						foreach ($order_ids as $order_id) {
+							if (!empty($order_id)) {
+								$Order=Order::model()->findByPk($order_id);
+								$Order->shopping_shopping_id=$models[$key]->shopping_id;
+								$Order->save();
+							}
+						}
 						# po poprawnym zapisie wyczyść prezentowany wiersz lub usuń 
 						# wyczyść
 						//$models[$key]->unsetAttributes();
@@ -206,6 +219,7 @@ class ShoppingController extends Controller
 	{
 		$model=new Shopping('search');
 		$model->unsetAttributes();  // clear any default values
+		$model->shopping_status=0;
 		if(isset($_GET['Shopping']))
 			$model->attributes=$_GET['Shopping'];
 

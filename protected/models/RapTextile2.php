@@ -9,13 +9,15 @@
  * @property string $textile_name
  * @property integer $order1_id
  * @property string $order1_number
- * @property string $textile1_selected
+ * @property integer $order1_checked
  * @property integer $order2_id
  * @property string $order2_number
+ * @property integer $order2_checked
+ * @property string $textile1_selected
  * @property string $textile2_selected
  * @property string $textiles_selected
  * @property string $textile1_warehouse
- * @property integer $textiles_ordered
+ * @property string $textiles_ordered
  * @property string $textile_yet_need
  */
 class RapTextile2 extends CActiveRecord
@@ -37,16 +39,16 @@ class RapTextile2 extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('textile_number, textile_name', 'required'),
-			array('order1_id, order2_id, textiles_ordered', 'numerical', 'integerOnly'=>true),
+			array('order1_id, order1_checked, order2_id, order2_checked', 'numerical', 'integerOnly'=>true),
 			array('supplier_name, textile_name', 'length', 'max'=>150),
 			array('textile_number, order1_number, order2_number', 'length', 'max'=>50),
 			array('textile1_selected, textile2_selected', 'length', 'max'=>19),
 			array('textiles_selected', 'length', 'max'=>20),
-			array('textile1_warehouse', 'length', 'max'=>31),
-			array('textile_yet_need', 'length', 'max'=>34),
+			array('textile1_warehouse, textiles_ordered', 'length', 'max'=>31),
+			array('textile_yet_need', 'length', 'max'=>33),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('supplier_name, textile_number, textile_name, order1_id, order1_number, textile1_selected, order2_id, order2_number, textile2_selected, textiles_selected, textile1_warehouse, textiles_ordered, textile_yet_need', 'safe', 'on'=>'search'),
+			array('supplier_name, textile_number, textile_name, order1_id, order1_number, order1_checked, order2_id, order2_number, order2_checked, textile1_selected, textile2_selected, textiles_selected, textile1_warehouse, textiles_ordered, textile_yet_need', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -68,13 +70,15 @@ class RapTextile2 extends CActiveRecord
 	{
 		return array(
 			'supplier_name' => 'dostawca',
-			'textile_number' => 'nr. mat.',
+			'textile_number' => 'nr mat.',
 			'textile_name' => 'nazwa mat.',
 			'order1_id' => 'id zam. 1',
 			'order1_number' => 'nr zam. 1',
-			'textile1_selected' => 'mat. 1 dla zazn.',
+			'order1_checked' => 'zazn. na zam. 1',
 			'order2_id' => 'id zam. 2',
 			'order2_number' => 'nr zam. 2',
+			'order2_checked' => 'zazn. na zam. 2',
+			'textile1_selected' => 'mat. 1 dla zazn.',
 			'textile2_selected' => 'mat. 2 dla zazn.',
 			'textiles_selected' => 'mat. dla zazn',
 			'textile1_warehouse' => 'na magazynie',
@@ -106,13 +110,15 @@ class RapTextile2 extends CActiveRecord
 		$criteria->compare('textile_name',$this->textile_name,true);
 		$criteria->compare('order1_id',$this->order1_id);
 		$criteria->compare('order1_number',$this->order1_number,true);
-		$criteria->compare('textile1_selected',$this->textile1_selected,true);
+		$criteria->compare('order1_checked',$this->order1_checked);
 		$criteria->compare('order2_id',$this->order2_id);
 		$criteria->compare('order2_number',$this->order2_number,true);
+		$criteria->compare('order2_checked',$this->order2_checked);
+		$criteria->compare('textile1_selected',$this->textile1_selected,true);
 		$criteria->compare('textile2_selected',$this->textile2_selected,true);
 		$criteria->compare('textiles_selected',$this->textiles_selected,true);
 		$criteria->compare('textile1_warehouse',$this->textile1_warehouse,true);
-		$criteria->compare('textiles_ordered',$this->textiles_ordered);
+		$criteria->compare('textiles_ordered',$this->textiles_ordered,true);
 		$criteria->compare('textile_yet_need',$this->textile_yet_need,true);
 
 		return new CActiveDataProvider($this, array(

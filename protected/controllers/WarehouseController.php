@@ -78,10 +78,25 @@ class WarehouseController extends Controller
 					}
 				}
 				if ($attributes_count > 0) {
+					# wyszukujemy powiązane zakupy
+					$Shopping=Shopping::model()->findByPk($models[$key]->shopping_shopping_id);
+					# jeżeli nie znaleziono, to nie ustawiaj
+					if(empty($Shopping)) {
+						$models[$key]->shopping_shopping_id=null;
+					} 
+					
 					if($models[$key]->save()) {
+						# zmieniamy status zamówienia, jeżeli podano id
+						if ($models[$key]->article_count >= $Shopping->article_amount) {
+							$Shopping->shopping_status="dostarczono";
+						} else {
+							$Shopping->shopping_status="częściowo";
+						}
+						$Shopping->save();
+						
 						# po poprawnym zapisie wyczyść prezentowany wiersz lub usuń 
 						# wyczyść
-						$models[$key]=new Warehouse();
+						$models[$key]->unsetAttributes();
 						# usuń
 						//unset($models[$key]);
 					}

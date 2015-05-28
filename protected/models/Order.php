@@ -61,6 +61,7 @@ class Order extends CActiveRecord
 	public $textiles2_textile_number;
 	public $textiles2_textile_name;
 	public $textiles2_textile_price_groupe;
+	public $shoppingShopping_shopping_status;
 	
 	/**
 	 * @return string the associated database table name
@@ -86,7 +87,7 @@ class Order extends CActiveRecord
 			array('order_date, buyer_order_number, buyer_comments, order_reference, textil_pair, textilpair_price_group, textile2_textile_id, printed_minilabel, printed_shipping_label, article_exported', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, printed_minilabel, printed_shipping_label, article_manufactured, article_exported, manufacturerManufacturer_manufacturer_name, brokerBroker_broker_name, buyerBuyer_buyer_name_1, articleArticle_article_number, articleArticle_model_name, articleArticle_model_type, articleArticle_article_colli, legLeg_leg_type, textiles1_textile_number, textiles1_textile_name, textiles1_textile_price_groupe, textiles2_textile_number, textiles2_textile_name, textiles2_textile_price_group, textile1_textile_id, textile2_textile_id, checked, shopping_shopping_id, article_planed, article_prepared_to_export', 'safe', 'on'=>'search'),
+			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, printed_minilabel, printed_shipping_label, article_manufactured, article_exported, manufacturerManufacturer_manufacturer_name, brokerBroker_broker_name, buyerBuyer_buyer_name_1, articleArticle_article_number, articleArticle_model_name, articleArticle_model_type, articleArticle_article_colli, legLeg_leg_type, textiles1_textile_number, textiles1_textile_name, textiles1_textile_price_groupe, textiles2_textile_number, textiles2_textile_name, textiles2_textile_price_group, textile1_textile_id, textile2_textile_id, checked, shopping_shopping_id, article_planed, article_prepared_to_export, shoppingShopping_shopping_status', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -182,7 +183,6 @@ class Order extends CActiveRecord
 		$criteria->compare('textilpair_price_group',$this->textilpair_price_group);
 		$criteria->compare('textile1_textile_id',$this->textile1_textile_id);
 		$criteria->compare('textile2_textile_id',$this->textile2_textile_id);
-		$criteria->compare('shopping_shopping_id',$this->shopping_shopping_id);
 		$criteria->compare('article_planed',$this->article_planed);
 		$criteria->compare('article_prepared_to_export',$this->article_prepared_to_export);
 		if ($this->printed_minilabel == "0") {
@@ -210,7 +210,7 @@ class Order extends CActiveRecord
 		$criteria->compare('order_add_date',$this->order_add_date,true);
 		$criteria->compare('checked',$this->checked);
 		
-		$criteria->with = array('manufacturerManufacturer', 'brokerBroker', 'buyerBuyer', 'articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
+		$criteria->with = array('manufacturerManufacturer', 'brokerBroker', 'buyerBuyer', 'articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile', 'shoppingShopping');
 		$criteria->together=true;
 		
 		$criteria->compare('manufacturerManufacturer.manufacturer_name',$this->manufacturerManufacturer_manufacturer_name,true);
@@ -227,6 +227,12 @@ class Order extends CActiveRecord
 		$criteria->compare('textile2Textile.textile_number',$this->textiles2_textile_number,true);
 		$criteria->compare('textile2Textile.textile_name',$this->textiles2_textile_name,true);
 		$criteria->compare('textile2Textile.textile_price_group',$this->textiles2_textile_price_groupe,true);
+		if ($this->shoppingShopping_shopping_status == "0") {
+			$criteria->addCondition('shoppingShopping.shopping_status is :shoppingShopping_shopping_status' );
+			$criteria->params=array_merge($criteria->params,array(':shoppingShopping_shopping_status'=>null));
+		} else {
+			$criteria->compare('shoppingShopping.shopping_status',$this->shoppingShopping_shopping_status,true);
+		}
 		
 		//Create a new CSort
 		$sort = new CSort;

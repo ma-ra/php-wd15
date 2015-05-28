@@ -586,7 +586,7 @@ class OrderController extends Controller
 				'textiles_ordered',
 				new CDbExpression('IF((SUM(textiles_selected) - textile1_warehouse -  textiles_ordered)>0, SUM(textiles_selected) - textile1_warehouse -  textiles_ordered, NULL) as textile_yet_need'),
 				new CDbExpression('IF((SUM(textiles_selected) - textile1_warehouse -  textiles_ordered)<0, (SUM(textiles_selected) - textile1_warehouse -  textiles_ordered) * -1, NULL) as order1_id'),
-				new CDBExpression('CONCAT(IFNULL(GROUP_CONCAT(order1_id),""),IF(GROUP_CONCAT(order1_id),",",""),IFNULL(GROUP_CONCAT(order2_id),"")) as order2_id')
+				new CDBExpression('CONCAT(IFNULL(GROUP_CONCAT(order1_id),""),IF(GROUP_CONCAT(order1_id),",",""),IFNULL(GROUP_CONCAT(order2_id),"")) as order2_number')
 			);
 			$criteria->addInCondition('order1_id',$pks, 'AND');
 			$criteria->addInCondition('order2_id',$pks, 'OR');
@@ -611,6 +611,7 @@ class OrderController extends Controller
 				} else {
 					$shopping[$key]->article_calculated_amount=$textile->textile_yet_need;
 				}
+				$shopping[$key]->order_ids=$textile->order2_number;
 			}
 			
 			

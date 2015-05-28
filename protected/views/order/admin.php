@@ -104,7 +104,12 @@ $this->widget('zii.widgets.grid.CGridView', array(
 				'type' => 'raw',
 				'value' => 'CHtml::encode(isset($data->textile2Textile->textile_name)? $data->textile2Textile->textile_name : "")'
 		),
-		'shopping_shopping_id',
+		array(
+				'name' => 'shoppingShopping.shopping_status',
+				'filter'=>CHtml::activeTextField($model,'shoppingShopping_shopping_status'),
+				'type' => 'raw',
+				'value' => 'CHtml::encode(isset($data->shoppingShopping->shopping_status)? $data->shoppingShopping->shopping_status . " (" . $data->shopping_shopping_id . ")" : "")'
+		),
 		'printed_minilabel',
 		'printed_shipping_label',
 		'textile_prepared',

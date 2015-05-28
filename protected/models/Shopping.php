@@ -22,6 +22,9 @@
  */
 class Shopping extends CActiveRecord
 {
+	
+	public $order_ids;
+	
 	/**
 	 * @return string the associated database table name
 	 */
@@ -77,7 +80,7 @@ class Shopping extends CActiveRecord
 			'article_amount' => 'ilość',
 			'article_calculated_amount' => 'wyliczona ilość',
 			'shopping_term' => 'termin',
-			'shopping_status' => 'status',
+			'shopping_status' => 'status zakupów',
 			'shopping_printed' => 'wydrukowane',
 			'creation_time' => 'data utworzenia',
 		);
@@ -108,9 +111,14 @@ class Shopping extends CActiveRecord
 		$criteria->compare('article_amount',$this->article_amount,true);
 		$criteria->compare('article_calculated_amount',$this->article_calculated_amount,true);
 		$criteria->compare('shopping_term',$this->shopping_term,true);
-		$criteria->compare('shopping_status',$this->shopping_status,true);
 		$criteria->compare('shopping_printed',$this->shopping_printed,true);
 		$criteria->compare('creation_time',$this->creation_time,true);
+		if ($this->shopping_status == "0") {
+			$criteria->addCondition('shopping_status not like :shopping_status' );
+			$criteria->params=array_merge($criteria->params,array(':shopping_status'=>'%dostarczono%'));
+		} else {
+			$criteria->compare('shopping_status',$this->shopping_status,true);
+		}
 		
 		$criteria->with=array('textileTextile'=>array('with'=>'supplierSupplier', 'together'=>true));
 		$criteria->together=true;

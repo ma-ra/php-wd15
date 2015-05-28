@@ -68,11 +68,11 @@
 				echo "<td>$Order->order1_id</td>";
 			echo "</tr>";
 			
-			#ukryte pola
+			#ukryte pola służące do przeniesienia informacji z OrderControler do ShoppingContlorer
 			echo "\n" . $form->hiddenField($shopping[$key],"[$key]" . 'shopping_number');
 			echo "\n" . $form->hiddenField($shopping[$key],"[$key]" . 'textile_textile_id');
 			echo "\n" . $form->hiddenField($shopping[$key],"[$key]" . 'article_calculated_amount');
-			echo "\n" . $form->hiddenField($shopping[$key],"[$key]" . 'order2_id');
+			echo "\n" . $form->hiddenField($shopping[$key],"[$key]" . 'order_ids');
 		}
 	?>
 </table>
