@@ -32,7 +32,7 @@ class ShoppingController extends Controller
 				'users'=>array('@'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update', 'delete'),
+				'actions'=>array('create','update', 'delete', 'print'),
 				'users'=>array('mara', 'asia'),
 			),
 			array('deny',  // deny all users
@@ -226,6 +226,50 @@ class ShoppingController extends Controller
 		$this->render('admin',array(
 			'model'=>$model,
 		));
+	}
+	
+	public function actionPrint()
+	{
+		echo "<style>";
+		echo "table {";
+			echo "border-collapse: collapse;";
+		echo "}";
+		
+		echo "table, th, td {";
+			echo "border: 1px solid black;";
+			echo "vertical-align: text-top;";
+			echo "text-align: center;";
+		echo "}";
+		echo "</style>";
+		
+		if (isset($_POST["check"]) && isset($_GET["act"])) {
+			if ($_GET["act"] == "print_order") {
+				$shopping=Shopping::model()->findAllByPk($_POST["check"]);
+				
+				# weryfikujemy, czy zaznaczono zamówienia od tym samym numerze
+				$sum=0;
+				foreach ($shopping as $shopping_position) {
+					$sum+=$shopping_position->shopping_number;
+				}
+				if ($sum/count($shopping) == $shopping[0]->shopping_number) {
+					$shopping_number=$shopping[0]->shopping_number;
+					
+					echo "<table>";
+					foreach ($shopping as $shopping_position) {
+						echo "<tr>";
+							echo "<td>";
+								echo "$shopping_position->article_amount";
+							echo "</td>";
+						echo "</tr>";
+					}
+					echo "</table>";
+				} else {
+					echo "Zaznaczono pozycje o różnych numerach zamówień";
+				}
+				echo "<pre>";
+				echo "</pre>";
+			}
+		}
 	}
 
 	/**

@@ -8,8 +8,8 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List Shopping', 'url'=>array('index')),
-	array('label'=>'Create Shopping', 'url'=>array('create')),
+	array('label'=>'Dodaj', 'url'=>array('create')),
+	array('label'=>'Drukuj zamówienie', 'url'=>'#', 'itemOptions'=>array('id' => 'print-menu')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -40,11 +40,24 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 )); ?>
 </div><!-- search-form -->
 
-<?php $this->widget('zii.widgets.grid.CGridView', array(
+
+<?php $form=$this->beginWidget('CActiveForm', array(
+	'id'=>'shopping-form',
+	'enableAjaxValidation'=>true,
+	'enableClientValidation'=>true,
+	'htmlOptions'=>array('enctype'=>'multipart/form-data')
+)); ?>
+
+<?php $this->widget('ext.selgridview.SelGridView', array(
 	'id'=>'shopping-grid',
 	'dataProvider'=>$model->search(),
+	'selectableRows' => 2,
 	'filter'=>$model,
 	'columns'=>array(
+		array(
+			'id'=>'check',
+			'class' => 'CCheckBoxColumn',
+		),
 		'shopping_id',
 		'shopping_number',
 		array(
@@ -66,7 +79,12 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'article_amount',
 		'article_calculated_amount',
 		'shopping_term',
-		'shopping_status',
+		array(
+				'name' => 'shopping_status',
+				'filter'=>array('0'=>'w trakcie','nowy'=>'nowy', 'dostarczono'=>'dostarczono', 'częściowo'=>'częściowo'),
+				'type' => 'raw',
+				'value' => 'CHtml::encode($data->shopping_status)'
+		),
 		'shopping_printed',
 		'creation_time',
 		array(
@@ -74,3 +92,21 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		),
 	),
 )); ?>
+<script>
+function reloadGrid(data) {
+    $.fn.yiiGridView.update('shopping-grid');
+}
+
+$(document).ready(function() {
+	$("li#print-menu a").click(function() {
+		//zmieniamy cel wysłania danych i ustawiamy aby było w nowej karcie
+		$("form#shopping-form").attr("action","<?php echo Yii::app()->createUrl("Shopping/print", array('act'=>'print_order'))?>");
+		$("form#shopping-form").attr("target","_blank");
+		//zatwierdzenie formularza i przywrócenie otwierania w bieżącej karcie
+		$("form#shopping-form").submit();
+		$("form#shopping-form").attr("target","_self");
+	});
+	
+});
+</script>
+<?php $this->endWidget(); ?>
