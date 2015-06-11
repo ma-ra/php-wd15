@@ -213,24 +213,27 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 		$('input[value="Drukuj listę załadunkową"]').hide();
 		
 		//realizujemy kliknięcie za pomocą linku
-		$("li#print_label a").click(function() {
+		$("li#print_label a").click(function(event) {
 			$("form#check_form").attr("target","_blank");
 			$('input[value="Drukuj etykiety"]').click();
 			$("form#check_form").attr("target","_self");
+			event.preventDefault();
 		});
-		$("li#print_transport_list a").click(function() {
+		$("li#print_transport_list a").click(function(event) {
 			$("form#check_form").attr("target","_blank");
 			$('input[value="Drukuj listę załadunkową"]').click();
 			$("form#check_form").attr("target","_self");
+			event.preventDefault();
 		});
-		$("li#print_minilabel a").click(function() {
+		$("li#print_minilabel a").click(function(event) {
 			$("form#check_form").attr("target","_blank");
 			$('input[value="Drukuj etykiety na wykroje"]').click();
 			$("form#check_form").attr("target","_self");
+			event.preventDefault();
 		});
 		
 		//wysyłka za pomocą linku i dodatkowej informacji w POST
-		$("li#summary a").click(function() {
+		$("li#summary a").click(function(event) {
 			//dodajemy informację do POST po przez ukryte pole
 			var input = $("<input>")
 	            .attr("type", "hidden")
@@ -246,8 +249,9 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("form#check_form").attr("target","_self")
 			//przywracamy cel wysłania danych
 			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
+			event.preventDefault();
 		});
-		$("li#textile_summary a").click(function() {
+		$("li#textile_summary a").click(function(event) {
 			//dodajemy informację do POST po przez ukryte pole
 			var input = $("<input>")
 	            .attr("type", "hidden")
@@ -263,10 +267,11 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("form#check_form").attr("target","_self")
 			//przywracamy cel wysłania danych
 			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
+			event.preventDefault();
 		});
 
 		//wysyłka za pomocą linku i dodatkowej informacji w GET
-		$("li#set_check a").click(function() {
+		$("li#set_check a").click(function(event) {
 			//wysyłka ajaxem
 			$.ajax({
 				type: 'POST',
@@ -283,8 +288,9 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 					console.log(data);
 				}
 			});
+			event.preventDefault();
 		});
-		$("li#unset_check a").click(function() {
+		$("li#unset_check a").click(function(event) {
 			//wysyłka ajaxem
 			$.ajax({
 				type: 'POST',
@@ -301,8 +307,9 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 					console.log(data);
 				}
 			});
+			event.preventDefault();
 		});
-		$("li#reset_check a").click(function() {
+		$("li#reset_check a").click(function(event) {
 			//wysyłka ajaxem
 			$.ajax({
 				type: 'POST',
@@ -319,8 +326,9 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 					console.log(data);
 				}
 			});
+			event.preventDefault();
 		});
-		$("li#read_check a").click(function() {
+		$("li#read_check a").click(function(event) {
 			//pobieramy dane ajaxem
 			$.ajax({
 				type: 'POST',
@@ -329,17 +337,17 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 				success : function(data) {
 					console.log("SUCCESS");
 					console.log(data);
-					console.log(data.split(","));
-					$("#order-grid").selGridView("addSelection", data.split(","));
-					$("#order-grid").selGridView("addSelection", [140, 321]);
+					console.log($.map(data.split(","), Number));
+					$("#order-grid").selGridView("addSelection", $.map(data.split(","), Number));
 				},
 				error : function(data) {
 					console.log("ERROR");
 					console.log(data);
 				}
 			});
+			event.preventDefault();
 		});
-		$("li#prepared a").click(function() {
+		$("li#prepared a").click(function(event) {
 			//wysyłka ajaxem
 			$.ajax({
 				type: 'POST',
@@ -356,8 +364,9 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 					console.log(data);
 				}
 			});
+			event.preventDefault();
 		});
-		$("li#manufactured a").click(function() {
+		$("li#manufactured a").click(function(event) {
 			//wysyłka ajaxem
 			$.ajax({
 				type: 'POST',
@@ -374,8 +383,9 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 					console.log(data);
 				}
 			});
+			event.preventDefault();
 		});
-		$("li#canceled a").click(function() {
+		$("li#canceled a").click(function(event) {
 			//wysyłka ajaxem
 			$.ajax({
 				type: 'POST',
@@ -392,6 +402,7 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 					console.log(data);
 				}
 			});
+			event.preventDefault();
 		});
 		
 		//Rozszeżanie kontenera
