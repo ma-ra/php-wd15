@@ -32,7 +32,7 @@ class ShoppingController extends Controller
 				'users'=>array('@'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update', 'delete', 'print'),
+				'actions'=>array('create','update', 'delete', 'print', 'html'),
 				'users'=>array('mara', 'asia'),
 			),
 			array('deny',  // deny all users
@@ -228,8 +228,9 @@ class ShoppingController extends Controller
 		));
 	}
 	
-	public function actionPrint()
+	public function actionHtml()
 	{
+		echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
 		echo "<style>";
 		echo "table {";
 			echo "border-collapse: collapse;";
@@ -244,7 +245,10 @@ class ShoppingController extends Controller
 		
 		if (isset($_POST["check"]) && isset($_GET["act"])) {
 			if ($_GET["act"] == "print_order") {
-				$shopping=Shopping::model()->findAllByPk($_POST["check"]);
+				$shopping=Shopping::model()->findAllByPk($_POST["check"],array(
+					'with'=>'textileTextile',
+					'together'=>true,
+				));
 				
 				# weryfikujemy, czy zaznaczono zamówienia od tym samym numerze
 				$sum=0;
@@ -254,11 +258,33 @@ class ShoppingController extends Controller
 				if ($sum/count($shopping) == $shopping[0]->shopping_number) {
 					$shopping_number=$shopping[0]->shopping_number;
 					
+					# budujemy html
+					$lp=0;
 					echo "<table>";
+						echo "<tr>";
+						echo "<td>lp.</td>";
+						echo "<td>nr mat. REALITY</td>";
+						echo "<td>nazwa</td>";
+						echo "<td>ilość</td>";
+						echo "</tr>";
 					foreach ($shopping as $shopping_position) {
+						$lp+=1;
 						echo "<tr>";
 							echo "<td>";
-								echo "$shopping_position->article_amount";
+								echo $lp;
+							echo "</td>";
+							echo "<td>";
+								echo $shopping_position->textileTextile->textile_number;
+							echo "</td>";
+							echo "<td>";
+								echo "&nbsp&nbsp" . $shopping_position->textileTextile->textile_name . "&nbsp&nbsp";
+							echo "</td>";
+							echo "<td>";
+								if (!empty($shopping_position->article_amount)) {
+									echo "&nbsp&nbsp" . $shopping_position->article_amount . "&nbsp&nbsp";
+								} else {
+									echo "&nbsp&nbsp" . $shopping_position->article_calculated_amount . "&nbsp&nbsp";
+								}
 							echo "</td>";
 						echo "</tr>";
 					}
@@ -266,8 +292,166 @@ class ShoppingController extends Controller
 				} else {
 					echo "Zaznaczono pozycje o różnych numerach zamówień";
 				}
-				echo "<pre>";
-				echo "</pre>";
+			}
+		}
+	}
+	
+	public function actionPrint()
+	{
+		if (isset($_POST["check"]) && isset($_GET["act"])) {
+			if ($_GET["act"] == "print_order") {
+				$shopping=Shopping::model()->findAllByPk($_POST["check"],array(
+						'with'=>'textileTextile',
+						'together'=>true,
+				));
+	
+				# weryfikujemy, czy zaznaczono zamówienia od tym samym numerze
+				$sum=0;
+				foreach ($shopping as $shopping_position) {
+					$sum+=$shopping_position->shopping_number;
+				}
+				if ($sum/count($shopping) == $shopping[0]->shopping_number) {
+					$shopping_number=$shopping[0]->shopping_number;
+					$shopping_lang=$shopping[0]->textileTextile->supplierSupplier->supplier_lang;
+					
+					# parametry PDF
+					$pdf = Yii::createComponent('application.extensions.tcpdf.ETcPdf','P', 'mm', 'A4', true, 'UTF-8');
+					$pdf->getAliasNbPages();
+					$pdf->SetAuthor("Firma Wyrwał Daniel");
+					$pdf->SetCreator("WD15");
+					$pdf->SetSubject("Zamówienie materiałów");
+					$pdf->SetTitle("zam. mat.");
+					$pdf->SetKeywords("WD15, zamówienie, materiałów");
+					
+					$pdf->setPrintHeader(false);
+					$pdf->setPrintFooter(false);
+					$pdf->SetMargins(5,5,5,true);
+					
+					$pdf->AddPage();
+					$pdf->SetFont("FreeSans", "", 12);
+					//$pdf->SetFont("DejaVuSans", "", 12);
+					$pdf->setCellMargins(0, 0, 0, 0);
+					$pdf->setCellPaddings(1, 1, 1, 1);
+					
+					# nagłowek dokumentu
+					// Image ($file, $x='', $y='', $w=0, $h=0, $type='', $link='', $align='', $resize=false, $dpi=300, $palign='', $ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false, $alt=false, $altimgs=array())
+					//$pdf->Image (Yii::app()->basePath."/../images/Logo WD.png", $x='', $y='', $w=0, $h=32, $type='', $link='', $align='T', $resize=false, $dpi=300, $palign='', $ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false, $alt=false, $altimgs=array());
+					
+					//ImageSVG ($file, $x='', $y='', $w=0, $h=0, $link='', $align='', $palign='', $border=0, $fitonpage=false)
+					$pdf->ImageSVG(Yii::app()->basePath."/../images/Logo WD.svg", $x='', $y='', $w=0, $h=32, $link='', $align='T', $palign='', $border=0, $fitonpage=false);
+					$txt = <<<EOT
+Daniel Wyrwał
+Silna 27
+66-330 Pszczew
+NIP PL 595-10-36-394
+tel. +48 781 494 785
+e-mail: wyrwal.daniel@gmail.com
+EOT;
+					$pdf->SetX($pdf->GetX()+5);
+					// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
+					$pdf->MultiCell(0, 50, $txt, 0, 'L', 0, 1, '', '', true, 1);
+					
+					if ($shopping_lang == "pl") {
+						$txt="Zamówienie nr: $shopping_number";
+					} else if ($shopping_lang == "en") {
+						$txt="Order No: $shopping_number";
+					} else {
+						$txt="Bestellung: $shopping_number";
+					}
+					// Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M')
+					$pdf->Cell(0, 20, $txt, 0, 1, 'C', false, '', 0, false, 'T', 'T');
+					
+					# parametry tabeli
+					$w=array(
+						0 => 10,
+						1 => 35,
+						2 => 125,
+						3 => 30
+					);
+					$h=0;
+					
+					# nagłówki
+					if ($shopping_lang == "pl") {
+						$headers=array(
+							'lp.',
+							'nr mat. REALITY',
+							'nazwa',
+							'ilość [mb]'
+						);
+					} else if ($shopping_lang == "en") {
+						$headers=array(
+							'lp.',
+							'number',
+							'name',
+							'count [m]'
+						);
+					} else {
+						$headers=array(
+							'lp.',
+							'Materialnummer',
+							'Name',
+							'Menge [m]'
+						);
+					}
+					
+					
+					## ustalamy najwyższy "MultiCell"
+					$textHeight=0;
+					$lines=0;
+					foreach ($headers as $index => $header) {
+						// getStringHeight ($w, $txt, $reseth=false, $autopadding=true, $cellpadding='', $border=0)
+						if ($textHeight < $pdf->getStringHeight($w[$index], $header)) {
+							$textHeight=$pdf->getStringHeight($w[$index], $header);
+						}
+					};
+					
+					## drukujemy
+					// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
+					$pdf->MultiCell($w[0], $textHeight, $headers[0], 1, 'C', 0, 0, '', '', true, 1);
+					$pdf->MultiCell($w[1], $textHeight, $headers[1], 1, 'C', 0, 0, '', '', true, 1);
+					$pdf->MultiCell($w[2], $textHeight, $headers[2], 1, 'C', 0, 0, '', '', true, 1);
+					$pdf->MultiCell($w[3], $textHeight, $headers[3], 1, 'C', 0, 1, '', '', true, 1);
+					
+					# wiersze
+					$lp=0;
+					
+					
+					foreach ($shopping as $shopping_position) {
+						$lp+=1;
+						if (!empty($shopping_position->article_amount)) {
+							$count=$shopping_position->article_amount;
+						} else {
+							$count=$shopping_position->article_calculated_amount;
+						}
+					
+						# teksty
+						$texts=array(
+								$lp,
+								$shopping_position->textileTextile->textile_number,
+								$shopping_position->textileTextile->textile_name,
+								$count
+						);
+							
+						## ustalamy najwyższy "MultiCell" - wysokośc lub liczba wierszy
+						$textHeight=0;
+						$lines=0;
+						foreach ($texts as $index => $text) {
+							// getStringHeight ($w, $txt, $reseth=false, $autopadding=true, $cellpadding='', $border=0)
+							if ($textHeight < $pdf->getStringHeight($w[$index], $text)) {
+								$textHeight=$pdf->getStringHeight($w[$index], $text);
+							}
+						};
+						
+						$pdf->MultiCell($w[0], $textHeight, $texts[0], 1, 'C', 0, 0, '', '', true, 1);
+						$pdf->MultiCell($w[1], $textHeight, $texts[1], 1, 'C', 0, 0, '', '', true, 1);
+						$pdf->MultiCell($w[2], $textHeight, $texts[2], 1, 'C', 0, 0, '', '', true, 1);
+						$pdf->MultiCell($w[3], $textHeight, $texts[3], 1, 'C', 0, 1, '', '', true, 1);
+					}
+					
+					$pdf->Output("example_002.pdf", "I");
+				} else {
+					echo "Zaznaczono pozycje o różnych numerach zamówień";
+				}
 			}
 		}
 	}
