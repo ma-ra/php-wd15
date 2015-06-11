@@ -3,44 +3,21 @@
 /* @var $model Configuration */
 
 $this->breadcrumbs=array(
-	'Configurations'=>array('index'),
-	'Manage',
+	'Lista parametrów'=>array('admin'),
 );
 
 $this->menu=array(
-	array('label'=>'List Configuration', 'url'=>array('index')),
-	array('label'=>'Create Configuration', 'url'=>array('create')),
-	array('label'=>'Truncate database', 'url'=>array('truncate','noArticle'=>'false')),
-	array('label'=>'Truncate database without article', 'url'=>array('truncate','noArticle'=>'true')),
+	array('label'=>'Dodaj parametr', 'url'=>array('create')),
+	array('label'=>'Kasuj bazę danych', 'url'=>array('truncate','noArticle'=>'false')),
+	array('label'=>'Kasuj bazę danych za wyjątkiem artykułów', 'url'=>array('truncate','noArticle'=>'true')),
 );
-
-Yii::app()->clientScript->registerScript('search', "
-$('.search-button').click(function(){
-	$('.search-form').toggle();
-	return false;
-});
-$('.search-form form').submit(function(){
-	$('#configuration-grid').yiiGridView('update', {
-		data: $(this).serialize()
-	});
-	return false;
-});
-");
 ?>
 
-<h1>Manage Configurations</h1>
+<h1>Lista parametrów</h1>
 
 <p>
-You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
-or <b>=</b>) at the beginning of each of your search values to specify how the comparison should be done.
+Nie zmieniać nazw parametrów, tylko same wartości !!!.
 </p>
-
-<?php echo CHtml::link('Advanced Search','#',array('class'=>'search-button')); ?>
-<div class="search-form" style="display:none">
-<?php $this->renderPartial('_search',array(
-	'model'=>$model,
-)); ?>
-</div><!-- search-form -->
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'configuration-grid',
@@ -48,7 +25,11 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'filter'=>$model,
 	'columns'=>array(
 		'name',
-		'value',
+		array(
+				'name' => 'value',
+				'type' => 'raw',
+				'value' => 'CHtml::link(CHtml::encode($data->value),array(\'configuration/update\',\'id\'=>$data->name))'
+		),
 		array(
 			'class'=>'CButtonColumn',
 		),

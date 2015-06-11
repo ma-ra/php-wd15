@@ -3,16 +3,15 @@
 /* @var $model Article */
 
 $this->breadcrumbs=array(
-	'Articles'=>array('index'),
-	'Create',
+	'Lista artykułów'=>array('admin'),
+	'Dodaj',
 );
 
 $this->menu=array(
-	array('label'=>'List Article', 'url'=>array('index')),
-	array('label'=>'Manage Article', 'url'=>array('admin')),
+	array('label'=>'Lista artykułów', 'url'=>array('admin')),
 );
 ?>
 
-<h1>Create Article</h1>
+<h1>Dodaj artykuł</h1>
 
 <?php $this->renderPartial('_form', array('model'=>$model)); ?>

@@ -91,7 +91,7 @@ class ConfigurationController extends Controller
 		{
 			$model->attributes=$_POST['Configuration'];
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->name));
+				$this->redirect(array('admin'));
 		}
 
 		$this->render('update',array(

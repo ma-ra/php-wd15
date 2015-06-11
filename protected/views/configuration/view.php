@@ -3,20 +3,19 @@
 /* @var $model Configuration */
 
 $this->breadcrumbs=array(
-	'Configurations'=>array('index'),
+	'Lista parametrów'=>array('admin'),
 	$model->name,
 );
 
 $this->menu=array(
-	array('label'=>'List Configuration', 'url'=>array('index')),
-	array('label'=>'Create Configuration', 'url'=>array('create')),
-	array('label'=>'Update Configuration', 'url'=>array('update', 'id'=>$model->name)),
-	array('label'=>'Delete Configuration', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->name),'confirm'=>'Are you sure you want to delete this item?')),
-	array('label'=>'Manage Configuration', 'url'=>array('admin')),
+	array('label'=>'Dodaj parametr', 'url'=>array('create')),
+	array('label'=>'Modyfikuj parametr', 'url'=>array('update', 'id'=>$model->name)),
+	array('label'=>'Usuń parametr', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->name),'confirm'=>'Are you sure you want to delete this item?')),
+	array('label'=>'Lista parametrów', 'url'=>array('admin')),
 );
 ?>
 
-<h1>View Configuration #<?php echo $model->name; ?></h1>
+<h1>Szczegóły # <?php echo $model->name; ?></h1>
 
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,

@@ -2,36 +2,37 @@
 /* @var $model Order */
 
 $this->breadcrumbs=array(
-	'Zamówienia'=>array('index'),
+	'Lista zamówień'=>array('admin'),
 );
 
 $this->menu=array(
+	array('label'=>'zakończone znakeim # są otwierane w nowej karcie'),
 	array('label'=>'--------------------------------------------------'),
 	array('label'=>'Zaznacz wszystkie widoczne', 'url'=>'#', 'itemOptions'=>array('id' => 'check')),
 	array('label'=>'Zapisz/Usuń zaznaczenie', 'url'=>'#', 'itemOptions'=>array('id' => 'save_check')),
 	array('label'=>'--------------------------------------------------'),
 	array('label'=>'Dodaj zamówienie', 'url'=>array('create')),
-	array('label'=>'Wgraj zamówienia', 'url'=>array('upload')),
+	array('label'=>'Wczytaj zamówienia', 'url'=>array('upload')),
 	array('label'=>'--------------------------------------------------'),
-	array('label'=>'Drukuj etykiety na wykroje', 'url'=>'#', 'itemOptions'=>array('id' => 'print_minilabel')),
-	array('label'=>'Drukuj etykiety transportowe', 'url'=>'#', 'itemOptions'=>array('id' => 'print_label')),
-	array('label'=>'Drukuj ladeliste', 'url'=>'#', 'itemOptions'=>array('id' => 'print_transport_list')),
+	array('label'=>'Drukuj etykiety na wykroje #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_minilabel')),
+	array('label'=>'Drukuj etykiety transportowe #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_label')),
+	array('label'=>'Drukuj ladeliste #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_transport_list')),
 	array('label'=>'--------------------------------------------------'),
 	array('label'=>'Wykrojono (Zaznacz/Odznacz)', 'url'=>'#', 'itemOptions'=>array('id' => 'prepared')),
 	array('label'=>'Wyprodukowano (Zaznacz/Odznacz)', 'url'=>'#', 'itemOptions'=>array('id' => 'manufactured')),
 	array('label'=>'Storno (Zaznacz/Odznacz)', 'url'=>'#', 'itemOptions'=>array('id' => 'canceled')),
 	array('label'=>'--------------------------------------------------'),
-	array('label'=>'Podsumowanie', 'url'=>'#', 'itemOptions'=>array('id' => 'summary')),
-	array('label'=>'Wyliczenie materiałów', 'url'=>'#', 'itemOptions'=>array('id' => 'textile_summary')),
+	array('label'=>'Podsumowanie #', 'url'=>'#', 'itemOptions'=>array('id' => 'summary')),
+	array('label'=>'Wyliczenie materiałów #', 'url'=>'#', 'itemOptions'=>array('id' => 'textile_summary')),
 	array('label'=>'--------------------------------------------------'),
 );
 ?>
 
-<h1>Zamówienia</h1>
+<h1>Lista zamówień</h1>
 
 <p>
-Można dodatkowo używać operatorów (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
-lub <b>=</b>) na początku każdej wyszukiwanej wartości aby sprecyzować sposób działania porównania.
+Wprowadzone filtry należy zatwierdzić klawiszem "Enter". Można dodatkowo używać operatorów (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
+lub <b>=</b>) na początku każdej wyszukiwanej wartości aby sprecyzować sposób działania porównania. W niektórych polach można użyć cyfry 0, aby wyszukać puste wartości.
 </p>
 <?php 
 echo CHtml::beginForm(array('Order/print'),'post', array('enctype'=>'multipart/form-data', 'id'=>'check_form'));
@@ -176,6 +177,14 @@ echo CHtml::submitButton('Drukuj listę załadunkową') . "<br>";
 echo CHtml::submitButton('Drukuj etykiety na wykroje') . "<br>";
 echo CHtml::endForm();
 ?>
+
+<?php 
+Yii::app()->clientScript->registerScript('gridFilter',"   
+    $(function(){
+        $(document).off('change.yiiGridView');
+    });
+", CClientScript::POS_READY);
+?> 
 
 <script type="text/javascript">
 /*<![CDATA[*/

@@ -3,16 +3,15 @@
 /* @var $model Configuration */
 
 $this->breadcrumbs=array(
-	'Configurations'=>array('index'),
-	'Create',
+	'Lista parametrów'=>array('admin'),
+	'Dodaj',
 );
 
 $this->menu=array(
-	array('label'=>'List Configuration', 'url'=>array('index')),
-	array('label'=>'Manage Configuration', 'url'=>array('admin')),
+	array('label'=>'Lista parametrów', 'url'=>array('admin')),
 );
 ?>
 
-<h1>Create Configuration</h1>
+<h1>Dodaj</h1>
 
 <?php $this->renderPartial('_form', array('model'=>$model)); ?>

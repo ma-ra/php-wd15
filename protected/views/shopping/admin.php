@@ -110,3 +110,11 @@ $(document).ready(function() {
 });
 </script>
 <?php $this->endWidget(); ?>
+
+<?php 
+Yii::app()->clientScript->registerScript('gridFilter',"   
+    $(function(){
+        $(document).off('change.yiiGridView');
+    });
+", CClientScript::POS_READY);
+?> 

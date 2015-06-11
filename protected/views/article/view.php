@@ -3,20 +3,19 @@
 /* @var $model Article */
 
 $this->breadcrumbs=array(
-	'Articles'=>array('index'),
+	'Lista artykułów'=>array('admin'),
 	$model->article_id,
 );
 
 $this->menu=array(
-	array('label'=>'List Article', 'url'=>array('index')),
-	array('label'=>'Create Article', 'url'=>array('create')),
-	array('label'=>'Update Article', 'url'=>array('update', 'id'=>$model->article_id)),
-	array('label'=>'Delete Article', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->article_id),'confirm'=>'Are you sure you want to delete this item?')),
-	array('label'=>'Manage Article', 'url'=>array('admin')),
+	array('label'=>'Dodaj artykuł', 'url'=>array('create')),
+	array('label'=>'Modyfikuj artykuł', 'url'=>array('update', 'id'=>$model->article_id)),
+	array('label'=>'Usuń artykuł', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->article_id),'confirm'=>'Czy na pewno usunąć ten element?')),
+	array('label'=>'Lista artykułów', 'url'=>array('admin')),
 );
 ?>
 
-<h1>View Article #<?php echo $model->article_id; ?></h1>
+<h1>Szczegóły #<?php echo $model->article_id; ?></h1>
 
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,

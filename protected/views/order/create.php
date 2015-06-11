@@ -3,16 +3,15 @@
 /* @var $model Order */
 
 $this->breadcrumbs=array(
-	'Orders'=>array('index'),
-	'Create',
+	'Lista zamówień'=>array('admin'),
+	'Dodaj',
 );
 
 $this->menu=array(
-	array('label'=>'List Order', 'url'=>array('index')),
-	array('label'=>'Manage Order', 'url'=>array('admin')),
+	array('label'=>'Lista zamówień', 'url'=>array('admin')),
 );
 ?>
 
-<h1>Create Order</h1>
+<h1>Dodaj zamówienie</h1>
 
 <?php $this->renderPartial('_form', array('model'=>$model)); ?>
