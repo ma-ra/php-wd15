@@ -331,6 +331,7 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 					console.log(data);
 					console.log(data.split(","));
 					$("#order-grid").selGridView("addSelection", data.split(","));
+					$("#order-grid").selGridView("addSelection", [140, 321]);
 				},
 				error : function(data) {
 					console.log("ERROR");
