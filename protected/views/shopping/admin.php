@@ -9,6 +9,7 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 	array('label'=>'Dodaj', 'url'=>array('create')),
+	array('label'=>'Wyświetl zamówienie', 'url'=>'#', 'itemOptions'=>array('id' => 'html-menu')),
 	array('label'=>'Drukuj zamówienie', 'url'=>'#', 'itemOptions'=>array('id' => 'print-menu')),
 );
 
@@ -101,6 +102,15 @@ $(document).ready(function() {
 	$("li#print-menu a").click(function() {
 		//zmieniamy cel wysłania danych i ustawiamy aby było w nowej karcie
 		$("form#shopping-form").attr("action","<?php echo Yii::app()->createUrl("Shopping/print", array('act'=>'print_order'))?>");
+		$("form#shopping-form").attr("target","_blank");
+		//zatwierdzenie formularza i przywrócenie otwierania w bieżącej karcie
+		$("form#shopping-form").submit();
+		$("form#shopping-form").attr("target","_self");
+	});
+
+	$("li#html-menu a").click(function() {
+		//zmieniamy cel wysłania danych i ustawiamy aby było w nowej karcie
+		$("form#shopping-form").attr("action","<?php echo Yii::app()->createUrl("Shopping/html", array('act'=>'print_order'))?>");
 		$("form#shopping-form").attr("target","_blank");
 		//zatwierdzenie formularza i przywrócenie otwierania w bieżącej karcie
 		$("form#shopping-form").submit();
