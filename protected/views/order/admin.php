@@ -6,10 +6,14 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'zakończone znakeim # są otwierane w nowej karcie'),
+	array('label'=>'# - w nowej karcie'),
+	array('label'=>'* - w tle'),
+	array('label'=>'brak - normalne przejście do nowej strony'),
 	array('label'=>'--------------------------------------------------'),
-	array('label'=>'Zaznacz wszystkie widoczne', 'url'=>'#', 'itemOptions'=>array('id' => 'check')),
-	array('label'=>'Zapisz/Usuń zaznaczenie', 'url'=>'#', 'itemOptions'=>array('id' => 'save_check')),
+	array('label'=>'Zapisz zaznaczenie *', 'url'=>'#', 'itemOptions'=>array('id' => 'set_check')),
+	array('label'=>'Usuń zaznaczenie *', 'url'=>'#', 'itemOptions'=>array('id' => 'unset_check')),
+	array('label'=>'Reset zaznaczenia *', 'url'=>'#', 'itemOptions'=>array('id' => 'reset_check')),			
+	array('label'=>'Odczyt zaznaczenia *', 'url'=>'#', 'itemOptions'=>array('id' => 'read_check')),
 	array('label'=>'--------------------------------------------------'),
 	array('label'=>'Dodaj zamówienie', 'url'=>array('create')),
 	array('label'=>'Wczytaj zamówienia', 'url'=>array('upload')),
@@ -18,9 +22,9 @@ $this->menu=array(
 	array('label'=>'Drukuj etykiety transportowe #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_label')),
 	array('label'=>'Drukuj ladeliste #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_transport_list')),
 	array('label'=>'--------------------------------------------------'),
-	array('label'=>'Wykrojono (Zaznacz/Odznacz)', 'url'=>'#', 'itemOptions'=>array('id' => 'prepared')),
-	array('label'=>'Wyprodukowano (Zaznacz/Odznacz)', 'url'=>'#', 'itemOptions'=>array('id' => 'manufactured')),
-	array('label'=>'Storno (Zaznacz/Odznacz)', 'url'=>'#', 'itemOptions'=>array('id' => 'canceled')),
+	array('label'=>'Wykrojono (Zaznacz/Odznacz) *', 'url'=>'#', 'itemOptions'=>array('id' => 'prepared')),
+	array('label'=>'Wyprodukowano (Zaznacz/Odznacz) *', 'url'=>'#', 'itemOptions'=>array('id' => 'manufactured')),
+	array('label'=>'Storno (Zaznacz/Odznacz) *', 'url'=>'#', 'itemOptions'=>array('id' => 'canceled')),
 	array('label'=>'--------------------------------------------------'),
 	array('label'=>'Podsumowanie #', 'url'=>'#', 'itemOptions'=>array('id' => 'summary')),
 	array('label'=>'Wyliczenie materiałów #', 'url'=>'#', 'itemOptions'=>array('id' => 'textile_summary')),
@@ -37,15 +41,15 @@ lub <b>=</b>) na początku każdej wyszukiwanej wartości aby sprecyzować spos�
 <?php 
 echo CHtml::beginForm(array('Order/print'),'post', array('enctype'=>'multipart/form-data', 'id'=>'check_form'));
 
-$this->widget('zii.widgets.grid.CGridView', array(
+$this->widget('ext.selgridview.SelGridView', array(
 	'id'=>'order-grid',
 	'dataProvider'=>$model->search(),
+	'selectableRows' => 2,
 	'filter'=>$model,
 	'columns'=>array(
-		'select'=>array(
-				'header' => 'Zaznacz',
-				'type'=>'raw',
-				'value'=>'"<input id=\"select_".$data->order_id."\" type=\"checkbox\" value=\"1\" name=\"select[".$data->order_id."]\"/>"'
+		array(
+				'id'=>'select',
+				'class' => 'CCheckBoxColumn',
 		),
 		'checked',
 		array(
@@ -176,6 +180,20 @@ echo CHtml::submitButton('Drukuj etykiety') . "<br>";
 echo CHtml::submitButton('Drukuj listę załadunkową') . "<br>";
 echo CHtml::submitButton('Drukuj etykiety na wykroje') . "<br>";
 echo CHtml::endForm();
+
+$this->beginWidget('zii.widgets.jui.CJuiDialog',array(
+		'id'=>'mydialog',
+		// additional javascript options for the dialog plugin
+		'options'=>array(
+				'title'=>'WD15',
+				'autoOpen'=>false,
+				'buttons' => array(
+                    'OK'=>'js:function(){$(this).dialog("close")}',
+				),
+				'model' => true,
+		),
+));
+$this->endWidget('zii.widgets.jui.CJuiDialog');
 ?>
 
 <?php 
@@ -199,69 +217,19 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("form#check_form").attr("target","_blank");
 			$('input[value="Drukuj etykiety"]').click();
 			$("form#check_form").attr("target","_self");
-		})
+		});
 		$("li#print_transport_list a").click(function() {
 			$("form#check_form").attr("target","_blank");
 			$('input[value="Drukuj listę załadunkową"]').click();
 			$("form#check_form").attr("target","_self");
-		})
+		});
 		$("li#print_minilabel a").click(function() {
 			$("form#check_form").attr("target","_blank");
 			$('input[value="Drukuj etykiety na wykroje"]').click();
 			$("form#check_form").attr("target","_self");
-		})
-		$("li#save_check a").click(function() {
-			//dodajemy informację do POST po przez ukryte pole
-			var input = $("<input>")
-	            .attr("type", "hidden")
-	            .attr("name", "checked")
-	            .val("checked");
-			$("form#check_form").append($(input));
-			//zmieniamy cel wysłania danych
-			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/checked")?>");
-			console.log($("form#check_form").attr("action"));
-			//zatwierdzenie formularza
-			$("form#check_form").submit();
-		})
-		$("li#prepared a").click(function() {
-			//dodajemy informację do POST po przez ukryte pole
-			var input = $("<input>")
-	            .attr("type", "hidden")
-	            .attr("name", "prepared")
-	            .val("prepared");
-			$("form#check_form").append($(input));
-			//zmieniamy cel wysłania danych
-			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/prepared")?>");
-			console.log($("form#check_form").attr("action"));
-			//zatwierdzenie formularza
-			$("form#check_form").submit();
-		})
-		$("li#manufactured a").click(function() {
-			//dodajemy informację do POST po przez ukryte pole
-			var input = $("<input>")
-	            .attr("type", "hidden")
-	            .attr("name", "manufactured")
-	            .val("manufactured");
-			$("form#check_form").append($(input));
-			//zmieniamy cel wysłania danych
-			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/manufactured")?>");
-			console.log($("form#check_form").attr("action"));
-			//zatwierdzenie formularza
-			$("form#check_form").submit();
-		})
-		$("li#canceled a").click(function() {
-			//dodajemy informację do POST po przez ukryte pole
-			var input = $("<input>")
-	            .attr("type", "hidden")
-	            .attr("name", "canceled")
-	            .val("canceled");
-			$("form#check_form").append($(input));
-			//zmieniamy cel wysłania danych
-			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/canceled")?>");
-			console.log($("form#check_form").attr("action"));
-			//zatwierdzenie formularza
-			$("form#check_form").submit();
-		})
+		});
+		
+		//wysyłka za pomocą linku i dodatkowej informacji w POST
 		$("li#summary a").click(function() {
 			//dodajemy informację do POST po przez ukryte pole
 			var input = $("<input>")
@@ -278,7 +246,7 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("form#check_form").attr("target","_self")
 			//przywracamy cel wysłania danych
 			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
-		})
+		});
 		$("li#textile_summary a").click(function() {
 			//dodajemy informację do POST po przez ukryte pole
 			var input = $("<input>")
@@ -295,23 +263,135 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("form#check_form").attr("target","_self")
 			//przywracamy cel wysłania danych
 			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
-		})
-		
-		
-		//obsługa zaznaczania i odznaczania
-		$('li#check a').click(function(e) {
-			console.log("klik");
-			//zaznaczanie i odznaczanie
-			if($(this).text() == "Zaznacz wszystkie widoczne") {
-				$('input[id^=select_]').attr("checked",true);
-				$(this).text("Odznacz wszystkie widoczne");
-			} 
-			else {
-				$('input[id^=select_]').attr("checked",false);
-				$(this).text("Zaznacz wszystkie widoczne");
-			}
-			e.preventDefault();
-		})
+		});
+
+		//wysyłka za pomocą linku i dodatkowej informacji w GET
+		$("li#set_check a").click(function() {
+			//wysyłka ajaxem
+			$.ajax({
+				type: 'POST',
+				url : "<?php echo Yii::app()->createUrl("Order/checked", array('act'=>'set'))?>",
+				data: $("form#check_form").serialize(),
+				success : function(data) {
+					console.log(data);
+					$('#order-grid').yiiGridView('update');
+					$("#mydialog").dialog( "option", "title", "Zaznaczenie" );
+					$("#mydialog").html("Zapisano zaznaczenie");
+					$("#mydialog").dialog( "open" );
+				},
+				error : function(data) {
+					console.log(data);
+				}
+			});
+		});
+		$("li#unset_check a").click(function() {
+			//wysyłka ajaxem
+			$.ajax({
+				type: 'POST',
+				url : "<?php echo Yii::app()->createUrl("Order/checked", array('act'=>'unset'))?>",
+				data: $("form#check_form").serialize(),
+				success : function(data) {
+					console.log(data);
+					$('#order-grid').yiiGridView('update');
+					$("#mydialog").dialog( "option", "title", "Zaznaczenie" );
+					$("#mydialog").html("Usunieto zaznaczenie");
+					$("#mydialog").dialog( "open" );
+				},
+				error : function(data) {
+					console.log(data);
+				}
+			});
+		});
+		$("li#reset_check a").click(function() {
+			//wysyłka ajaxem
+			$.ajax({
+				type: 'POST',
+				url : "<?php echo Yii::app()->createUrl("Order/checked", array('act'=>'reset'))?>",
+				data: $("form#check_form").serialize(),
+				success : function(data) {
+					console.log(data);
+					$('#order-grid').yiiGridView('update');
+					$("#mydialog").dialog( "option", "title", "Zaznaczenie" );
+					$("#mydialog").html(data);
+					$("#mydialog").dialog( "open" );
+				},
+				error : function(data) {
+					console.log(data);
+				}
+			});
+		});
+		$("li#read_check a").click(function() {
+			//pobieramy dane ajaxem
+			$.ajax({
+				type: 'POST',
+				url : "<?php echo Yii::app()->createUrl("Order/checked", array('act'=>'read'))?>",
+				data: $("form#check_form").serialize(),
+				success : function(data) {
+					console.log("SUCCESS");
+					console.log(data);
+					console.log(data.split(","));
+					$("#order-grid").selGridView("addSelection", data.split(","));
+				},
+				error : function(data) {
+					console.log("ERROR");
+					console.log(data);
+				}
+			});
+		});
+		$("li#prepared a").click(function() {
+			//wysyłka ajaxem
+			$.ajax({
+				type: 'POST',
+				url : "<?php echo Yii::app()->createUrl("Order/prepared")?>",
+				data: $("form#check_form").serialize(),
+				success : function(data) {
+					console.log(data);
+					$('#order-grid').yiiGridView('update');
+					$("#mydialog").dialog( "option", "title", "Wykrojono" );
+					$("#mydialog").html("Zapisano zmiany");
+					$("#mydialog").dialog( "open" );
+				},
+				error : function(data) {
+					console.log(data);
+				}
+			});
+		});
+		$("li#manufactured a").click(function() {
+			//wysyłka ajaxem
+			$.ajax({
+				type: 'POST',
+				url : "<?php echo Yii::app()->createUrl("Order/manufactured")?>",
+				data: $("form#check_form").serialize(),
+				success : function(data) {
+					console.log(data);
+					$('#order-grid').yiiGridView('update');
+					$("#mydialog").dialog( "option", "title", "Wyprodukowano" );
+					$("#mydialog").html("Zapisano zmiany");
+					$("#mydialog").dialog( "open" );
+				},
+				error : function(data) {
+					console.log(data);
+				}
+			});
+		});
+		$("li#canceled a").click(function() {
+			//wysyłka ajaxem
+			$.ajax({
+				type: 'POST',
+				url : "<?php echo Yii::app()->createUrl("Order/canceled")?>",
+				data: $("form#check_form").serialize(),
+				success : function(data) {
+					console.log(data);
+					$('#order-grid').yiiGridView('update');
+					$("#mydialog").dialog( "option", "title", "Storno" );
+					$("#mydialog").html("Zapisano zmiany");
+					$("#mydialog").dialog( "open" );
+				},
+				error : function(data) {
+					console.log(data);
+				}
+			});
+		});
 		
 		//Rozszeżanie kontenera
 		$('div#page').css("width","2800px");

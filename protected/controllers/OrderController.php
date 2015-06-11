@@ -454,25 +454,36 @@ class OrderController extends Controller
 	
 	public function actionChecked()
 	{
-		if (isset($_POST["checked"]) && isset($_POST["select"])) {
+		if (isset($_GET["act"]) && isset($_POST["select"]) && $_GET["act"] == "set" ) {
 			foreach ($_POST["select"] as $id => $checked) {
-				$Order=$this->loadModel($id);
-				if ($Order->checked==0) {
-					$Order->checked=1;
-				} else {
-					$Order->checked=0;					
-				}
+				$Order=$this->loadModel($checked);
+				$Order->checked=1;					
 				$Order->save();
 			}
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		} else if (isset($_GET["act"]) && isset($_POST["select"]) && $_GET["act"] == "unset" ) {
+			foreach ($_POST["select"] as $id => $checked) {
+				$Order=$this->loadModel($checked);
+				$Order->checked=0;
+				$Order->save();
+			}
+		} else if (isset($_GET["act"]) && $_GET["act"] == "reset" ) {
+			$updated=Order::model()->updateAll(array('checked'=>0));
+			echo "Skasowano zaznaczenie dla $updated pozycji.";
+		} else if (isset($_GET["act"]) && $_GET["act"] == "read" ) {
+			$Orders=Order::model()->findAllByAttributes(array('checked'=>1));
+			foreach ($Orders as $order) {
+				echo "$order->order_id,";
+			}
+		} else {
+			print_r($_REQUEST);
 		}
 	}
 	
 	public function actionPrepared()
 	{
-		if (isset($_POST["prepared"]) && isset($_POST["select"])) {
+		if (isset($_POST["select"])) {
 			foreach ($_POST["select"] as $id => $checked) {
-				$Order=$this->loadModel($id);
+				$Order=$this->loadModel($checked);
 				if ($Order->textile_prepared==0) {
 					$Order->textile_prepared=1;
 				} else {
@@ -480,15 +491,16 @@ class OrderController extends Controller
 				}
 				$Order->save();
 			}
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		} else {
+			print_r($_REQUEST);
 		}
 	}
 	
 	public function actionManufactured()
 	{	
-		if (isset($_POST["manufactured"]) && isset($_POST["select"])) {
+		if (isset($_POST["select"])) {
 			foreach ($_POST["select"] as $id => $checked) {
-				$Order=$this->loadModel($id);
+				$Order=$this->loadModel($checked);
 				if ($Order->article_manufactured==0) {
 					$Order->article_manufactured=$Order->article_amount * $Order->articleArticle->article_colli;
 				} else {
@@ -496,15 +508,16 @@ class OrderController extends Controller
 				}
 				$Order->save();
 			}
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		} else {
+			print_r($_REQUEST);
 		}
 	}
 
 	public function actionCanceled()
 	{
-		if (isset($_POST["canceled"]) && isset($_POST["select"])) {
+		if (isset($_POST["select"])) {
 			foreach ($_POST["select"] as $id => $checked) {
-				$Order=$this->loadModel($id);
+				$Order=$this->loadModel($checked);
 				if ($Order->article_canceled==0) {
 					$Order->article_canceled=1;
 				} else {
@@ -512,7 +525,8 @@ class OrderController extends Controller
 				}
 				$Order->save();
 			}
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		} else {
+			print_r($_REQUEST);
 		}
 	}
 	
@@ -522,7 +536,7 @@ class OrderController extends Controller
 			#Budujemy tablicę pod zapytanie wyszukujące chciane krotki
 			$pks=array();
 			foreach ($_POST["select"] as $id => $checked) {
-				array_push($pks, $id);
+				array_push($pks, $checked);
 			}
 			#Pozycje na potrzeby faktury
 			$Orders1=Order::model()->findAllByPk($pks, array(
@@ -572,7 +586,7 @@ class OrderController extends Controller
 			#Budujemy tablicę pod zapytanie wyszukujące chciane krotki
 			$pks=array();
 			foreach ($_POST["select"] as $id => $checked) {
-				array_push($pks, $id);
+				array_push($pks, $checked);
 			}
 				
 			$criteria=new CDbCriteria;
@@ -751,7 +765,7 @@ class OrderController extends Controller
 				#Budujemy tablicę pod zapytanie wyszukujące chciane krotki
 				$pks=array();
 				foreach ($_POST["select"] as $id => $checked) {
-					array_push($pks, $id);
+					array_push($pks, $checked);
 				}
 				#Kryteria wyszukiwania
 				$criteria=new CDbCriteria;
@@ -829,7 +843,7 @@ class OrderController extends Controller
 				#Budujemy tablicę pod zapytanie wyszukujące chciane krotki
 				$pks=array();
 				foreach ($_POST["select"] as $id => $checked) {
-					array_push($pks, $id);
+					array_push($pks, $checked);
 				}
 				#Kryteria wyszukiwania
 				$criteria=new CDbCriteria;
@@ -919,7 +933,7 @@ class OrderController extends Controller
 				#Budujemy tablicę pod zapytanie wyszukujące chciane krotki
 				$pks=array();
 				foreach ($_POST["select"] as $id => $checked) {
-					array_push($pks, $id);
+					array_push($pks, $checked);
 				}
 				#Kryteria wyszukiwania
 				$criteria=new CDbCriteria;
