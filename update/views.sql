@@ -136,7 +136,7 @@ SUM(IF(`order`.`textil_pair`,(`article`.`article_first_textile_amount` * `order`
 -- textile2_selected
 SUM(IF(`order`.`textil_pair`,(`article`.`article_second_textile_amount` * `order`.`article_amount`),NULL)) AS `textile2_selected`,
 -- to check
-group_concat(concat(' ',cast(`order`.`article_amount` as char charset utf8mb4),'x ',convert(`order`.`order_number` using utf8mb4)) separator ',') AS `order_number`,
+group_concat(concat(' ',cast(`order`.`article_amount` as char),'x ',`order`.`order_number`) separator ',') AS `order_number`,
 group_concat(concat(' (',`textile1`.`textile_name`,ifnull(concat(' ',`textile2`.`textile_name`,')'),')')) separator ',') AS `order_reference`
 
 FROM `order`
