@@ -74,8 +74,12 @@
 	<?php echo CHtml::encode($data->textile2_textile_id); ?>
 	<br />
 	
-	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping_shopping_id')); ?>:</b>
-	<?php echo CHtml::encode($data->shopping_shopping_id); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping1_shopping_id')); ?>:</b>
+	<?php echo CHtml::encode($data->shopping1_shopping_id); ?>
+	<br />
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping2_shopping_id')); ?>:</b>
+	<?php echo CHtml::encode($data->shopping2_shopping_id); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('printed_minilabel')); ?>:</b>

@@ -16,14 +16,16 @@
  * @property string $creation_time
  *
  * The followings are the available model relations:
- * @property Order[] $orders
+ * @property Order[] $orders1
+ * @property Order[] $orders2
  * @property Textile $textileTextile
  * @property Warehouse[] $warehouses
  */
 class Shopping extends CActiveRecord
 {
 	
-	public $order_ids;
+	public $order1_ids;
+	public $order2_ids;
 	
 	/**
 	 * @return string the associated database table name
@@ -61,7 +63,8 @@ class Shopping extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'orders' => array(self::HAS_MANY, 'Order', 'shopping_shopping_id'),
+			'orders1' => array(self::HAS_MANY, 'Order', 'shopping1_shopping_id'),
+			'orders2' => array(self::HAS_MANY, 'Order', 'shopping2_shopping_id'),
 			'textileTextile' => array(self::BELONGS_TO, 'Textile', 'textile_textile_id'),
 			'warehouses' => array(self::HAS_MANY, 'Warehouse', 'shopping_shopping_id'),
 		);

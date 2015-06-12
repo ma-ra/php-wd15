@@ -85,7 +85,8 @@ class ShoppingController extends Controller
 				$check[$key]=true;
 				$models[$key]->attributes=$_POST['Shopping'][$key];
 				# nie wiem dalczego, ale trzeba ręcznie przepisać
-				$models[$key]->order_ids=$_POST['Shopping'][$key]['order_ids'];
+				$models[$key]->order1_ids=$_POST['Shopping'][$key]['order1_ids'];
+				$models[$key]->order2_ids=$_POST['Shopping'][$key]['order2_ids'];
 				
 				#nadajemy numer
 				$supplierId=isset(Textile::model()->findByPk($models[$key]->textile_textile_id)->supplierSupplier->supplier_id) ? Textile::model()->findByPk($models[$key]->textile_textile_id)->supplierSupplier->supplier_id : "-" ;
@@ -105,7 +106,7 @@ class ShoppingController extends Controller
 				}
 				
 				#jeżeli nie podano article amount, to z wyliczonej wartości
-				if (!isset($models[$key]->article_amount)) {
+				if (empty($models[$key]->article_amount)) {
 					$models[$key]->article_amount=$models[$key]->article_calculated_amount;
 				}
 				
@@ -124,15 +125,23 @@ class ShoppingController extends Controller
 				}
 				if ($attributes_count > 0) {
 					$models[$key]->shopping_number=$shoppingNumber[$supplierId];
-					# pozyskujemy id przemycony w polu status
-					$order_ids=explode(",",$models[$key]->order_ids);
+					# group by zagregował id (concat), teraz je zamieniamy na tablicę
+					$order1_ids=explode(",",$models[$key]->order1_ids);
+					$order2_ids=explode(",",$models[$key]->order2_ids);
 						
 					if($models[$key]->save()) {
 						# wiązemy zakupy (shopping) z zamówieniam (order)
-						foreach ($order_ids as $order_id) {
+						foreach ($order1_ids as $order_id) {
 							if (!empty($order_id)) {
 								$Order=Order::model()->findByPk($order_id);
-								$Order->shopping_shopping_id=$models[$key]->shopping_id;
+								$Order->shopping1_shopping_id=$models[$key]->shopping_id;
+								$Order->save();
+							}
+						}
+						foreach ($order2_ids as $order_id) {
+							if (!empty($order_id)) {
+								$Order=Order::model()->findByPk($order_id);
+								$Order->shopping2_shopping_id=$models[$key]->shopping_id;
 								$Order->save();
 							}
 						}
@@ -448,7 +457,15 @@ EOT;
 						$pdf->MultiCell($w[3], $textHeight, $texts[3], 1, 'C', 0, 1, '', '', true, 1);
 					}
 					
-					$pdf->Output("example_002.pdf", "I");
+					#Drukujemy - w sensie tworzymy plik PDF
+					#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
+					$pdf->Output("Zam. mat.: $shopping_number " . date('Y-m-d') . ".pdf", "I");
+					
+					# oznaczamy pozycje jako wydrukowane
+					foreach ($shopping as $shopping_position) {
+						$shopping_position->shopping_status="wydrukowane";
+						$shopping_position->save();
+					}
 				} else {
 					echo "Zaznaczono pozycje o różnych numerach zamówień";
 				}

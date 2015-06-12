@@ -26,12 +26,15 @@ CREATE TABLE `shopping` (
 );
 
 -- dodanie atrybutów do order
-ALTER TABLE `order` ADD `shopping_shopping_id` INT(11) NULL DEFAULT NULL AFTER `textile2_textile_id`;
+ALTER TABLE `order` ADD `shopping1_shopping_id` INT(11) NULL DEFAULT NULL AFTER `textile2_textile_id`;
+ALTER TABLE `order` ADD `shopping2_shopping_id` INT(11) NULL DEFAULT NULL AFTER `shopping1_shopping_id`;
 ALTER TABLE `order` ADD `article_planed` INT(11) NOT NULL DEFAULT '0' AFTER `textile_prepared`;
 ALTER TABLE `order` ADD `article_prepared_to_export` INT(11) NOT NULL DEFAULT '0' AFTER `article_manufactured`;
 
-ALTER TABLE `order` ADD INDEX `fk_order_shopping1_idx` (`shopping_shopping_id`);
-ALTER TABLE `order` ADD CONSTRAINT `fk_order_shopping1` FOREIGN KEY (`shopping_shopping_id`) REFERENCES `shopping`(`shopping_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `order` ADD INDEX `fk_order_shopping1_idx` (`shopping1_shopping_id`);
+ALTER TABLE `order` ADD CONSTRAINT `fk_order_shopping1` FOREIGN KEY (`shopping1_shopping_id`) REFERENCES `shopping`(`shopping_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `order` ADD INDEX `fk_order_shopping2_idx` (`shopping2_shopping_id`);
+ALTER TABLE `order` ADD CONSTRAINT `fk_order_shopping2` FOREIGN KEY (`shopping2_shopping_id`) REFERENCES `shopping`(`shopping_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- dodanie i usunięcie atrybutów do i z supplier; zmiana relacji z textile
 ALTER TABLE `supplier` ADD `supplier_lang` VARCHAR(45) NOT NULL ;

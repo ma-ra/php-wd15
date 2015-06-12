@@ -97,8 +97,13 @@
 	</div>
 	
 	<div class="row">
-		<?php echo $form->label($model,'shopping_shopping_id'); ?>
-		<?php echo $form->textField($model,'shopping_shopping_id'); ?>
+		<?php echo $form->label($model,'shopping1_shopping_id'); ?>
+		<?php echo $form->textField($model,'shopping1_shopping_id'); ?>
+	</div>
+	
+	<div class="row">
+		<?php echo $form->label($model,'shopping2_shopping_id'); ?>
+		<?php echo $form->textField($model,'shopping2_shopping_id'); ?>
 	</div>
 
 	<div class="row">

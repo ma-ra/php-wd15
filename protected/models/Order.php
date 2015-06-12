@@ -21,7 +21,8 @@
  * @property integer $textilpair_price_group
  * @property integer $textile1_textile_id
  * @property integer $textile2_textile_id
- * @property integer $shopping_shopping_id
+ * @property integer $shopping1_shopping_id
+ * @property integer $shopping2_shopping_id
  * @property string $printed_minilabel
  * @property string $printed_shipping_label
  * @property integer $textile_prepared
@@ -42,7 +43,8 @@
  * @property Article $articleArticle
  * @property Textile $textile1Textile
  * @property Textile $textile2Textile
- * @property Shopping $shoppingShopping
+ * @property Shopping $shopping1Shopping
+ * @property Shopping $shopping2Shopping
  */
 class Order extends CActiveRecord
 {
@@ -61,7 +63,8 @@ class Order extends CActiveRecord
 	public $textiles2_textile_number;
 	public $textiles2_textile_name;
 	public $textiles2_textile_price_groupe;
-	public $shoppingShopping_shopping_status;
+	public $shopping1Shopping_shopping_status;
+	public $shopping2Shopping_shopping_status;
 	
 	/**
 	 * @return string the associated database table name
@@ -80,14 +83,14 @@ class Order extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('order_number, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textile1_textile_id', 'required'),
-			array('article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id,  textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, textile_prepared, article_manufactured, article_canceled, checked, shopping_shopping_id, article_planed, article_prepared_to_export', 'numerical', 'integerOnly'=>true),
+			array('article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id,  textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, textile_prepared, article_manufactured, article_canceled, checked, shopping1_shopping_id, shopping2_shopping_id, article_planed, article_prepared_to_export', 'numerical', 'integerOnly'=>true),
 			array('order_number, buyer_order_number, order_term, article_exported, order_error', 'length', 'max'=>50),
 			array('buyer_comments, order_reference', 'length', 'max'=>150),
 			array('order_date, order_add_date, printed_minilabel, printed_shipping_label', 'safe'),
 			array('order_date, buyer_order_number, buyer_comments, order_reference, textil_pair, textilpair_price_group, textile2_textile_id, printed_minilabel, printed_shipping_label, article_exported', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, printed_minilabel, printed_shipping_label, article_manufactured, article_exported, manufacturerManufacturer_manufacturer_name, brokerBroker_broker_name, buyerBuyer_buyer_name_1, articleArticle_article_number, articleArticle_model_name, articleArticle_model_type, articleArticle_article_colli, legLeg_leg_type, textiles1_textile_number, textiles1_textile_name, textiles1_textile_price_groupe, textiles2_textile_number, textiles2_textile_name, textiles2_textile_price_group, textile1_textile_id, textile2_textile_id, checked, shopping_shopping_id, article_planed, article_prepared_to_export, shoppingShopping_shopping_status', 'safe', 'on'=>'search'),
+			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, printed_minilabel, printed_shipping_label, article_manufactured, article_exported, manufacturerManufacturer_manufacturer_name, brokerBroker_broker_name, buyerBuyer_buyer_name_1, articleArticle_article_number, articleArticle_model_name, articleArticle_model_type, articleArticle_article_colli, legLeg_leg_type, textiles1_textile_number, textiles1_textile_name, textiles1_textile_price_groupe, textiles2_textile_number, textiles2_textile_name, textiles2_textile_price_group, textile1_textile_id, textile2_textile_id, checked, shopping1_shopping_id, shopping2_shopping_id, article_planed, article_prepared_to_export, shopping1Shopping_shopping_status, shopping2Shopping_shopping_status', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -106,7 +109,8 @@ class Order extends CActiveRecord
 			'articleArticle' => array(self::BELONGS_TO, 'Article', 'article_article_id'),
 			'textile1Textile' => array(self::BELONGS_TO, 'Textile', 'textile1_textile_id'),
 			'textile2Textile' => array(self::BELONGS_TO, 'Textile', 'textile2_textile_id'),
-			'shoppingShopping' => array(self::BELONGS_TO, 'Shopping', 'shopping_shopping_id'),
+			'shopping1Shopping' => array(self::BELONGS_TO, 'Shopping', 'shopping1_shopping_id'),
+			'shopping2Shopping' => array(self::BELONGS_TO, 'Shopping', 'shopping2_shopping_id'),
 		);
 	}
 
@@ -142,7 +146,8 @@ class Order extends CActiveRecord
 			'order_error' => 'błąd',
 			'order_add_date' => 'data wgrania',
 			'checked' => '&nbsp&nbsp&nbsp&nbsp',
-			'shopping_shopping_id' => 'id zakupów',
+			'shopping1_shopping_id' => 'id zakupów 1',
+			'shopping2_shopping_id' => 'id zakupów 2',
 			'article_planed' => 'zaplanowano',
 			'article_prepared_to_export' => 'załadowano',
 		);
@@ -210,7 +215,7 @@ class Order extends CActiveRecord
 		$criteria->compare('order_add_date',$this->order_add_date,true);
 		$criteria->compare('checked',$this->checked);
 		
-		$criteria->with = array('manufacturerManufacturer', 'brokerBroker', 'buyerBuyer', 'articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile', 'shoppingShopping');
+		$criteria->with = array('manufacturerManufacturer', 'brokerBroker', 'buyerBuyer', 'articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile', 'shopping1Shopping', 'shopping2Shopping');
 		$criteria->together=true;
 		
 		$criteria->compare('manufacturerManufacturer.manufacturer_name',$this->manufacturerManufacturer_manufacturer_name,true);
@@ -227,11 +232,17 @@ class Order extends CActiveRecord
 		$criteria->compare('textile2Textile.textile_number',$this->textiles2_textile_number,true);
 		$criteria->compare('textile2Textile.textile_name',$this->textiles2_textile_name,true);
 		$criteria->compare('textile2Textile.textile_price_group',$this->textiles2_textile_price_groupe,true);
-		if ($this->shoppingShopping_shopping_status == "0") {
-			$criteria->addCondition('shoppingShopping.shopping_status is :shoppingShopping_shopping_status' );
-			$criteria->params=array_merge($criteria->params,array(':shoppingShopping_shopping_status'=>null));
+		if ($this->shopping1Shopping_shopping_status == "0") {
+			$criteria->addCondition('shopping1Shopping.shopping_status is :shopping1Shopping_shopping_status' );
+			$criteria->params=array_merge($criteria->params,array(':shopping1Shopping_shopping_status'=>null));
 		} else {
-			$criteria->compare('shoppingShopping.shopping_status',$this->shoppingShopping_shopping_status,true);
+			$criteria->compare('shopping1Shopping.shopping_status',$this->shopping1Shopping_shopping_status,true);
+		}
+		if ($this->shopping2Shopping_shopping_status == "0") {
+			$criteria->addCondition('shopping2Shopping.shopping_status is :shopping2Shopping_shopping_status' );
+			$criteria->params=array_merge($criteria->params,array(':shopping2Shopping_shopping_status'=>null));
+		} else {
+			$criteria->compare('shopping2Shopping.shopping_status',$this->shopping2Shopping_shopping_status,true);
 		}
 		
 		//Create a new CSort
@@ -251,6 +262,8 @@ class Order extends CActiveRecord
 				'textile2Textile.textile_number',
 				'textile2Textile.textile_name',
 				'textile2Textile.textile_price_group',
+				'shopping1Shopping.shopping_status',
+				'shopping2Shopping.shopping_status',
 				'*',//Add the * to include all the rest of the fields from the main model
 		);
 		

@@ -116,9 +116,15 @@
 	</div>
 	
 	<div class="row">
-		<?php echo $form->labelEx($model,'shopping_shopping_id'); ?>
-		<?php echo $form->textField($model,'shopping_shopping_id'); ?>
-		<?php echo $form->error($model,'shopping_shopping_id'); ?>
+		<?php echo $form->labelEx($model,'shopping1_shopping_id'); ?>
+		<?php echo $form->textField($model,'shopping1_shopping_id'); ?>
+		<?php echo $form->error($model,'shopping1_shopping_id'); ?>
+	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'shopping2_shopping_id'); ?>
+		<?php echo $form->textField($model,'shopping2_shopping_id'); ?>
+		<?php echo $form->error($model,'shopping2_shopping_id'); ?>
 	</div>
 
 	<div class="row">

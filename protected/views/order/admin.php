@@ -98,6 +98,12 @@ $this->widget('ext.selgridview.SelGridView', array(
 				'value' => 'CHtml::encode($data->textile1Textile->textile_name)'
 		),
 		array(
+				'name' => 'shopping1Shopping.shopping_status',
+				'filter'=>CHtml::activeTextField($model,'shopping1Shopping_shopping_status'),
+				'type' => 'raw',
+				'value' => 'CHtml::encode(isset($data->shopping1Shopping->shopping_status)? $data->shopping1Shopping->shopping_status . " (" . $data->shopping1_shopping_id . ")" : "")'
+		),
+		array(
 				'name' => 'textile2Textile.textile_number',
 				'filter'=>CHtml::activeTextField($model,'textiles2_textile_number'),
 				'type' => 'raw',
@@ -110,10 +116,10 @@ $this->widget('ext.selgridview.SelGridView', array(
 				'value' => 'CHtml::encode(isset($data->textile2Textile->textile_name)? $data->textile2Textile->textile_name : "")'
 		),
 		array(
-				'name' => 'shoppingShopping.shopping_status',
-				'filter'=>CHtml::activeTextField($model,'shoppingShopping_shopping_status'),
+				'name' => 'shopping2Shopping.shopping_status',
+				'filter'=>CHtml::activeTextField($model,'shopping2Shopping_shopping_status'),
 				'type' => 'raw',
-				'value' => 'CHtml::encode(isset($data->shoppingShopping->shopping_status)? $data->shoppingShopping->shopping_status . " (" . $data->shopping_shopping_id . ")" : "")'
+				'value' => 'CHtml::encode(isset($data->shopping2Shopping->shopping_status)? $data->shopping2Shopping->shopping_status . " (" . $data->shopping2_shopping_id . ")" : "")'
 		),
 		'printed_minilabel',
 		'printed_shipping_label',
