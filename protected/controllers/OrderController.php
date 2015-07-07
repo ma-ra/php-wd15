@@ -28,7 +28,7 @@ class OrderController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('admin','checked', 'manufactured', 'summary', 'textileSummary'),
+				'actions'=>array('admin','checked', 'manufactured', 'summary', 'textileSummary','print','update','view'),
 				'users'=>array('mariola','pawel'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
@@ -37,7 +37,9 @@ class OrderController extends Controller
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
 					'actions'=>array('mobileScaned'),
-					'users'=>array('mobile'),
+					# wpuszczamy wszystkich ponieważ wd15-mobile nie radzi sobie z autoryzacją w tym miejscu
+					# cała aplikacja i tak jest chroniona hasłem w htaccess, co działa z aplikacją mobilną
+					'users'=>array('*'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
 					'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print', 'mobileScaned', 'checked', 'manufactured', 'prepared', 'canceled', 'upload', 'summary', 'textileSummary'),
@@ -829,11 +831,13 @@ class OrderController extends Controller
 				$pdf->SetAuthor("Firma Wyrwał Daniel",1);
 				$pdf->SetCreator("WD15",1);
 				$pdf->SetSubject("Lista załadunkowa");
+				$pdf->SetTitle("Lista załadunkowa");
 				$pdf->SetDisplayMode("fullpage","continuous");
 				
 				$configuration=Configuration::model();
+				$verladeliste_tour=$configuration->findByAttributes(array('name'=>'verladeliste_tour'))->value;
+				$pdf->verladeliste_tour=str_replace(".", "", $verladeliste_tour);
 				$pdf->ladedatum=$configuration->findByAttributes(array('name'=>'ladedatum'))->value;
-				$pdf->verladeliste_tour=$configuration->findByAttributes(array('name'=>'verladeliste_tour'))->value;
 					
 				$pdf->AddPage();
 				
@@ -889,8 +893,12 @@ class OrderController extends Controller
 					} 
 					$pdf->DrawLine($i);
 
-					#Oznacz jako wywiezione
-					$Order->article_exported=$pdf->verladeliste_tour;
+					#Oznacz jako wywiezione, lub ewentualnie cofnij wywóz
+					if ($pdf->verladeliste_tour == "null") {
+						$Order->article_exported=null;
+					} else {
+						$Order->article_exported=$pdf->verladeliste_tour . " (" . date('mdhis') . ")";
+					}
 					$Order->save();
 				
 				}
@@ -901,8 +909,9 @@ class OrderController extends Controller
 				$pdf->Close();
 				
 				#Drukujemy - w sensie tworzymy plik PDF
+				$filename="Ladeliste " .  str_replace("/", "-", $pdf->verladeliste_tour) . ".pdf";
 				#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
-				$pdf->Output("Ladeliste " . date('Y-m-d') . ".pdf", "I");
+				$pdf->Output($filename, "I");
 				
 				/* echo "<pre>"; var_dump($_POST); echo "</pre>";
 				die(); */
