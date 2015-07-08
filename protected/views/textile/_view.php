@@ -25,5 +25,9 @@
 	<?php echo CHtml::encode($data->supplier_supplier_id); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('pattern')); ?>:</b>
+	<?php echo CHtml::encode($data->pattern); ?>
+	<br />
+
 
 </div>

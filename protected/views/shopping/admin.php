@@ -2,45 +2,24 @@
 /* @var $this ShoppingController */
 /* @var $model Shopping */
 
+$this->setPageTitle('Lista zakupów');
 $this->breadcrumbs=array(
-	'Shoppings'=>array('index'),
-	'Manage',
+	'Lista zakupów'=>array('admin'),
 );
 
 $this->menu=array(
-	array('label'=>'Dodaj', 'url'=>array('create')),
+	//array('label'=>'Dodaj', 'url'=>array('create')),
 	array('label'=>'Wyświetl zamówienie', 'url'=>'#', 'itemOptions'=>array('id' => 'html-menu')),
 	array('label'=>'Drukuj zamówienie', 'url'=>'#', 'itemOptions'=>array('id' => 'print-menu')),
 );
-
-Yii::app()->clientScript->registerScript('search', "
-$('.search-button').click(function(){
-	$('.search-form').toggle();
-	return false;
-});
-$('.search-form form').submit(function(){
-	$('#shopping-grid').yiiGridView('update', {
-		data: $(this).serialize()
-	});
-	return false;
-});
-");
 ?>
 
-<h1>Manage Shoppings</h1>
+<h1>Lista zakupów</h1>
 
 <p>
-You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
-or <b>=</b>) at the beginning of each of your search values to specify how the comparison should be done.
+Wprowadzone filtry należy zatwierdzić klawiszem "Enter". Można dodatkowo używać operatorów (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
+lub <b>=</b>) na początku każdej wyszukiwanej wartości aby sprecyzować sposób działania porównania. W niektórych polach można użyć cyfry 0, aby wyszukać puste wartości.
 </p>
-
-<?php echo CHtml::link('Advanced Search','#',array('class'=>'search-button')); ?>
-<div class="search-form" style="display:none">
-<?php $this->renderPartial('_search',array(
-	'model'=>$model,
-)); ?>
-</div><!-- search-form -->
-
 
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'shopping-form',
@@ -63,17 +42,20 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'shopping_number',
 		array(
 				'header' => 'dostawca',
+				'filter'=>CHtml::activeTextField($model,'textile_supplier_supplier_name'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode(isset($data->textileTextile->supplierSupplier->supplier_name) ? $data->textileTextile->supplierSupplier->supplier_name : "-" )'
 		),
-		'textile_textile_id',
+		//'textile_textile_id',
 		array(
 				'name' => 'textileTextile.textile_number',
+				'filter'=>CHtml::activeTextField($model,'textile_textile_number'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->textileTextile->textile_number)'
 		),
 		array(
 				'name' => 'textileTextile.textile_name',
+				'filter'=>CHtml::activeTextField($model,'textile_textile_name'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->textileTextile->textile_name)'
 		),
@@ -90,6 +72,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'creation_time',
 		array(
 			'class'=>'CButtonColumn',
+			'template'=>'{update}',
 		),
 	),
 )); ?>

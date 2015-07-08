@@ -608,7 +608,7 @@ class OrderController extends Controller
 			$criteria->addInCondition('order1_id',$pks, 'AND');
 			$criteria->addInCondition('order2_id',$pks, 'OR');
 			$criteria->group='supplier_name, textile_number, textile1_warehouse, textiles_ordered';
-			$criteria->order='textile_number ASC';
+			$criteria->order='supplier_name ASC, textile_number ASC';
 			#wyszukiwanie
 			$rapTextile=RapTextile2::model()->findAll($criteria);
 			
@@ -619,7 +619,7 @@ class OrderController extends Controller
 				$shopping[$key]->textile_textile_id=Textile::model()->find(array(
 					'condition'=>'textile_number = :textile_number',
 					'params'=>array(':textile_number'=>$textile->textile_number),
-					'order'=>'textile_name DESC',
+					'order'=>'pattern DESC, textile_name ASC',
 					'limit'=>1
 						
 				))->textile_id;

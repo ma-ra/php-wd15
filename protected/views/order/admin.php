@@ -1,6 +1,6 @@
 <?php
 /* @var $model Order */
-
+$this->setPageTitle('Lista zamówień, tydz. ' . date('W'));
 $this->breadcrumbs=array(
 	'Lista zamówień'=>array('admin'),
 );
@@ -38,6 +38,7 @@ $this->menu=array(
 Wprowadzone filtry należy zatwierdzić klawiszem "Enter". Można dodatkowo używać operatorów (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
 lub <b>=</b>) na początku każdej wyszukiwanej wartości aby sprecyzować sposób działania porównania. W niektórych polach można użyć cyfry 0, aby wyszukać puste wartości.
 </p>
+<B>Obecny tydzień: <?php echo date('W')?></B>
 <?php 
 echo CHtml::beginForm(array('Order/print'),'post', array('enctype'=>'multipart/form-data', 'id'=>'check_form'));
 

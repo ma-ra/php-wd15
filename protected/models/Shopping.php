@@ -26,6 +26,9 @@ class Shopping extends CActiveRecord
 	
 	public $order1_ids;
 	public $order2_ids;
+	public $textile_supplier_supplier_name;
+	public $textile_textile_number;
+	public $textile_textile_name;
 	
 	/**
 	 * @return string the associated database table name
@@ -51,7 +54,7 @@ class Shopping extends CActiveRecord
 			array('article_amount, shopping_term, shopping_status, shopping_printed', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('shopping_number, shopping_id, shopping_type, textile_textile_id, article_amount, article_calculated_amount, shopping_term, shopping_status, shopping_printed, creation_time', 'safe', 'on'=>'search'),
+			array('shopping_number, shopping_id, shopping_type, textile_textile_id, article_amount, article_calculated_amount, shopping_term, shopping_status, shopping_printed, creation_time, textile_supplier_supplier_name, textile_textile_number, textile_textile_name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -125,10 +128,25 @@ class Shopping extends CActiveRecord
 		
 		$criteria->with=array('textileTextile'=>array('with'=>'supplierSupplier', 'together'=>true));
 		$criteria->together=true;
-
+		$criteria->compare('textileTextile.textile_number',$this->textile_textile_number,true);
+		$criteria->compare('textileTextile.textile_name',$this->textile_textile_name,true);
+		$criteria->compare('supplierSupplier.supplier_name',$this->textile_supplier_supplier_name,true);
+		
+		//Create a new CSort
+		$sort = new CSort;
+		$sort->attributes = array(
+				'textileTextile.textile_number',
+				'textileTextile.textile_name',
+				'supplierSupplier.supplier_name',
+				'*',//Add the * to include all the rest of the fields from the main model
+		);
+		$sort->defaultOrder='shopping_number ASC';
+		
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 			'pagination'=>array('pageSize'=>200),
+			'sort'=>$sort
+			//'sort'=>array('defaultOrder'=>'shopping_number ASC')
 		));
 	}
 	

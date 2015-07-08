@@ -26,5 +26,6 @@ $this->menu=array(
 		'textile_name',
 		'textile_price_group',
 		'supplier_supplier_id',
+		'pattern',
 	),
 )); ?>

@@ -43,6 +43,12 @@
 		<?php echo $form->error($model,'supplier_supplier_id'); ?>
 	</div>
 
+	<div class="row">
+		<?php echo $form->labelEx($model,'pattern'); ?>
+		<?php echo $form->textField($model,'pattern'); ?>
+		<?php echo $form->error($model,'pattern'); ?>
+	</div>
+
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>

@@ -230,7 +230,7 @@ class ShoppingController extends Controller
 	{
 		$model=new Shopping('search');
 		$model->unsetAttributes();  // clear any default values
-		$model->shopping_status=0;
+		$model->shopping_status='nowy';
 		if(isset($_GET['Shopping']))
 			$model->attributes=$_GET['Shopping'];
 
@@ -326,7 +326,7 @@ class ShoppingController extends Controller
 					$shopping_lang=$shopping[0]->textileTextile->supplierSupplier->supplier_lang;
 					
 					# parametry PDF
-					$pdf = Yii::createComponent('application.extensions.tcpdf.ETcPdf','P', 'mm', 'A4', true, 'UTF-8');
+					$pdf = new ShoppingList('P', 'mm', 'A4', true, 'UTF-8');
 					$pdf->getAliasNbPages();
 					$pdf->SetAuthor("Firma Wyrwał Daniel");
 					$pdf->SetCreator("WD15");
@@ -335,8 +335,9 @@ class ShoppingController extends Controller
 					$pdf->SetKeywords("WD15, zamówienie, materiałów");
 					
 					$pdf->setPrintHeader(false);
-					$pdf->setPrintFooter(false);
+					$pdf->setPrintFooter(true);
 					$pdf->SetMargins(5,5,5,true);
+					$pdf->SetAutoPageBreak(true,0);
 					
 					$pdf->AddPage();
 					$pdf->SetFont("FreeSans", "", 12);
@@ -360,7 +361,8 @@ e-mail: wyrwal.daniel@gmail.com
 EOT;
 					$pdf->SetX($pdf->GetX()+5);
 					// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
-					$pdf->MultiCell(0, 50, $txt, 0, 'L', 0, 1, '', '', true, 1);
+					$pdf->MultiCell(0, 0, $txt, 0, 'L', 0, 1, '', '', true, 1);
+					$pdf->SetY($pdf->GetY()+5);
 					
 					if ($shopping_lang == "pl") {
 						$txt="Zamówienie nr: $shopping_number";
@@ -369,8 +371,11 @@ EOT;
 					} else {
 						$txt="Bestellung: $shopping_number";
 					}
+					$pdf->SetFont("FreeSans", "B", 13);
 					// Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M')
-					$pdf->Cell(0, 20, $txt, 0, 1, 'C', false, '', 0, false, 'T', 'T');
+					$pdf->Cell(0, 0, $txt, 0, 1, 'C', false, '', 0, false, 'T', 'T');
+					$pdf->SetFont("FreeSans", "", 12);
+					$pdf->SetY($pdf->GetY()+5);
 					
 					# parametry tabeli
 					$w=array(
@@ -428,6 +433,11 @@ EOT;
 					
 					
 					foreach ($shopping as $shopping_position) {
+						# kolejna strona
+						if ($pdf->GetY()>=297-12) {
+							$pdf->AddPage();
+						}
+						
 						$lp+=1;
 						if (!empty($shopping_position->article_amount)) {
 							$count=$shopping_position->article_amount;
@@ -474,7 +484,7 @@ EOT;
 			}
 		}
 	}
-
+	
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
