@@ -1,8 +1,9 @@
+* weryfikacja drugiego materiału (czy np. pojawia się dla 4cyfrowego numeru pary).
+* inteligentniejsza data wgrania
+
 * Kody kreskowe dla działu wykrojów.
-* Rozbudowa bazy o: plan, zamówiono, dotarło.
 * Tłumaczenia.
-* Dokończenie z kodami kreskowymi.
-* Podczas powtórnego drukowania ladeliste odznacz te które nie zostały ponownie wydane.
+* Rozbudowa bazy o: plan, zamówiono, dotarło.
 
 + Informacje do faktury.
 + Jeżeli puste pole to null do bazy.
@@ -13,3 +14,5 @@
 + update `order` set `order_error` = null WHERE `order_error` LIKE '0';
 + Obliczanie materiałów.
 + Teraz mamy nic nie rób lub insert podczas wgrywania. Zmienić na update lub insert (Na razie poprawione tylko dla Order).
++ Podczas powtórnego drukowania ladeliste odznacz te które nie zostały ponownie wydane.
++ Dokończenie z kodami kreskowymi.

@@ -64,7 +64,7 @@ lub <b>=</b>) na początku każdej wyszukiwanej wartości aby sprecyzować spos�
 		'shopping_term',
 		array(
 				'name' => 'shopping_status',
-				'filter'=>array('0'=>'w trakcie','nowy'=>'nowy', 'dostarczono'=>'dostarczono', 'częściowo'=>'częściowo'),
+				'filter'=>array('w trakcie'=>'w trakcie','nowy'=>'nowy', 'wydrukowane'=>'wydrukowane', 'dostarczono'=>'dostarczono', 'częściowo'=>'częściowo'),
 				'type' => 'raw',
 				'value' => 'CHtml::encode($data->shopping_status)'
 		),

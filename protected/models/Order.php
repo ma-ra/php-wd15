@@ -232,13 +232,19 @@ class Order extends CActiveRecord
 		$criteria->compare('textile2Textile.textile_number',$this->textiles2_textile_number,true);
 		$criteria->compare('textile2Textile.textile_name',$this->textiles2_textile_name,true);
 		$criteria->compare('textile2Textile.textile_price_group',$this->textiles2_textile_price_groupe,true);
-		if ($this->shopping1Shopping_shopping_status == "0") {
+		if ($this->shopping1Shopping_shopping_status == "w trakcie") {
+			$criteria->addCondition('shopping1Shopping.shopping_status not like :shopping1Shopping_shopping_status' );
+			$criteria->params=array_merge($criteria->params,array(':shopping1Shopping_shopping_status'=>'%dostarczono%'));
+		} else if ($this->shopping1Shopping_shopping_status == "0") {
 			$criteria->addCondition('shopping1Shopping.shopping_status is :shopping1Shopping_shopping_status' );
 			$criteria->params=array_merge($criteria->params,array(':shopping1Shopping_shopping_status'=>null));
 		} else {
 			$criteria->compare('shopping1Shopping.shopping_status',$this->shopping1Shopping_shopping_status,true);
 		}
-		if ($this->shopping2Shopping_shopping_status == "0") {
+		if ($this->shopping2Shopping_shopping_status == "w trakcie") {
+			$criteria->addCondition('shopping2Shopping.shopping_status not like :shopping2Shopping_shopping_status' );
+			$criteria->params=array_merge($criteria->params,array(':shopping2Shopping_shopping_status'=>'%dostarczono%'));
+		} else if ($this->shopping2Shopping_shopping_status == "0") {
 			$criteria->addCondition('shopping2Shopping.shopping_status is :shopping2Shopping_shopping_status' );
 			$criteria->params=array_merge($criteria->params,array(':shopping2Shopping_shopping_status'=>null));
 		} else {

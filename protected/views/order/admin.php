@@ -22,6 +22,8 @@ $this->menu=array(
 	array('label'=>'Drukuj etykiety transportowe #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_label')),
 	array('label'=>'Drukuj ladeliste #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_transport_list')),
 	array('label'=>'--------------------------------------------------'),
+	array('label'=>'Drukuj plan produkcji #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan')),
+	array('label'=>'--------------------------------------------------'),
 	array('label'=>'Wykrojono (Zaznacz/Odznacz) *', 'url'=>'#', 'itemOptions'=>array('id' => 'prepared')),
 	array('label'=>'Wyprodukowano (Zaznacz/Odznacz) *', 'url'=>'#', 'itemOptions'=>array('id' => 'manufactured')),
 	array('label'=>'Storno (Zaznacz/Odznacz) *', 'url'=>'#', 'itemOptions'=>array('id' => 'canceled')),
@@ -100,9 +102,9 @@ $this->widget('ext.selgridview.SelGridView', array(
 		),
 		array(
 				'name' => 'shopping1Shopping.shopping_status',
-				'filter'=>CHtml::activeTextField($model,'shopping1Shopping_shopping_status'),
+				'filter'=>CHtml::activeDropDownList($model,'shopping1Shopping_shopping_status', array(''=>'', 'w trakcie'=>'w trakcie','nowy'=>'nowy', 'wydrukowane'=>'wydrukowane', 'dostarczono'=>'dostarczono', 'częściowo'=>'częściowo', '0'=>'null')),
 				'type' => 'raw',
-				'value' => 'CHtml::encode(isset($data->shopping1Shopping->shopping_status)? $data->shopping1Shopping->shopping_status . " (" . $data->shopping1_shopping_id . ")" : "")'
+				'value' => 'CHtml::encode(isset($data->shopping1Shopping->shopping_status)? $data->shopping1Shopping->shopping_status . " (" . $data->shopping1Shopping->shopping_number . "/" . $data->shopping1_shopping_id . ")" : "")'
 		),
 		array(
 				'name' => 'textile2Textile.textile_number',
@@ -118,9 +120,9 @@ $this->widget('ext.selgridview.SelGridView', array(
 		),
 		array(
 				'name' => 'shopping2Shopping.shopping_status',
-				'filter'=>CHtml::activeTextField($model,'shopping2Shopping_shopping_status'),
+				'filter'=>CHtml::activeDropDownList($model,'shopping2Shopping_shopping_status', array(''=>'', 'w trakcie'=>'w trakcie','nowy'=>'nowy', 'wydrukowane'=>'wydrukowane', 'dostarczono'=>'dostarczono', 'częściowo'=>'częściowo', '0'=>'null')),
 				'type' => 'raw',
-				'value' => 'CHtml::encode(isset($data->shopping2Shopping->shopping_status)? $data->shopping2Shopping->shopping_status . " (" . $data->shopping2_shopping_id . ")" : "")'
+				'value' => 'CHtml::encode(isset($data->shopping2Shopping->shopping_status)? $data->shopping2Shopping->shopping_status . " (" . $data->shopping2Shopping->shopping_number . "/" . $data->shopping2_shopping_id . ")" : "")'
 		),
 		'printed_minilabel',
 		'printed_shipping_label',
@@ -267,6 +269,24 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("form#check_form").append($(input));
 			//zmieniamy cel wysłania danych
 			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/textileSummary")?>");
+			console.log($("form#check_form").attr("action"));
+			//zatwierdzenie formularza
+			$("form#check_form").attr("target","_blank")
+			$("form#check_form").submit();
+			$("form#check_form").attr("target","_self")
+			//przywracamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
+			event.preventDefault();
+		});
+		$("li#print_plan a").click(function(event) {
+			//dodajemy informację do POST po przez ukryte pole
+			var input = $("<input>")
+	            .attr("type", "hidden")
+	            .attr("name", "type")
+	            .val("test");
+			$("form#check_form").append($(input));
+			//zmieniamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/printPlan")?>");
 			console.log($("form#check_form").attr("action"));
 			//zatwierdzenie formularza
 			$("form#check_form").attr("target","_blank")

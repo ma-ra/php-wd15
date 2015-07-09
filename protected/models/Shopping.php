@@ -119,7 +119,7 @@ class Shopping extends CActiveRecord
 		$criteria->compare('shopping_term',$this->shopping_term,true);
 		$criteria->compare('shopping_printed',$this->shopping_printed,true);
 		$criteria->compare('creation_time',$this->creation_time,true);
-		if ($this->shopping_status == "0") {
+		if ($this->shopping_status == "w trakcie") {
 			$criteria->addCondition('shopping_status not like :shopping_status' );
 			$criteria->params=array_merge($criteria->params,array(':shopping_status'=>'%dostarczono%'));
 		} else {

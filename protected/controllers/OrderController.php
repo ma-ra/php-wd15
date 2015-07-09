@@ -42,7 +42,7 @@ class OrderController extends Controller
 					'users'=>array('*'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-					'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print', 'mobileScaned', 'checked', 'manufactured', 'prepared', 'canceled', 'upload', 'summary', 'textileSummary'),
+					'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print', 'mobileScaned', 'checked', 'manufactured', 'prepared', 'canceled', 'upload', 'summary', 'textileSummary', 'printPlan'),
 					'users'=>array('mara','asia'),
 			),
 			array('deny',  // deny all users
@@ -1023,6 +1023,69 @@ class OrderController extends Controller
 				echo "Nic nie zaznaczono";
 			}
 		}
+	}
+	
+	public function actionPrintPlan()
+	{
+		# parametry PDF
+		$pdf = new Plan('L', 'mm', 'A4', true, 'UTF-8');
+		$pdf->getAliasNbPages();
+		$pdf->SetAuthor("Firma Wyrwał Daniel");
+		$pdf->SetCreator("WD15");
+		$pdf->SetSubject("Plan");
+		$pdf->SetTitle("Plan");
+		$pdf->SetKeywords("WD15, plan");
+			
+		$pdf->SetDisplayMode("fullpage","OneColumn");
+		$pdf->setPrintHeader(true);
+		$pdf->setPrintFooter(true);
+		$pdf->SetMargins(5,5,5,true);
+		$pdf->SetAutoPageBreak(true,0);
+
+		$pdf->SetFont("FreeSans", "", 12);
+		//$pdf->SetFont("DejaVuSans", "", 12);
+		$pdf->setCellMargins(0, 0, 0, 0);
+		$pdf->setCellPaddings(1, 1, 1, 1);
+
+		# ustalenie tytułu
+		
+		$pdf->AddPage();
+		#####
+		# Druk tabeli
+		#####
+		
+		$pks=array();
+		foreach ($_POST["select"] as $id => $checked) {
+			array_push($pks, $checked);
+		}
+		
+		# kryteria wyszukiwania
+		$criteria=new CDbCriteria;
+		$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
+		$criteria->order='articleArticle.article_number ASC';
+		$Orders=Order::model()->findAllByPk($pks, $criteria);
+		
+		# pętla po posortowanych zamówieniach i dodawanie etykiet na wydruk
+		foreach ($Orders as $id => $Order) {
+			$pdf->order_number=$Orders[$id]->order_number;
+			$pdf->article_number=$Orders[$id]->articleArticle->article_number;
+			$pdf->model_name=$Orders[$id]->articleArticle->model_name;
+			$pdf->model_type=$Orders[$id]->articleArticle->model_type;
+			$pdf->article_amount=$Orders[$id]->article_amount;
+			$pdf->textil_pair=isset($Orders[$id]->textil_pair) ? $Orders[$id]->textil_pair : $Orders[$id]->textile1Textile->textile_number ;
+			$pdf->textile_name1=$Orders[$id]->textile1Textile->textile_name;
+			$pdf->textile_name2=isset($Orders[$id]->textile2Textile->textile_name) ? $Orders[$id]->textile2Textile->textile_name : "-";
+			$pdf->order_term=$Orders[$id]->order_term;
+			$pdf->leg_type=$Orders[$id]->legLeg->leg_type;
+			
+			# drukujemy wiersz
+			$pdf->DrawRow();
+		}
+		
+			
+		#Drukujemy - w sensie tworzymy plik PDF
+		#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
+		$pdf->Output("Plan" . date('Y-m-d') . ".pdf", "I");
 	}
 
 	/**

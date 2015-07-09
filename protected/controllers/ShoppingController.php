@@ -334,6 +334,7 @@ class ShoppingController extends Controller
 					$pdf->SetTitle("zam. mat.");
 					$pdf->SetKeywords("WD15, zamówienie, materiałów");
 					
+					$pdf->SetDisplayMode("fullpage","OneColumn");
 					$pdf->setPrintHeader(false);
 					$pdf->setPrintFooter(true);
 					$pdf->SetMargins(5,5,5,true);
