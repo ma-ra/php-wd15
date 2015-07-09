@@ -1048,30 +1048,64 @@ class OrderController extends Controller
 		$pdf->setCellPaddings(1, 1, 1, 1);
 
 		# ustalenie tytułu
-		
+		$title=Order::model()->find(array(
+			'select'=>'order_add_date',
+			'order'=>'order_add_date DESC',
+			'limit'=>1
+		))->order_add_date;
+		if (isset($_POST["select"])) {
+			$pdf->title=isset($title)? "Zamówienie - aktualizacja z dnia: " . $title . " (wybrane)" : "Zamówienie (wybrane)" ;
+		} else {
+			$pdf->title=isset($title)? "Zamówienie - aktualizacja z dnia: " . $title . " (wszystkie)": "Zamówienie (wszystkie)" ;
+		}
 		$pdf->AddPage();
+		
 		#####
 		# Druk tabeli
 		#####
 		
-		$pks=array();
-		foreach ($_POST["select"] as $id => $checked) {
-			array_push($pks, $checked);
+		
+		if (isset($_POST["select"])) {
+			$pks=array();
+			foreach ($_POST["select"] as $id => $checked) {
+				array_push($pks, $checked);
+			}
+			
+			//echo "<pre>"; var_dump($_GET); echo "</pre>"; die();
+			# kryteria wyszukiwania
+			$criteria=new CDbCriteria;
+			$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
+			if ($_GET['act'] == "plan3") {
+				$criteria->order='order_term ASC, order_number, articleArticle.article_number ASC';
+			} else if ($_GET['act'] == "plan2") {
+				$criteria->order='order_term ASC, order_number, articleArticle.article_number ASC';
+			} else {
+				$criteria->order='order_term ASC, articleArticle.article_number ASC, order_number';
+			}
+			$Orders=Order::model()->findAllByPk($pks, $criteria);
+		} else {
+			$criteria=new CDbCriteria;
+			$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
+			$criteria->condition=('article_exported is :article_exported AND article_canceled = :article_canceled');
+			$criteria->params=array(':article_exported'=>null, 'article_canceled'=>0);
+			if ($_GET['act'] == "plan3") {
+				$criteria->order='order_term ASC, order_number, articleArticle.article_number ASC';
+			} else if ($_GET['act'] == "plan2") {
+				$criteria->order='order_term ASC, order_number, articleArticle.article_number ASC';
+			} else {
+				$criteria->order='order_term ASC, articleArticle.article_number ASC, order_number';
+			}
+			$Orders=Order::model()->findAll($criteria);
 		}
 		
-		# kryteria wyszukiwania
-		$criteria=new CDbCriteria;
-		$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
-		$criteria->order='articleArticle.article_number ASC';
-		$Orders=Order::model()->findAllByPk($pks, $criteria);
-		
 		# pętla po posortowanych zamówieniach i dodawanie etykiet na wydruk
+		$sum=0;
 		foreach ($Orders as $id => $Order) {
 			$pdf->order_number=$Orders[$id]->order_number;
 			$pdf->article_number=$Orders[$id]->articleArticle->article_number;
 			$pdf->model_name=$Orders[$id]->articleArticle->model_name;
 			$pdf->model_type=$Orders[$id]->articleArticle->model_type;
-			$pdf->article_amount=$Orders[$id]->article_amount;
+			$pdf->article_amount=$Orders[$id]->article_amount; $sum+=$pdf->article_amount;
 			$pdf->textil_pair=isset($Orders[$id]->textil_pair) ? $Orders[$id]->textil_pair : $Orders[$id]->textile1Textile->textile_number ;
 			$pdf->textile_name1=$Orders[$id]->textile1Textile->textile_name;
 			$pdf->textile_name2=isset($Orders[$id]->textile2Textile->textile_name) ? $Orders[$id]->textile2Textile->textile_name : "-";
@@ -1081,6 +1115,9 @@ class OrderController extends Controller
 			# drukujemy wiersz
 			$pdf->DrawRow();
 		}
+		# drukujemy podsumowanie
+		$pdf->article_amount=$sum;
+		$pdf->DrawSummary();
 		
 			
 		#Drukujemy - w sensie tworzymy plik PDF

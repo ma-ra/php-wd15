@@ -22,7 +22,9 @@ $this->menu=array(
 	array('label'=>'Drukuj etykiety transportowe #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_label')),
 	array('label'=>'Drukuj ladeliste #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_transport_list')),
 	array('label'=>'--------------------------------------------------'),
-	array('label'=>'Drukuj plan produkcji #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan')),
+	array('label'=>'Drukuj plan produkcji #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan1')),
+	array('label'=>'Drukuj plan produkcji (Paweł) #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan2')),
+	array('label'=>'Drukuj plan produkcji (Asia) #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan3')),
 	array('label'=>'--------------------------------------------------'),
 	array('label'=>'Wykrojono (Zaznacz/Odznacz) *', 'url'=>'#', 'itemOptions'=>array('id' => 'prepared')),
 	array('label'=>'Wyprodukowano (Zaznacz/Odznacz) *', 'url'=>'#', 'itemOptions'=>array('id' => 'manufactured')),
@@ -278,15 +280,33 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
 			event.preventDefault();
 		});
-		$("li#print_plan a").click(function(event) {
-			//dodajemy informację do POST po przez ukryte pole
-			var input = $("<input>")
-	            .attr("type", "hidden")
-	            .attr("name", "type")
-	            .val("test");
-			$("form#check_form").append($(input));
+		$("li#print_plan1 a").click(function(event) {
 			//zmieniamy cel wysłania danych
-			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/printPlan")?>");
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/printPlan", array('act'=>'plan1'))?>");
+			console.log($("form#check_form").attr("action"));
+			//zatwierdzenie formularza
+			$("form#check_form").attr("target","_blank")
+			$("form#check_form").submit();
+			$("form#check_form").attr("target","_self")
+			//przywracamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
+			event.preventDefault();
+		});
+		$("li#print_plan2 a").click(function(event) {
+			//zmieniamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/printPlan", array('act'=>'plan2'))?>");
+			console.log($("form#check_form").attr("action"));
+			//zatwierdzenie formularza
+			$("form#check_form").attr("target","_blank")
+			$("form#check_form").submit();
+			$("form#check_form").attr("target","_self")
+			//przywracamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
+			event.preventDefault();
+		});
+		$("li#print_plan3 a").click(function(event) {
+			//zmieniamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/printPlan", array('act'=>'plan3'))?>");
 			console.log($("form#check_form").attr("action"));
 			//zatwierdzenie formularza
 			$("form#check_form").attr("target","_blank")
