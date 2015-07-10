@@ -21,6 +21,8 @@
  * @property integer $textilpair_price_group
  * @property integer $textile1_textile_id
  * @property integer $textile2_textile_id
+ * @property string $order_price
+ * @property string $order_total_price
  * @property integer $shopping1_shopping_id
  * @property integer $shopping2_shopping_id
  * @property string $printed_minilabel
@@ -86,11 +88,12 @@ class Order extends CActiveRecord
 			array('article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id,  textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, textile_prepared, article_manufactured, article_canceled, checked, shopping1_shopping_id, shopping2_shopping_id, article_planed, article_prepared_to_export', 'numerical', 'integerOnly'=>true),
 			array('order_number, buyer_order_number, order_term, article_exported, order_error', 'length', 'max'=>50),
 			array('buyer_comments, order_reference', 'length', 'max'=>150),
+			array('order_price, order_total_price', 'length', 'max'=>9),
 			array('order_date, order_add_date, printed_minilabel, printed_shipping_label', 'safe'),
 			array('order_date, buyer_order_number, buyer_comments, order_reference, textil_pair, textilpair_price_group, textile2_textile_id, printed_minilabel, printed_shipping_label, article_exported', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, printed_minilabel, printed_shipping_label, article_manufactured, article_exported, manufacturerManufacturer_manufacturer_name, brokerBroker_broker_name, buyerBuyer_buyer_name_1, articleArticle_article_number, articleArticle_model_name, articleArticle_model_type, articleArticle_article_colli, legLeg_leg_type, textiles1_textile_number, textiles1_textile_name, textiles1_textile_price_groupe, textiles2_textile_number, textiles2_textile_name, textiles2_textile_price_group, textile1_textile_id, textile2_textile_id, checked, shopping1_shopping_id, shopping2_shopping_id, article_planed, article_prepared_to_export, shopping1Shopping_shopping_status, shopping2Shopping_shopping_status', 'safe', 'on'=>'search'),
+			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, printed_minilabel, printed_shipping_label, article_manufactured, article_exported, manufacturerManufacturer_manufacturer_name, brokerBroker_broker_name, buyerBuyer_buyer_name_1, articleArticle_article_number, articleArticle_model_name, articleArticle_model_type, articleArticle_article_colli, legLeg_leg_type, textiles1_textile_number, textiles1_textile_name, textiles1_textile_price_groupe, textiles2_textile_number, textiles2_textile_name, textiles2_textile_price_group, textile1_textile_id, textile2_textile_id, checked, shopping1_shopping_id, shopping2_shopping_id, article_planed, article_prepared_to_export, shopping1Shopping_shopping_status, shopping2Shopping_shopping_status, order_price, order_total_price', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -137,6 +140,8 @@ class Order extends CActiveRecord
 			'textilpair_price_group' => 'grupa cenowa pary desenii',
 			'textile1_textile_id' => 'id materiału 1',
 			'textile2_textile_id' => 'id materiału 2',
+			'order_price' => 'cena jedn.',
+			'order_total_price' => 'cena całości',
 			'printed_minilabel' => 'mini etykieta',
 			'printed_shipping_label' => 'etykieta transportowa',
 			'textile_prepared' => 'wykrojono',
@@ -178,7 +183,7 @@ class Order extends CActiveRecord
 		$criteria->compare('buyer_comments',$this->buyer_comments,true);
 		$criteria->compare('order_reference',$this->order_reference,true);
 		$criteria->compare('order_term',$this->order_term,true);
-		$criteria->compare('article_amount',$this->article_amount);
+		$criteria->compare('t.article_amount',$this->article_amount);
 		$criteria->compare('buyer_buyer_id',$this->buyer_buyer_id);
 		$criteria->compare('broker_broker_id',$this->broker_broker_id);
 		$criteria->compare('manufacturer_manufacturer_id',$this->manufacturer_manufacturer_id);
@@ -188,6 +193,8 @@ class Order extends CActiveRecord
 		$criteria->compare('textilpair_price_group',$this->textilpair_price_group);
 		$criteria->compare('textile1_textile_id',$this->textile1_textile_id);
 		$criteria->compare('textile2_textile_id',$this->textile2_textile_id);
+		$criteria->compare('order_price',$this->order_price,true);
+		$criteria->compare('order_total_price',$this->order_total_price,true);
 		$criteria->compare('article_planed',$this->article_planed);
 		$criteria->compare('article_prepared_to_export',$this->article_prepared_to_export);
 		if ($this->printed_minilabel == "0") {

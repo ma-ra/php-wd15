@@ -37,6 +37,8 @@ $this->menu=array(
 		'textilpair_price_group',
 		'textile1_textile_id',
 		'textile2_textile_id',
+		'order_price',
+		'order_total_price',
 		'shopping1_shopping_id',
 		'shopping2_shopping_id',
 		'printed_minilabel',

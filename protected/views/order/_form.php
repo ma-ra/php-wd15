@@ -116,6 +116,18 @@
 	</div>
 	
 	<div class="row">
+		<?php echo $form->labelEx($model,'order_price'); ?>
+		<?php echo $form->textField($model,'order_price',array('size'=>9,'maxlength'=>9)); ?>
+		<?php echo $form->error($model,'order_price'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'order_total_price'); ?>
+		<?php echo $form->textField($model,'order_total_price',array('size'=>9,'maxlength'=>9)); ?>
+		<?php echo $form->error($model,'order_total_price'); ?>
+	</div>
+	
+	<div class="row">
 		<?php echo $form->labelEx($model,'shopping1_shopping_id'); ?>
 		<?php echo $form->textField($model,'shopping1_shopping_id'); ?>
 		<?php echo $form->error($model,'shopping1_shopping_id'); ?>

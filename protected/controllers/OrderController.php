@@ -122,7 +122,7 @@ class OrderController extends Controller
 			$model->file_mime=isset($model->file->type)? $model->file->type : " ";
 			$model->file_size=isset($model->file->size)? $model->file->size : " ";
 			if ($model->validate()) {
-				#Usuń dotychczasowe błędy typu: exported
+				# usuń dotychczasowe błędy typu: exported
 				$exported=Order::model()->findAll(array(
 					'condition'=>'order_error like :exported',
 					'params'=>array(':exported'=>'%exported%'),
@@ -149,7 +149,9 @@ class OrderController extends Controller
 				
 				
 				$file=$model->file->tempName;
-				#Odczytywanie pliku i zapis zamówień do bazy
+				#####
+				# Odczytywanie pliku i zapis zamówień do bazy
+				#####
 				$handle = @fopen($file, "r");
 				$i=1;
 				$currentDate=date('Y-m-d H:i:s');
@@ -164,7 +166,9 @@ class OrderController extends Controller
 								continue;
 							}
 							
-							#buyer - update or insert
+							####
+							# Buyer - update or insert
+							####
 							$buyer=Buyer::model()->find(array(
 								'condition'=>'buyer_name_1=:name1 AND buyer_name_2=:name2 AND buyer_street=:street AND buyer_zip_code=:zip_code',
 								'params'=>array(':name1'=>$line[5], 
@@ -172,7 +176,7 @@ class OrderController extends Controller
 					 				':street'=>$line[7],
 									':zip_code'=>$line[8],
 								),
-								#ostatni element
+								# ostatni element
 								'order' => "buyer_id DESC",
 								'limit' => 1
 							));
@@ -185,11 +189,13 @@ class OrderController extends Controller
 							$buyer->buyer_zip_code=$line[8];
 							$buyer->save();
 							
-							#broker - update or insert
+							####
+							# Broker - update or insert
+							####
 							$broker=Broker::model()->find(array(
 								'condition'=>'broker_name=:name',
 								'params'=>array(':name'=>'Reality Import GmbH'),
-								#ostatni element
+								# ostatni element
 								'order' => "broker_id DESC",
 								'limit' => 1
 							));
@@ -199,13 +205,15 @@ class OrderController extends Controller
 							$broker->broker_name="Reality Import GmbH";
 							$broker->save();
 							
-							#manufacturer - update or insert
+							####
+							# Manufacturer - update or insert
+							####
 							$manufacturer=Manufacturer::model()->find(array(
 								'condition'=>'manufacturer_name=:name AND manufacturer_number=:number',
 								'params'=>array(':name'=>$line[1],
 												':number'=>$line[0],
 								),
-								#ostatni element
+								# ostatni element
 								'order' => "manufacturer_id DESC",
 								'limit' => 1
 							));
@@ -216,7 +224,9 @@ class OrderController extends Controller
 							$manufacturer->manufacturer_name=$line[1];
 							$manufacturer->save();
 							
-							#leg - update or insert
+							####
+							# Leg - update or insert
+							####
 							$leg=Leg::model()->find(array(
 								'condition'=>'leg_type=:leg',
 								'params'=>array(':leg'=>$line[14]),
@@ -230,7 +240,9 @@ class OrderController extends Controller
 							$leg->leg_type=$line[14];
 							$leg->save();
 							
-							#article - update or insert
+							####
+							# Article - update or insert
+							####
 							$article=Article::model()->find(array(
 								'condition'=>'article_number=:number',
 								'params'=>array(':number'=>$line[11]),
@@ -247,16 +259,19 @@ class OrderController extends Controller
 							$article->article_number=$line[11];
 							$article->save();
 							
-							#Pierwszy deseń
+							# pierwszy deseń
 							if ($line[15]>999) { #Jeden deseń na zamówieniu
 								$textile_number=$line[15];
 								$textile_price_group=$line[18];
-							} else { #Dwa desenie na zamówieniu
+							} else { # dwa desenie na zamówieniu
 								preg_match('/([0-9]{4})/i',$line[16],$matches);
 								$textile_number=$matches[1];
 								$textile_price_group=0; #przy dwuch, mamy grupę dla dwuch materiałów i zapisujemy gdzie indziej
 							}
-							#textile - update or insert
+							
+							####
+							# Textile - update or insert
+							####
 							$textile=Textile::model()->find(array(
 								'condition'=>'textile_number=:number AND textile_name=:name AND textile_price_group=:group',
 								'params'=>array(':number'=>$textile_number,
@@ -275,17 +290,17 @@ class OrderController extends Controller
 							$textile->textile_name=$line[16];
 							$textile->save();
 							
-							#Drugi deseń
+							# drugi deseń
 							if ($line[15]<=999) {
 								preg_match('/([0-9]{4})/i',$line[17],$matches);
-								#textile2 - update or insert
+								# textile2 - update or insert
 								$textile2=Textile::model()->find(array(
 									'condition'=>'textile_number=:number AND textile_name=:name AND textile_price_group=:group',
 									'params'=>array(':number'=>$matches[1],
 									':name'=>$line[17],
 									':group'=>0,
 									),
-									#ostatni element
+									# ostatni element
 									'order' => "textile_id DESC",
 									'limit' => 1
 								));
@@ -298,19 +313,22 @@ class OrderController extends Controller
 								$textile2->save();
 							}
 							
-							
-							#order - update or insert
+							####
+							# Order - update or insert
+							####
 							$order=Order::model()->find(array(
-							'condition'=>'order_number=:order_number AND article_article_id=:article_id',
-							'params'=>array(':order_number'=>$line[3], ':article_id'=>$article->article_id),
-							#ostatni element
-							'order' => "order_id DESC",
-							'limit' => 1
+								'condition'=>'order_number=:order_number AND article_article_id=:article_id',
+								'params'=>array(':order_number'=>$line[3], ':article_id'=>$article->article_id),
+								#ostatni element
+								'order' => "order_id DESC",
+								'limit' => 1
 							));
 							if (empty($order)) {
 								$order=new Order('upload');
+								# jak nowy, to ustaw datę wgrania, w przeciwnym wypadku zostanie poprzednia data wgrania
+								$order->order_add_date=$currentDate;
 							}
-							#Oznacz zmianę ilości
+							# oznacz zmianę ilości
 							if (isset($order->article_amount) && $order->article_amount != $line[24]) {
 								$error=explode("|", $order->order_error);
 								array_push ( $error , "amount-$order->article_amount");
@@ -318,8 +336,10 @@ class OrderController extends Controller
 								$order->order_error=$error;
 							}
 							
-							#Dalsze przetwarzanie wczytywania zamówienia
+							# dalsze przetwarzanie wczytywania zamówienia
+							$order->order_price=$line[23];
 							$order->article_amount=$line[24];
+							$order->order_total_price=$line[25];
 							$order->buyer_comments=$line[10];
 							$order->buyer_order_number=$line[9];
 							$order->order_date=$line[4];
@@ -336,13 +356,13 @@ class OrderController extends Controller
 							} else {
 								$order->textile2_textile_id=null;
 							}
-							#Pierwszy deseń zawsze zapisuj
+							# pierwszy deseń zawsze zapisuj
 							$order->textile1_textile_id=$textile->textile_id;
 							$order->buyer_buyer_id=$buyer->buyer_id;
 							$order->broker_broker_id=$broker->broker_id;
 							$order->manufacturer_manufacturer_id=$manufacturer->manufacturer_id;
 							
-							#Oznacz niepoprawne storno
+							# oznacz niepoprawne storno
 							if (isset($order->article_canceled) && $order->article_canceled != 0) {
 								$error=explode("|", $order->order_error);
 								if (!in_array("false storno", $error)) {
@@ -352,7 +372,7 @@ class OrderController extends Controller
 								$order->order_error=$error;
 							}
 							
-							#Oznacz błąd typu "exported" - zamówienie dla towaru który wyjechał
+							# oznacz błąd typu "exported" - zamówienie dla towaru który wyjechał
 							if (isset($order->article_exported) && $order->article_exported != null) {
 								$error=explode("|", $order->order_error);
 								if (!in_array("exported", $error)) {
@@ -362,7 +382,6 @@ class OrderController extends Controller
 								$order->order_error=$error;
 							}
 							
-							$order->order_add_date=$currentDate;
 							$order->save();
 							
 						}
@@ -377,13 +396,13 @@ class OrderController extends Controller
 					echo "<pre>"; var_dump($e); echo "</pre>";
 				}
 				
-				#Wyszukaj potencjalne storna
+				# wyszukaj potencjalne storna
 				$stornos=Order::model()->findAll(array(
 				'condition'=>'article_exported is NULL AND article_canceled = 0 AND order_add_date != :currentDate',
 				'params'=>array(':currentDate'=>$currentDate),
 				));
 		
-				#Oznacz odnalezione storna za pomocą błędu: storno
+				# oznacz odnalezione storna za pomocą błędu: storno
 				$transaction = Yii::app()->db->beginTransaction();
 				try {
 					foreach ($stornos as $key => $storno) {
@@ -404,7 +423,7 @@ class OrderController extends Controller
 					Yii::app()->user->setFlash('3error','Nie udało się wyszukiwanie potencjalnych "storn"');
 				}
 			}
-			#Przeładowanie strony wgrywania (strona wykryje potencjalne błędy (setFlash) i wyświetli je
+			# przeładowanie strony wgrywania (strona wykryje potencjalne błędy (setFlash) i wyświetli je
 			$this->refresh();
 		}
 		
@@ -1058,13 +1077,8 @@ class OrderController extends Controller
 		} else {
 			$pdf->title=isset($title)? "Zamówienie - aktualizacja z dnia: " . $title . " (wszystkie)": "Zamówienie (wszystkie)" ;
 		}
-		$pdf->AddPage();
 		
-		#####
-		# Druk tabeli
-		#####
-		
-		
+		# ustalanie danych, ich sortowania oraz sposobu prezentacji
 		if (isset($_POST["select"])) {
 			$pks=array();
 			foreach ($_POST["select"] as $id => $checked) {
@@ -1077,10 +1091,13 @@ class OrderController extends Controller
 			$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
 			if ($_GET['act'] == "plan3") {
 				$criteria->order='order_term ASC, order_number, articleArticle.article_number ASC';
+				$pdf->version="plan3";
 			} else if ($_GET['act'] == "plan2") {
 				$criteria->order='order_term ASC, order_number, articleArticle.article_number ASC';
+				$pdf->version="plan2";
 			} else {
 				$criteria->order='order_term ASC, articleArticle.article_number ASC, order_number';
+				$pdf->version="plan1";
 			}
 			$Orders=Order::model()->findAllByPk($pks, $criteria);
 		} else {
@@ -1090,33 +1107,49 @@ class OrderController extends Controller
 			$criteria->params=array(':article_exported'=>null, 'article_canceled'=>0);
 			if ($_GET['act'] == "plan3") {
 				$criteria->order='order_term ASC, order_number, articleArticle.article_number ASC';
+				$pdf->version="plan3";
 			} else if ($_GET['act'] == "plan2") {
 				$criteria->order='order_term ASC, order_number, articleArticle.article_number ASC';
+				$pdf->version="plan2";
 			} else {
 				$criteria->order='order_term ASC, articleArticle.article_number ASC, order_number';
+				$pdf->version="plan1";
 			}
 			$Orders=Order::model()->findAll($criteria);
 		}
 		
+		#####
+		# Druk tabeli
+		#####
+		$pdf->SetVersion();
+		$pdf->AddPage();
+		
 		# pętla po posortowanych zamówieniach i dodawanie etykiet na wydruk
-		$sum=0;
+		$amountSum=0;
+		$totalPriceSum=0;
+		$count=0;
 		foreach ($Orders as $id => $Order) {
 			$pdf->order_number=$Orders[$id]->order_number;
 			$pdf->article_number=$Orders[$id]->articleArticle->article_number;
 			$pdf->model_name=$Orders[$id]->articleArticle->model_name;
 			$pdf->model_type=$Orders[$id]->articleArticle->model_type;
-			$pdf->article_amount=$Orders[$id]->article_amount; $sum+=$pdf->article_amount;
+			$pdf->article_amount=$Orders[$id]->article_amount; $amountSum+=$pdf->article_amount;
 			$pdf->textil_pair=isset($Orders[$id]->textil_pair) ? $Orders[$id]->textil_pair : $Orders[$id]->textile1Textile->textile_number ;
 			$pdf->textile_name1=$Orders[$id]->textile1Textile->textile_name;
 			$pdf->textile_name2=isset($Orders[$id]->textile2Textile->textile_name) ? $Orders[$id]->textile2Textile->textile_name : "-";
 			$pdf->order_term=$Orders[$id]->order_term;
 			$pdf->leg_type=$Orders[$id]->legLeg->leg_type;
+			$pdf->order_price=isset($Orders[$id]->order_price)? $Orders[$id]->order_price : "-";
+			$pdf->order_total_price=isset($Orders[$id]->order_total_price)? $Orders[$id]->order_total_price : "-"; $totalPriceSum+=$pdf->order_total_price;
+			$count+=1;
 			
 			# drukujemy wiersz
 			$pdf->DrawRow();
 		}
 		# drukujemy podsumowanie
-		$pdf->article_amount=$sum;
+		$pdf->article_amount=$amountSum;
+		$pdf->order_total_price=$totalPriceSum;
+		$pdf->article_number=$count;
 		$pdf->DrawSummary();
 		
 			

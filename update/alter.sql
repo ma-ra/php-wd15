@@ -29,3 +29,6 @@ INSERT INTO `wd15`.`textile` (`textile_number`, `supplier_supplier_id`, `textile
 
 -- numery materiałów nigdy nie występujące jako jednodeseniowe
 SELECT textile_number, MIN(textile_name), GROUP_CONCAT(textile_price_group), SUM(textile_price_group), MIN(pattern) FROM `textile` GROUP BY textile_number HAVING SUM(textile_price_group)=0 ORDER BY SUM(textile_price_group) ASC 
+
+-- dodajemy ceny do tabeli Order
+ALTER TABLE `order` ADD `order_price` DECIMAL(9,2) NULL AFTER `textile2_textile_id`, ADD `order_total_price` DECIMAL(9,2) NULL AFTER `order_price`;

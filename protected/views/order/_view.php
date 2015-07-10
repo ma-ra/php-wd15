@@ -73,11 +73,19 @@
 	<b><?php echo CHtml::encode($data->getAttributeLabel('textile2_textile_id')); ?>:</b>
 	<?php echo CHtml::encode($data->textile2_textile_id); ?>
 	<br />
-	
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('order_price')); ?>:</b>
+	<?php echo CHtml::encode($data->order_price); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('order_total_price')); ?>:</b>
+	<?php echo CHtml::encode($data->order_total_price); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping1_shopping_id')); ?>:</b>
 	<?php echo CHtml::encode($data->shopping1_shopping_id); ?>
 	<br />
-	
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping2_shopping_id')); ?>:</b>
 	<?php echo CHtml::encode($data->shopping2_shopping_id); ?>
 	<br />
@@ -93,7 +101,7 @@
 	<b><?php echo CHtml::encode($data->getAttributeLabel('textile_prepared')); ?>:</b>
 	<?php echo CHtml::encode($data->textile_prepared); ?>
 	<br />
-	
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('article_planed')); ?>:</b>
 	<?php echo CHtml::encode($data->article_planed); ?>
 	<br />
@@ -101,7 +109,7 @@
 	<b><?php echo CHtml::encode($data->getAttributeLabel('article_manufactured')); ?>:</b>
 	<?php echo CHtml::encode($data->article_manufactured); ?>
 	<br />
-	
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('article_prepared_to_export')); ?>:</b>
 	<?php echo CHtml::encode($data->article_prepared_to_export); ?>
 	<br />
