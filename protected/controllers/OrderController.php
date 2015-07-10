@@ -1141,6 +1141,8 @@ class OrderController extends Controller
 			$pdf->leg_type=$Orders[$id]->legLeg->leg_type;
 			$pdf->order_price=isset($Orders[$id]->order_price)? $Orders[$id]->order_price : "-";
 			$pdf->order_total_price=isset($Orders[$id]->order_total_price)? $Orders[$id]->order_total_price : "-"; $totalPriceSum+=$pdf->order_total_price;
+			$pdf->order_add_date=$Orders[$id]->order_add_date;
+			$pdf->pattern_order_add_date=$title;
 			$count+=1;
 			
 			# drukujemy wiersz

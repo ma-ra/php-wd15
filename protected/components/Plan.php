@@ -16,6 +16,8 @@ class Plan extends TCPDF {
 	public $leg_type;
 	public $order_price;
 	public $order_total_price;
+	public $order_add_date;
+	public $pattern_order_add_date;
 	
 	public $title;
 	
@@ -82,19 +84,21 @@ class Plan extends TCPDF {
 		} else {
 			$this->fields_width=array(
 				0 => 20,
-				1 => 15,
+				1 => 20,
 				2 => 15,
-				3 => 60,
-				4 => 12,
-				5 => 15,
-				6 => 55,
-				7 => 55,
-				8 => 15,
-				9 => 25,
+				3 => 15,
+				4 => 50,
+				5 => 12,
+				6 => 15,
+				7 => 50,
+				8 => 50,
+				9 => 15,
+				10 => 25,
 			);
 			
 			$this->headers=array(
 				'zam. nr',
+				'notki',
 				'art. nr',
 				'model',
 				'wersja',
@@ -110,6 +114,7 @@ class Plan extends TCPDF {
 	
 	// Page header
 	function Header() {
+		$this->SetFillColor(190, 190, 190);
 		$this->SetFont("FreeSans", "", 8);
 		$this->SetXY(5,5);
 		// Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M')
@@ -125,7 +130,7 @@ class Plan extends TCPDF {
 		foreach ($this->headers as $index => $header) {
 			// getStringHeight ($w, $txt, $reseth=false, $autopadding=true, $cellpadding='', $border=0)
 			if ($textHeight < $this->getStringHeight($w[$index], $header)) {
-				$textHeight=$this->getStringHeight($w[$index], $header);
+				$textHeight=$this->getStringHeight($w[$index], $header)+1;
 			}
 		};
 			
@@ -140,6 +145,7 @@ class Plan extends TCPDF {
 	
 	// Draw row
 	function DrawRow() {
+		$this->SetFillColor(180, 180, 180);
 		$this->SetFont("FreeSans", "", 8);
 		$this->SetY($this->start);
 		
@@ -161,6 +167,7 @@ class Plan extends TCPDF {
 		} else {
 			$row=array(
 				$this->order_number,
+				"",
 				$this->article_number,
 				$this->model_name,
 				$this->model_type,
@@ -185,9 +192,15 @@ class Plan extends TCPDF {
 		};
 				
 		## drukujemy
+		$fill=0;
 		foreach ($row as $index => $field) {
+			if ($this->order_add_date == $this->pattern_order_add_date && $index == 0) {
+				$fill=1;
+			} else {
+				$fill=0;
+			}
 			// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
-			$this->MultiCell($w[$index], $textHeight, $row[$index], 1, 'C', 0, 0, '', '', true, 1);
+			$this->MultiCell($w[$index], $textHeight, $row[$index], 1, 'C', $fill, 0, '', '', true, 1);
 		}
 		$this->Ln();
 		$this->start=$this->GetY();
@@ -200,6 +213,7 @@ class Plan extends TCPDF {
 	
 	// Draw summary
 	function DrawSummary() {
+		$this->SetFillColor(190, 190, 190);
 		$this->SetFont("FreeSans", "", 8);
 		$this->SetY($this->start);
 		if ($this->version == "plan3") {
@@ -219,6 +233,7 @@ class Plan extends TCPDF {
 			);
 		} else {
 			$row=array(
+				$this->article_number,
 				"",
 				"",
 				"",
@@ -245,7 +260,7 @@ class Plan extends TCPDF {
 	
 		## drukujemy
 		foreach ($row as $index => $field) {
-		// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
+			// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
 			$this->MultiCell($w[$index], $textHeight, $row[$index], 1, 'C', 0, 0, '', '', true, 1);
 		}
 		$this->Ln();
@@ -262,8 +277,9 @@ class Plan extends TCPDF {
 		$this->SetFont("FreeSans", "", 8);
 		$this->SetXY(5,210-5-$this->getStringHeight(1, ""));
 		// Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M')
-		$this->Cell(143.5, 0, date('Y-m-d H:i '), 0, 0, "L");
-		$this->Cell(143.5, 0,  $this->getPage() . "/" . $this->getNumPages(), 0, 0, "R");
+		$this->Cell(63.5, 0, date('Y-m-d H:i '), 0, 0, "L");
+		$this->Cell(160, 0, "Wydrukowane z aplikacji WD15 / Copyright © 2015 by Marek Ramotowski for Wyrwał Daniel", 0, 0, "C");
+		$this->Cell(63.5, 0,  $this->getPage() . "/" . $this->getNumPages(), 0, 0, "R");
 	}
 }
 ?>
