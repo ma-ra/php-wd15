@@ -32,3 +32,6 @@ SELECT textile_number, MIN(textile_name), GROUP_CONCAT(textile_price_group), SUM
 
 -- dodajemy ceny do tabeli Order
 ALTER TABLE `order` ADD `order_price` DECIMAL(9,2) NULL AFTER `textile2_textile_id`, ADD `order_total_price` DECIMAL(9,2) NULL AFTER `order_price`;
+
+-- dodajemy datę aktualizacji do tableli Order
+ALTER TABLE `order` ADD `order_storno_date` DATETIME NULL DEFAULT NULL AFTER `order_add_date`;

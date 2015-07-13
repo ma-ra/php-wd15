@@ -328,6 +328,7 @@ class OrderController extends Controller
 								# jak nowy, to ustaw datę wgrania, w przeciwnym wypadku zostanie poprzednia data wgrania
 								$order->order_add_date=$currentDate;
 							}
+							$order->order_storno_date=$currentDate;
 							# oznacz zmianę ilości
 							if (isset($order->article_amount) && $order->article_amount != $line[24]) {
 								$error=explode("|", $order->order_error);
@@ -398,7 +399,7 @@ class OrderController extends Controller
 				
 				# wyszukaj potencjalne storna
 				$stornos=Order::model()->findAll(array(
-				'condition'=>'article_exported is NULL AND article_canceled = 0 AND order_add_date != :currentDate',
+				'condition'=>'article_exported is NULL AND article_canceled = 0 AND order_storno_date != :currentDate',
 				'params'=>array(':currentDate'=>$currentDate),
 				));
 		

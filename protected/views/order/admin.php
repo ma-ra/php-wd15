@@ -144,6 +144,7 @@ $this->widget('ext.selgridview.SelGridView', array(
 				'template'=>'{update}',
 		),
 		'order_add_date',
+		'order_storno_date',
 		'order_date',
 		'buyer_order_number',
 		'buyer_comments',
@@ -185,8 +186,8 @@ $this->widget('ext.selgridview.SelGridView', array(
 				'type' => 'raw',
 				'value' => 'CHtml::encode(isset($data->textile2Textile->textile_price_group)? $data->textile2Textile->textile_price_group : "")'
 		),
-		'order_price',
-		'order_total_price',
+		#'order_price',
+		#'order_total_price',
 	),
 )); 
 echo CHtml::submitButton('Drukuj etykiety') . "<br>";
