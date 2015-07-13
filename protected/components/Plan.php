@@ -279,7 +279,7 @@ class Plan extends TCPDF {
 		// Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M')
 		$this->Cell(63.5, 0, date('Y-m-d H:i '), 0, 0, "L");
 		$this->Cell(160, 0, "Wydrukowane z aplikacji WD15 / Copyright © 2015 by Marek Ramotowski for Wyrwał Daniel", 0, 0, "C");
-		$this->Cell(63.5, 0,  $this->getPage() . "/" . $this->getNumPages(), 0, 0, "R");
+		$this->Cell(63.5, 0,  $this->getPage() . "/" . trim($this->getAliasNbPages()), 0, 0, "R");
 	}
 }
 ?>

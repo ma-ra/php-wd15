@@ -28,7 +28,7 @@ class OrderController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('admin','checked', 'manufactured', 'summary', 'textileSummary','print','update','view'),
+				'actions'=>array('admin','checked', 'manufactured', 'summary', 'textileSummary','print','update','view', 'printPlan1'),
 				'users'=>array('mariola','pawel'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
@@ -42,7 +42,7 @@ class OrderController extends Controller
 					'users'=>array('*'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-					'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print', 'mobileScaned', 'checked', 'manufactured', 'prepared', 'canceled', 'upload', 'summary', 'textileSummary', 'printPlan'),
+					'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print', 'mobileScaned', 'checked', 'manufactured', 'prepared', 'canceled', 'upload', 'summary', 'textileSummary', 'printPlan1', 'printPlan2'),
 					'users'=>array('mara','asia'),
 			),
 			array('deny',  // deny all users
@@ -1045,7 +1045,7 @@ class OrderController extends Controller
 		}
 	}
 	
-	public function actionPrintPlan()
+	public function actionPrintPlan1()
 	{
 		# parametry PDF
 		$pdf = new Plan('L', 'mm', 'A4', true, 'UTF-8');
@@ -1090,32 +1090,16 @@ class OrderController extends Controller
 			# kryteria wyszukiwania
 			$criteria=new CDbCriteria;
 			$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
-			if ($_GET['act'] == "plan3") {
-				$criteria->order='order_term ASC, order_number, articleArticle.article_number ASC';
-				$pdf->version="plan3";
-			} else if ($_GET['act'] == "plan2") {
-				$criteria->order='order_term ASC, order_number, articleArticle.article_number ASC';
-				$pdf->version="plan2";
-			} else {
-				$criteria->order='order_term ASC, articleArticle.article_number ASC, order_number';
-				$pdf->version="plan1";
-			}
+			$criteria->order='order_term ASC, articleArticle.article_number ASC, order_number';
+			$pdf->version="plan1";
 			$Orders=Order::model()->findAllByPk($pks, $criteria);
 		} else {
 			$criteria=new CDbCriteria;
 			$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
 			$criteria->condition=('article_exported is :article_exported AND article_canceled = :article_canceled');
 			$criteria->params=array(':article_exported'=>null, 'article_canceled'=>0);
-			if ($_GET['act'] == "plan3") {
-				$criteria->order='order_term ASC, order_number, articleArticle.article_number ASC';
-				$pdf->version="plan3";
-			} else if ($_GET['act'] == "plan2") {
-				$criteria->order='order_term ASC, order_number, articleArticle.article_number ASC';
-				$pdf->version="plan2";
-			} else {
-				$criteria->order='order_term ASC, articleArticle.article_number ASC, order_number';
-				$pdf->version="plan1";
-			}
+			$criteria->order='order_term ASC, articleArticle.article_number ASC, order_number';
+			$pdf->version="plan1";
 			$Orders=Order::model()->findAll($criteria);
 		}
 		
@@ -1160,6 +1144,107 @@ class OrderController extends Controller
 		#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
 		$pdf->Output("Plan" . date('Y-m-d') . ".pdf", "I");
 	}
+	
+		public function actionPrintPlan2()
+	{
+		# parametry PDF
+		$pdf = new Plan('L', 'mm', 'A4', true, 'UTF-8');
+		$pdf->getAliasNbPages();
+		$pdf->SetAuthor("Firma Wyrwał Daniel");
+		$pdf->SetCreator("WD15");
+		$pdf->SetSubject("Plan");
+		$pdf->SetTitle("Plan");
+		$pdf->SetKeywords("WD15, plan");
+			
+		$pdf->SetDisplayMode("fullpage","OneColumn");
+		$pdf->setPrintHeader(true);
+		$pdf->setPrintFooter(true);
+		$pdf->SetMargins(5,5,5,true);
+		$pdf->SetAutoPageBreak(true,0);
+
+		$pdf->SetFont("FreeSans", "", 12);
+		//$pdf->SetFont("DejaVuSans", "", 12);
+		$pdf->setCellMargins(0, 0, 0, 0);
+		$pdf->setCellPaddings(1, 1, 1, 1);
+
+		# ustalenie tytułu
+		$title=Order::model()->find(array(
+			'select'=>'order_add_date',
+			'order'=>'order_add_date DESC',
+			'limit'=>1
+		))->order_add_date;
+		if (isset($_POST["select"])) {
+			$pdf->title=isset($title)? "Zamówienie - aktualizacja z dnia: " . $title . " (wybrane)" : "Zamówienie (wybrane)" ;
+		} else {
+			$pdf->title=isset($title)? "Zamówienie - aktualizacja z dnia: " . $title . " (wszystkie)": "Zamówienie (wszystkie)" ;
+		}
+		
+		# ustalanie danych, ich sortowania oraz sposobu prezentacji
+		if (isset($_POST["select"])) {
+			$pks=array();
+			foreach ($_POST["select"] as $id => $checked) {
+				array_push($pks, $checked);
+			}
+			
+			//echo "<pre>"; var_dump($_GET); echo "</pre>"; die();
+			# kryteria wyszukiwania
+			$criteria=new CDbCriteria;
+			$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
+			$criteria->order='order_term ASC, order_number, articleArticle.article_number ASC';
+			$pdf->version="plan3";
+			$Orders=Order::model()->findAllByPk($pks, $criteria);
+		} else {
+			$criteria=new CDbCriteria;
+			$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
+			$criteria->condition=('article_exported is :article_exported AND article_canceled = :article_canceled');
+			$criteria->params=array(':article_exported'=>null, 'article_canceled'=>0);
+			$criteria->order='order_term ASC, order_number, articleArticle.article_number ASC';
+			$pdf->version="plan3";
+			$Orders=Order::model()->findAll($criteria);
+		}
+		
+		#####
+		# Druk tabeli
+		#####
+		$pdf->SetVersion();
+		$pdf->AddPage();
+		
+		# pętla po posortowanych zamówieniach i dodawanie etykiet na wydruk
+		$amountSum=0;
+		$totalPriceSum=0;
+		$count=0;
+		foreach ($Orders as $id => $Order) {
+			$pdf->order_number=$Orders[$id]->order_number;
+			$pdf->article_number=$Orders[$id]->articleArticle->article_number;
+			$pdf->model_name=$Orders[$id]->articleArticle->model_name;
+			$pdf->model_type=$Orders[$id]->articleArticle->model_type;
+			$pdf->article_amount=$Orders[$id]->article_amount; $amountSum+=$pdf->article_amount;
+			$pdf->textil_pair=isset($Orders[$id]->textil_pair) ? $Orders[$id]->textil_pair : $Orders[$id]->textile1Textile->textile_number ;
+			$pdf->textile_name1=$Orders[$id]->textile1Textile->textile_name;
+			$pdf->textile_name2=isset($Orders[$id]->textile2Textile->textile_name) ? $Orders[$id]->textile2Textile->textile_name : "-";
+			$pdf->order_term=$Orders[$id]->order_term;
+			$pdf->leg_type=$Orders[$id]->legLeg->leg_type;
+			$pdf->order_price=isset($Orders[$id]->order_price)? $Orders[$id]->order_price : "-";
+			$pdf->order_total_price=isset($Orders[$id]->order_total_price)? $Orders[$id]->order_total_price : "-"; $totalPriceSum+=$pdf->order_total_price;
+			$pdf->order_add_date=$Orders[$id]->order_add_date;
+			$pdf->pattern_order_add_date=$title;
+			$count+=1;
+			
+			# drukujemy wiersz
+			$pdf->DrawRow();
+		}
+		# drukujemy podsumowanie
+		$pdf->article_amount=$amountSum;
+		$pdf->order_total_price=$totalPriceSum;
+		$pdf->article_number=$count;
+		$pdf->DrawSummary();
+		
+			
+		#Drukujemy - w sensie tworzymy plik PDF
+		#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
+		$pdf->Output("Plan" . date('Y-m-d') . ".pdf", "I");
+	}
+	
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
