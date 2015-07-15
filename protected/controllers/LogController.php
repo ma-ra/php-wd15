@@ -33,7 +33,7 @@ class LogController extends Controller
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
 				'actions'=>array('create','update', 'delete'),
-				'users'=>array('mara'),
+				'users'=>array('asia', 'mara'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),

@@ -28,8 +28,12 @@ class ConfigurationController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view', 'create', 'update', 'admin', 'delete'),
-				'users'=>array('mara','asia','mariola','pawel'),
+				'actions'=>array('index','view', 'update', 'admin'),
+				'users'=>array('asia', 'gosia', 'mara', 'mariola', 'pawel'),
+			),
+			array('allow',  // allow all users to perform 'index' and 'view' actions
+					'actions'=>array('create', 'delete'),
+					'users'=>array('mara'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
 					'actions'=>array('truncate_all', 'truncate'),

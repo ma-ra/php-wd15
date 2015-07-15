@@ -28,8 +28,12 @@ class BrokerController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view', 'create', 'update', 'admin', 'delete'),
-				'users'=>array('mara','asia'),
+					'actions'=>array('index','view', 'admin'),
+					'users'=>array('@'),
+			),
+			array('allow',  // allow all users to perform 'index' and 'view' actions
+				'actions'=>array('create', 'update', 'delete'),
+				'users'=>array('asia', 'mara'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),

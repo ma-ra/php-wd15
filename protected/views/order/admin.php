@@ -22,8 +22,9 @@ $this->menu=array(
 	array('label'=>'Drukuj etykiety transportowe #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_label')),
 	array('label'=>'Drukuj ladeliste #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_transport_list')),
 	array('label'=>'--------------------------------------------------'),
-	array('label'=>'Drukuj plan produkcji #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan1')),
-	array('label'=>'Drukuj plan produkcji (z cenami) #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan2')),
+	array('label'=>'Drukuj zamówienia #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan1')),
+	array('label'=>'Drukuj zamówienia (z cenami) #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan2')),
+	array('label'=>'Drukuj plan #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan3')),
 	array('label'=>'--------------------------------------------------'),
 	array('label'=>'Wykrojono (Zaznacz/Odznacz) *', 'url'=>'#', 'itemOptions'=>array('id' => 'prepared')),
 	array('label'=>'Wyprodukowano (Zaznacz/Odznacz) *', 'url'=>'#', 'itemOptions'=>array('id' => 'manufactured')),
@@ -45,149 +46,157 @@ lub <b>=</b>) na początku każdej wyszukiwanej wartości aby sprecyzować spos�
 <?php 
 echo CHtml::beginForm(array('Order/print'),'post', array('enctype'=>'multipart/form-data', 'id'=>'check_form'));
 
+# definicja kolumn
+$columns=array(
+	array(
+		'id'=>'select',
+		'class' => 'CCheckBoxColumn',
+	),
+	'checked',
+	array(
+		'class'=>'CButtonColumn',
+		'template'=>'{update}',
+	),
+	'order_id',
+	'article_amount',
+	'order_number',
+	'order_term',
+	array(
+		'name' => 'articleArticle.article_number',
+		'filter'=>CHtml::activeTextField($model,'articleArticle_article_number'),
+		'type' => 'raw',
+		'value' => 'CHtml::encode($data->articleArticle->article_number)'
+	),
+	array(
+		'name' => 'articleArticle.model_name',
+		'filter'=>CHtml::activeTextField($model,'articleArticle_model_name'),
+		'type' => 'raw',
+		'value' => 'CHtml::encode($data->articleArticle->model_name)'
+	),
+	array(
+		'name' => 'articleArticle.model_type',
+		'filter'=>CHtml::activeTextField($model,'articleArticle_model_type'),
+		'type' => 'raw',
+		'value' => 'CHtml::encode($data->articleArticle->model_type)'
+	),
+	array(
+		'name' => 'articleArticle.article_colli',
+		'filter'=>CHtml::activeTextField($model,'articleArticle_article_colli'),
+		'type' => 'raw',
+		'value' => 'CHtml::encode($data->articleArticle->article_colli)'
+	),
+	'textil_pair',
+	array(
+		'name' => 'textile1Textile.textile_number',
+		'filter'=>CHtml::activeTextField($model,'textiles1_textile_number'),
+		'type' => 'raw',
+		'value' => 'CHtml::encode($data->textile1Textile->textile_number)'
+	),
+	array(
+		'name' => 'textile1Textile.textile_name',
+		'filter'=>CHtml::activeTextField($model,'textiles1_textile_name'),
+		'type' => 'raw',
+		'value' => 'CHtml::encode($data->textile1Textile->textile_name)'
+	),
+	array(
+		'name' => 'shopping1Shopping.shopping_status',
+		'filter'=>CHtml::activeDropDownList($model,'shopping1Shopping_shopping_status', array(''=>'', 'w trakcie'=>'w trakcie','nowy'=>'nowy', 'wydrukowane'=>'wydrukowane', 'dostarczono'=>'dostarczono', 'częściowo'=>'częściowo', '0'=>'null')),
+		'type' => 'raw',
+		'value' => 'CHtml::encode(isset($data->shopping1Shopping->shopping_status)? $data->shopping1Shopping->shopping_status . " (" . $data->shopping1Shopping->shopping_number . "/" . $data->shopping1_shopping_id . ")" : "")'
+	),
+	array(
+		'name' => 'textile2Textile.textile_number',
+		'filter'=>CHtml::activeTextField($model,'textiles2_textile_number'),
+		'type' => 'raw',
+		'value' => 'CHtml::encode(isset($data->textile2Textile->textile_number)? $data->textile2Textile->textile_number : "")'
+	),
+	array(
+		'name' => 'textile2Textile.textile_name',
+		'filter'=>CHtml::activeTextField($model,'textiles2_textile_name'),
+		'type' => 'raw',
+		'value' => 'CHtml::encode(isset($data->textile2Textile->textile_name)? $data->textile2Textile->textile_name : "")'
+	),
+	array(
+		'name' => 'shopping2Shopping.shopping_status',
+		'filter'=>CHtml::activeDropDownList($model,'shopping2Shopping_shopping_status', array(''=>'', 'w trakcie'=>'w trakcie','nowy'=>'nowy', 'wydrukowane'=>'wydrukowane', 'dostarczono'=>'dostarczono', 'częściowo'=>'częściowo', '0'=>'null')),
+		'type' => 'raw',
+		'value' => 'CHtml::encode(isset($data->shopping2Shopping->shopping_status)? $data->shopping2Shopping->shopping_status . " (" . $data->shopping2Shopping->shopping_number . "/" . $data->shopping2_shopping_id . ")" : "")'
+	),
+	'printed_minilabel',
+	'printed_shipping_label',
+	'textile_prepared',
+	'article_planed',
+	array(
+		'name' => 'article_manufactured',
+		'type' => 'raw',
+		'value' => 'CHtml::encode(isset($data->article_manufactured)? $data->article_manufactured . "/" . ($data->article_amount*$data->articleArticle->article_colli) . " Coli (" . (100*$data->article_manufactured)/($data->article_amount*$data->articleArticle->article_colli) . "%)" : "0%")'
+	),
+	'article_prepared_to_export',
+	'article_exported',
+	'article_canceled',
+	'order_error',
+	array(
+		'class'=>'CButtonColumn',
+		'template'=>'{update}',
+	),
+	'order_add_date',
+	'order_storno_date',
+	'order_date',
+	'buyer_order_number',
+	'buyer_comments',
+	'order_reference',
+	array(
+		'name' => 'manufacturerManufacturer.manufacturer_name',
+		'filter'=>CHtml::activeTextField($model,'manufacturerManufacturer_manufacturer_name'),
+		'type' => 'raw',
+		'value' => 'CHtml::encode($data->manufacturerManufacturer->manufacturer_name)'
+	),
+	array(
+		'name' => 'brokerBroker.broker_name',
+		'filter'=>CHtml::activeTextField($model,'brokerBroker_broker_name'),
+		'type' => 'raw',
+		'value' => 'CHtml::encode($data->brokerBroker->broker_name)'
+	),
+	array(
+		'name' => 'buyerBuyer.buyer_name_1',
+		'filter'=>CHtml::activeTextField($model,'buyerBuyer_buyer_name_1'),
+		'type' => 'raw',
+		'value' => 'CHtml::encode($data->buyerBuyer->buyer_name_1)'
+	),
+	array(
+		'name' => 'legLeg.leg_type',
+		'filter'=>CHtml::activeTextField($model,'legLeg_leg_type'),
+		'type' => 'raw',
+		'value' => 'CHtml::encode($data->legLeg->leg_type)'
+	),
+	'textilpair_price_group',
+	array(
+		'name' => 'textile1Textile.textile_price_group',
+		'filter'=>CHtml::activeTextField($model,'textiles1_textile_price_groupe'),
+		'type' => 'raw',
+		'value' => 'CHtml::encode($data->textile1Textile->textile_price_group)'
+	),
+	array(
+		'name' => 'textile2Textile.textile_price_group',
+		'filter'=>CHtml::activeTextField($model,'textiles2_textile_price_groupe'),
+		'type' => 'raw',
+		'value' => 'CHtml::encode(isset($data->textile2Textile->textile_price_group)? $data->textile2Textile->textile_price_group : "")'
+	),
+	#'order_price',
+	#'order_total_price',
+);
+
+# wybranym osobą włączamy dodatkowe kolumny
+if (in_array(Yii::app()->user->name, array('asia', 'gosia', 'mara', 'mariola'))) {
+	array_push($columns, 'order_price', 'order_total_price');
+}
+
 $this->widget('ext.selgridview.SelGridView', array(
 	'id'=>'order-grid',
 	'dataProvider'=>$model->search(),
 	'selectableRows' => 2,
 	'filter'=>$model,
-	'columns'=>array(
-		array(
-				'id'=>'select',
-				'class' => 'CCheckBoxColumn',
-		),
-		'checked',
-		array(
-			'class'=>'CButtonColumn',
-			'template'=>'{update}',
-		),
-		'order_id',
-		'article_amount',
-		'order_number',
-		'order_term',
-		array(
-				'name' => 'articleArticle.article_number',
-				'filter'=>CHtml::activeTextField($model,'articleArticle_article_number'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->articleArticle->article_number)'
-		),
-		array(
-				'name' => 'articleArticle.model_name',
-				'filter'=>CHtml::activeTextField($model,'articleArticle_model_name'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->articleArticle->model_name)'
-		),
-		array(
-				'name' => 'articleArticle.model_type',
-				'filter'=>CHtml::activeTextField($model,'articleArticle_model_type'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->articleArticle->model_type)'
-		),
-		array(
-				'name' => 'articleArticle.article_colli',
-				'filter'=>CHtml::activeTextField($model,'articleArticle_article_colli'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->articleArticle->article_colli)'
-		),
-		'textil_pair',
-		array(
-				'name' => 'textile1Textile.textile_number',
-				'filter'=>CHtml::activeTextField($model,'textiles1_textile_number'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->textile1Textile->textile_number)'
-		),
-		array(
-				'name' => 'textile1Textile.textile_name',
-				'filter'=>CHtml::activeTextField($model,'textiles1_textile_name'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->textile1Textile->textile_name)'
-		),
-		array(
-				'name' => 'shopping1Shopping.shopping_status',
-				'filter'=>CHtml::activeDropDownList($model,'shopping1Shopping_shopping_status', array(''=>'', 'w trakcie'=>'w trakcie','nowy'=>'nowy', 'wydrukowane'=>'wydrukowane', 'dostarczono'=>'dostarczono', 'częściowo'=>'częściowo', '0'=>'null')),
-				'type' => 'raw',
-				'value' => 'CHtml::encode(isset($data->shopping1Shopping->shopping_status)? $data->shopping1Shopping->shopping_status . " (" . $data->shopping1Shopping->shopping_number . "/" . $data->shopping1_shopping_id . ")" : "")'
-		),
-		array(
-				'name' => 'textile2Textile.textile_number',
-				'filter'=>CHtml::activeTextField($model,'textiles2_textile_number'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode(isset($data->textile2Textile->textile_number)? $data->textile2Textile->textile_number : "")'
-		),
-		array(
-				'name' => 'textile2Textile.textile_name',
-				'filter'=>CHtml::activeTextField($model,'textiles2_textile_name'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode(isset($data->textile2Textile->textile_name)? $data->textile2Textile->textile_name : "")'
-		),
-		array(
-				'name' => 'shopping2Shopping.shopping_status',
-				'filter'=>CHtml::activeDropDownList($model,'shopping2Shopping_shopping_status', array(''=>'', 'w trakcie'=>'w trakcie','nowy'=>'nowy', 'wydrukowane'=>'wydrukowane', 'dostarczono'=>'dostarczono', 'częściowo'=>'częściowo', '0'=>'null')),
-				'type' => 'raw',
-				'value' => 'CHtml::encode(isset($data->shopping2Shopping->shopping_status)? $data->shopping2Shopping->shopping_status . " (" . $data->shopping2Shopping->shopping_number . "/" . $data->shopping2_shopping_id . ")" : "")'
-		),
-		'printed_minilabel',
-		'printed_shipping_label',
-		'textile_prepared',
-		'article_planed',
-		array(
-				'name' => 'article_manufactured',
-				'type' => 'raw',
-				'value' => 'CHtml::encode(isset($data->article_manufactured)? $data->article_manufactured . "/" . ($data->article_amount*$data->articleArticle->article_colli) . " Coli (" . (100*$data->article_manufactured)/($data->article_amount*$data->articleArticle->article_colli) . "%)" : "0%")'
-		),
-		'article_prepared_to_export',
-		'article_exported',
-		'article_canceled',
-		'order_error',
-		array(
-				'class'=>'CButtonColumn',
-				'template'=>'{update}',
-		),
-		'order_add_date',
-		'order_storno_date',
-		'order_date',
-		'buyer_order_number',
-		'buyer_comments',
-		'order_reference',
-		array(
-				'name' => 'manufacturerManufacturer.manufacturer_name',
-				'filter'=>CHtml::activeTextField($model,'manufacturerManufacturer_manufacturer_name'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->manufacturerManufacturer->manufacturer_name)'
-		),
-		array(
-				'name' => 'brokerBroker.broker_name',
-				'filter'=>CHtml::activeTextField($model,'brokerBroker_broker_name'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->brokerBroker->broker_name)'
-		),
-		array(
-				'name' => 'buyerBuyer.buyer_name_1',
-				'filter'=>CHtml::activeTextField($model,'buyerBuyer_buyer_name_1'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->buyerBuyer->buyer_name_1)'
-		),
-		array(
-				'name' => 'legLeg.leg_type',
-				'filter'=>CHtml::activeTextField($model,'legLeg_leg_type'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->legLeg->leg_type)'
-		),
-		'textilpair_price_group',
-		array(
-				'name' => 'textile1Textile.textile_price_group',
-				'filter'=>CHtml::activeTextField($model,'textiles1_textile_price_groupe'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->textile1Textile->textile_price_group)'
-		),
-		array(
-				'name' => 'textile2Textile.textile_price_group',
-				'filter'=>CHtml::activeTextField($model,'textiles2_textile_price_groupe'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode(isset($data->textile2Textile->textile_price_group)? $data->textile2Textile->textile_price_group : "")'
-		),
-		#'order_price',
-		#'order_total_price',
-	),
+	'columns'=>$columns
 )); 
 echo CHtml::submitButton('Drukuj etykiety') . "<br>";
 echo CHtml::submitButton('Drukuj listę załadunkową') . "<br>";
@@ -306,6 +315,19 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
 			event.preventDefault();
 		});
+		$("li#print_plan3 a").click(function(event) {
+			//zmieniamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/printPlan1", array('act'=>'plan3'))?>");
+			console.log($("form#check_form").attr("action"));
+			//zatwierdzenie formularza
+			$("form#check_form").attr("target","_blank")
+			$("form#check_form").submit();
+			$("form#check_form").attr("target","_self")
+			//przywracamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
+			event.preventDefault();
+		});
+		
 
 		//wysyłka za pomocą linku i dodatkowej informacji w GET
 		$("li#set_check a").click(function(event) {

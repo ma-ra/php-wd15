@@ -167,6 +167,11 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->label($model,'order_storno_date'); ?>
+		<?php echo $form->textField($model,'order_storno_date'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->label($model,'checked'); ?>
 		<?php echo $form->textField($model,'checked'); ?>
 	</div>

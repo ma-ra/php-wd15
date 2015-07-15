@@ -51,6 +51,7 @@ $this->menu=array(
 		'article_canceled',
 		'order_error',
 		'order_add_date',
+		'order_storno_date',
 		'checked',
 	),
 )); ?>

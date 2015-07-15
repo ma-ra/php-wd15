@@ -198,6 +198,12 @@
 		<?php echo $form->textField($model,'order_add_date'); ?>
 		<?php echo $form->error($model,'order_add_date'); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'order_storno_date'); ?>
+		<?php echo $form->textField($model,'order_storno_date'); ?>
+		<?php echo $form->error($model,'order_storno_date'); ?>
+	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'checked'); ?>

@@ -28,12 +28,13 @@ class OrderController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('admin','checked', 'manufactured', 'summary', 'textileSummary','print','update','view', 'printPlan1'),
-				'users'=>array('mariola','pawel'),
+				'actions'=>array('index','view', 'update', 'admin', 'checked', 'manufactured', 
+						         'prepared', 'canceled', 'summary', 'textileSummary', 'print', 'printPlan1'),
+				'users'=>array('asia', 'gosia', 'mara', 'mariola', 'pawel'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-					'actions'=>array('prepared'),
-					'users'=>array('mariola'),
+					'actions'=>array('create', 'admin2', 'delete', 'upload', 'printPlan2'),
+					'users'=>array('mara','asia'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
 					'actions'=>array('mobileScaned'),
@@ -41,13 +42,10 @@ class OrderController extends Controller
 					# cała aplikacja i tak jest chroniona hasłem w htaccess, co działa z aplikacją mobilną
 					'users'=>array('*'),
 			),
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-					'actions'=>array('index','view', 'create', 'update', 'admin', 'delete','print', 'mobileScaned', 'checked', 'manufactured', 'prepared', 'canceled', 'upload', 'summary', 'textileSummary', 'printPlan1', 'printPlan2'),
-					'users'=>array('mara','asia'),
-			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
 			),
+			# w view->admin kontrlouję widocznośc kloumny z cenami na podstawie loginu
 		);
 	}
 
@@ -1073,10 +1071,19 @@ class OrderController extends Controller
 			'order'=>'order_add_date DESC',
 			'limit'=>1
 		))->order_add_date;
-		if (isset($_POST["select"])) {
-			$pdf->title=isset($title)? "Zamówienie - aktualizacja z dnia: " . $title . " (wybrane)" : "Zamówienie (wybrane)" ;
+		$pdf->date=date('Y-m-d H:i:s');
+		if (isset($_GET['act']) && $_GET['act'] == 'plan3') {
+			if (isset($_POST["select"])) {
+				$pdf->title=isset($title)? "Plan " .$pdf->date . " - aktualizacja zamówień z dnia: " . $title : "Plan" ;
+			} else {
+				throw new CHttpException(415,'Prawdopodobnie nie zaznaczono żadnych zamówień.');
+			}
 		} else {
-			$pdf->title=isset($title)? "Zamówienie - aktualizacja z dnia: " . $title . " (wszystkie)": "Zamówienie (wszystkie)" ;
+			if (isset($_POST["select"])) {
+				$pdf->title=isset($title)? "Zamówienia " .$pdf->date . "  - aktualizacja zamówień z dnia: " . $title . " (wybrane)" : "Zamówienie (wybrane)" ;
+			} else {
+				$pdf->title=isset($title)? "Zamówienia " .$pdf->date . "  - aktualizacja zamówień z dnia: " . $title . " (wszystkie)": "Zamówienie (wszystkie)" ;
+			}
 		}
 		
 		# ustalanie danych, ich sortowania oraz sposobu prezentacji
@@ -1109,7 +1116,7 @@ class OrderController extends Controller
 		$pdf->SetVersion();
 		$pdf->AddPage();
 		
-		# pętla po posortowanych zamówieniach i dodawanie etykiet na wydruk
+		# pętla po posortowanych zamówieniach i dodawanie wierszy na wydruk
 		$amountSum=0;
 		$totalPriceSum=0;
 		$count=0;
@@ -1132,6 +1139,12 @@ class OrderController extends Controller
 			
 			# drukujemy wiersz
 			$pdf->DrawRow();
+			
+			# w przypadku druku planu (plan3) zapisujemy datę druku w bazie
+			if (isset($_GET['act']) && $_GET['act'] == 'plan3') {
+				$Order->article_planed=$pdf->date;
+				$Order->save();
+			}
 		}
 		# drukujemy podsumowanie
 		$pdf->article_amount=$amountSum;
@@ -1173,10 +1186,11 @@ class OrderController extends Controller
 			'order'=>'order_add_date DESC',
 			'limit'=>1
 		))->order_add_date;
+		$pdf->date=date('Y-m-d H:i:s');
 		if (isset($_POST["select"])) {
-			$pdf->title=isset($title)? "Zamówienie - aktualizacja z dnia: " . $title . " (wybrane)" : "Zamówienie (wybrane)" ;
+			$pdf->title=isset($title)? "Zamówienia " .$pdf->date . "  - aktualizacja zamówień z dnia: " . $title . " (wybrane)" : "Zamówienie (wybrane)" ;
 		} else {
-			$pdf->title=isset($title)? "Zamówienie - aktualizacja z dnia: " . $title . " (wszystkie)": "Zamówienie (wszystkie)" ;
+			$pdf->title=isset($title)? "Zamówienia " .$pdf->date . "  - aktualizacja zamówień z dnia: " . $title . " (wszystkie)": "Zamówienie (wszystkie)" ;
 		}
 		
 		# ustalanie danych, ich sortowania oraz sposobu prezentacji
