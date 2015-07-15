@@ -156,6 +156,12 @@
 		<?php echo $form->textField($model,'textile_prepared'); ?>
 		<?php echo $form->error($model,'textile_prepared'); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'textile_for_reuse'); ?>
+		<?php echo $form->textField($model,'textile_for_reuse'); ?>
+		<?php echo $form->error($model,'textile_for_reuse'); ?>
+	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'article_planed'); ?>

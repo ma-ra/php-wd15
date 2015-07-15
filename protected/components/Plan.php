@@ -4,6 +4,7 @@ Yii::import('application.extensions.tcpdf.*');
 require_once('tcpdf/tcpdf.php');
 
 class Plan extends TCPDF {
+	public $order_id;
 	public $order_number;
 	public $article_number;
 	public $model_name;
@@ -18,6 +19,7 @@ class Plan extends TCPDF {
 	public $order_total_price;
 	public $order_add_date;
 	public $pattern_order_add_date;
+	public $for_reuse;
 	
 	public $title;
 	public $date;
@@ -193,15 +195,30 @@ class Plan extends TCPDF {
 		};
 				
 		## drukujemy
-		$fill=0;
 		foreach ($row as $index => $field) {
+			$fill=0;
+			$position='C';
 			if ($this->order_add_date == $this->pattern_order_add_date && $index == 0) {
 				$fill=1;
-			} else {
-				$fill=0;
+			} 
+			if ($this->for_reuse != 0 && $index == 1) {
+				$row[$index]=$this->for_reuse;
+				$position='R';
+			}
+			if ($this->for_reuse != 0 && $index == 2) {
+				$fill=1;
+			}
+			if ($this->for_reuse != 0 && $index == 3) {
+				$fill=1;
+			}
+			if ($this->for_reuse != 0 && $index == 7) {
+				$fill=1;
+			}
+			if ($this->for_reuse != 0 && $index == 8) {
+				$fill=1;
 			}
 			// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
-			$this->MultiCell($w[$index], $textHeight, $row[$index], 1, 'C', $fill, 0, '', '', true, 1);
+			$this->MultiCell($w[$index], $textHeight, $row[$index], 1, $position, $fill, 0, '', '', true, 1);
 		}
 		$this->Ln();
 		$this->start=$this->GetY();
@@ -235,7 +252,7 @@ class Plan extends TCPDF {
 		} else {
 			$row=array(
 				$this->article_number,
-				"",
+				$this->for_reuse,
 				"",
 				"",
 				"",

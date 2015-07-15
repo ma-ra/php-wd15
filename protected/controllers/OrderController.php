@@ -29,7 +29,7 @@ class OrderController extends Controller
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
 				'actions'=>array('index','view', 'update', 'admin', 'checked', 'manufactured', 
-						         'prepared', 'canceled', 'summary', 'textileSummary', 'print', 'printPlan1'),
+						         'prepared', 'canceled', 'forReuse', 'summary', 'textileSummary', 'print', 'printPlan1'),
 				'users'=>array('asia', 'gosia', 'mara', 'mariola', 'pawel'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
@@ -542,6 +542,23 @@ class OrderController extends Controller
 					$Order->article_canceled=1;
 				} else {
 					$Order->article_canceled=0;
+				}
+				$Order->save();
+			}
+		} else {
+			print_r($_REQUEST);
+		}
+	}
+	
+	public function actionForReuse()
+	{
+		if (isset($_POST["select"])) {
+			foreach ($_POST["select"] as $id => $checked) {
+				$Order=$this->loadModel($checked);
+				if ($Order->textile_for_reuse==0) {
+					$Order->textile_for_reuse=1;
+				} else {
+					$Order->textile_for_reuse=0;
 				}
 				$Order->save();
 			}
@@ -1064,7 +1081,16 @@ class OrderController extends Controller
 		//$pdf->SetFont("DejaVuSans", "", 12);
 		$pdf->setCellMargins(0, 0, 0, 0);
 		$pdf->setCellPaddings(1, 1, 1, 1);
-
+		
+		# ustalenie materiałów do ponownego wykożystania
+		$orders_for_reuse=Order::model()->findAll(array(
+			'order'=>'order_number',
+			'condition'=>'textile_for_reuse = :textile_for_reuse',
+			'params'=>array(':textile_for_reuse'=>1),
+			'with'=>array('articleArticle', 'textile1Textile', 'textile2Textile'),
+			'together'=>true
+		));
+		
 		# ustalenie tytułu
 		$title=Order::model()->find(array(
 			'select'=>'order_add_date',
@@ -1120,7 +1146,9 @@ class OrderController extends Controller
 		$amountSum=0;
 		$totalPriceSum=0;
 		$count=0;
+		$forReuseCount=0;
 		foreach ($Orders as $id => $Order) {
+			$pdf->order_id=$Orders[$id]->order_id;
 			$pdf->order_number=$Orders[$id]->order_number;
 			$pdf->article_number=$Orders[$id]->articleArticle->article_number;
 			$pdf->model_name=$Orders[$id]->articleArticle->model_name;
@@ -1134,8 +1162,26 @@ class OrderController extends Controller
 			$pdf->order_price=isset($Orders[$id]->order_price)? $Orders[$id]->order_price : "-";
 			$pdf->order_total_price=isset($Orders[$id]->order_total_price)? $Orders[$id]->order_total_price : "-"; $totalPriceSum+=$pdf->order_total_price;
 			$pdf->order_add_date=$Orders[$id]->order_add_date;
+			
 			$pdf->pattern_order_add_date=$title;
 			$count+=1;
+			
+			# weryfikacja czy mamy wykrojony materiał do ponownego użycia; jak tak, to odpowiedniio oznacz na planie
+			$pdf->for_reuse=0;
+			foreach ($orders_for_reuse as $order_for_reuse) {
+				$for_reuse_textile2=isset($order_for_reuse->textile2Textile->textile_number) ? $order_for_reuse->textile2Textile->textile_number : null;
+				$testile2=isset($Orders[$id]->textile2Textile->textile_number) ? $Orders[$id]->textile2Textile->textile_number : null;
+				
+				if ($order_for_reuse->articleArticle->article_number == $Orders[$id]->articleArticle->article_number &&
+					$order_for_reuse->articleArticle->model_name == $Orders[$id]->articleArticle->model_name &&
+					$order_for_reuse->textile1Textile->textile_number == $Orders[$id]->textile1Textile->textile_number &&
+					$for_reuse_textile2 == $testile2)
+				{	
+					$pdf->for_reuse=$order_for_reuse->order_number;
+					$forReuseCount+=1;
+					continue;
+				}
+			}
 			
 			# drukujemy wiersz
 			$pdf->DrawRow();
@@ -1150,6 +1196,7 @@ class OrderController extends Controller
 		$pdf->article_amount=$amountSum;
 		$pdf->order_total_price=$totalPriceSum;
 		$pdf->article_number=$count;
+		$pdf->for_reuse=$forReuseCount;
 		$pdf->DrawSummary();
 		
 			

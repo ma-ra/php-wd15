@@ -44,6 +44,7 @@ $this->menu=array(
 		'printed_minilabel',
 		'printed_shipping_label',
 		'textile_prepared',
+		'textile_for_reuse',
 		'article_planed',
 		'article_manufactured',
 		'article_prepared_to_export',
