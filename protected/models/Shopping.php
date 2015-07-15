@@ -152,7 +152,6 @@ class Shopping extends CActiveRecord
 	
 	public function beforeValidate() {
 		$this->shopping_type='textil';
-		$this->creation_time=date('Y-m-d H:i:s');
 			
 		return parent::beforeValidate();
 	}

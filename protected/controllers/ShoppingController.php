@@ -124,6 +124,7 @@ class ShoppingController extends Controller
 					
 					# nadajemy status
 					$models[$key]->shopping_status="nowy";
+					$models[$key]->creation_time=date('Y-m-d H:i:s');
 					
 					$models[$key]->shopping_number=$shoppingNumber[$supplierId];
 					# group by zagregował id (concat), teraz je zamieniamy na tablicę
@@ -323,6 +324,7 @@ class ShoppingController extends Controller
 				}
 				if ($sum/count($shopping) == $shopping[0]->shopping_number) {
 					$shopping_number=$shopping[0]->shopping_number;
+					$supplier_name=$shopping[0]->textileTextile->supplierSupplier->supplier_name;
 					$shopping_lang=$shopping[0]->textileTextile->supplierSupplier->supplier_lang;
 					
 					# parametry PDF
@@ -340,6 +342,7 @@ class ShoppingController extends Controller
 					$pdf->SetMargins(5,5,5,true);
 					$pdf->SetAutoPageBreak(true,0);
 					
+					$pdf->creation_time=$shopping[0]->creation_time;
 					$pdf->AddPage();
 					$pdf->SetFont("FreeSans", "", 12);
 					//$pdf->SetFont("DejaVuSans", "", 12);
@@ -366,11 +369,11 @@ EOT;
 					$pdf->SetY($pdf->GetY()+5);
 					
 					if ($shopping_lang == "pl") {
-						$txt="Zamówienie nr: $shopping_number";
+						$txt="Zamówienie nr: $shopping_number ($supplier_name)";
 					} else if ($shopping_lang == "en") {
-						$txt="Order No: $shopping_number";
+						$txt="Order No: $shopping_number ($supplier_name)";
 					} else {
-						$txt="Bestellung: $shopping_number";
+						$txt="Bestellung: $shopping_number ($supplier_name)";
 					}
 					$pdf->SetFont("FreeSans", "B", 13);
 					// Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M')
@@ -475,8 +478,10 @@ EOT;
 					$pdf->Output("Zam. mat.: $shopping_number " . date('Y-m-d') . ".pdf", "I");
 					
 					# oznaczamy pozycje jako wydrukowane
+					$date=date('Y-m-d H:i:s');
 					foreach ($shopping as $shopping_position) {
 						$shopping_position->shopping_status="wydrukowane";
+						$shopping_position->shopping_printed=$date;
 						$shopping_position->save();
 					}
 				} else {
