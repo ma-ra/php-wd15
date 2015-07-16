@@ -33,7 +33,7 @@ class OrderController extends Controller
 				'users'=>array('asia', 'gosia', 'mara', 'mariola', 'pawel'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-					'actions'=>array('create', 'admin2', 'delete', 'upload', 'printPlan2'),
+					'actions'=>array('create', 'admin2', 'delete', 'upload', 'printPlan2', 'printPlan4'),
 					'users'=>array('mara','asia'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
@@ -1226,7 +1226,16 @@ class OrderController extends Controller
 		//$pdf->SetFont("DejaVuSans", "", 12);
 		$pdf->setCellMargins(0, 0, 0, 0);
 		$pdf->setCellPaddings(1, 1, 1, 1);
-
+		
+		# ustalenie materiałów do ponownego wykożystania
+		$orders_for_reuse=Order::model()->findAll(array(
+			'order'=>'order_number',
+			'condition'=>'textile_for_reuse = :textile_for_reuse',
+			'params'=>array(':textile_for_reuse'=>1),
+			'with'=>array('articleArticle', 'textile1Textile', 'textile2Textile'),
+			'together'=>true
+		));
+		
 		# ustalenie tytułu
 		$title=Order::model()->find(array(
 			'select'=>'order_add_date',
@@ -1234,10 +1243,18 @@ class OrderController extends Controller
 			'limit'=>1
 		))->order_add_date;
 		$pdf->date=date('Y-m-d H:i:s');
-		if (isset($_POST["select"])) {
-			$pdf->title=isset($title)? "Zamówienia " .$pdf->date . "  - aktualizacja zamówień z dnia: " . $title . " (wybrane)" : "Zamówienie (wybrane)" ;
+		if (isset($_GET['act']) && $_GET['act'] == 'plan3') {
+			if (isset($_POST["select"])) {
+				$pdf->title=isset($title)? "Plan " .$pdf->date . " - aktualizacja zamówień z dnia: " . $title : "Plan" ;
+			} else {
+				throw new CHttpException(415,'Prawdopodobnie nie zaznaczono żadnych zamówień.');
+			}
 		} else {
-			$pdf->title=isset($title)? "Zamówienia " .$pdf->date . "  - aktualizacja zamówień z dnia: " . $title . " (wszystkie)": "Zamówienie (wszystkie)" ;
+			if (isset($_POST["select"])) {
+				$pdf->title=isset($title)? "Zamówienia " .$pdf->date . "  - aktualizacja zamówień z dnia: " . $title . " (wybrane)" : "Zamówienie (wybrane)" ;
+			} else {
+				$pdf->title=isset($title)? "Zamówienia " .$pdf->date . "  - aktualizacja zamówień z dnia: " . $title . " (wszystkie)": "Zamówienie (wszystkie)" ;
+			}
 		}
 		
 		# ustalanie danych, ich sortowania oraz sposobu prezentacji
@@ -1251,7 +1268,7 @@ class OrderController extends Controller
 			# kryteria wyszukiwania
 			$criteria=new CDbCriteria;
 			$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
-			$criteria->order='order_term ASC, order_number, articleArticle.article_number ASC';
+			$criteria->order='order_term ASC, articleArticle.article_number ASC, order_number';
 			$pdf->version="plan3";
 			$Orders=Order::model()->findAllByPk($pks, $criteria);
 		} else {
@@ -1259,7 +1276,7 @@ class OrderController extends Controller
 			$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
 			$criteria->condition=('article_exported is :article_exported AND article_canceled = :article_canceled');
 			$criteria->params=array(':article_exported'=>null, 'article_canceled'=>0);
-			$criteria->order='order_term ASC, order_number, articleArticle.article_number ASC';
+			$criteria->order='order_term ASC, articleArticle.article_number ASC, order_number';
 			$pdf->version="plan3";
 			$Orders=Order::model()->findAll($criteria);
 		}
@@ -1270,11 +1287,13 @@ class OrderController extends Controller
 		$pdf->SetVersion();
 		$pdf->AddPage();
 		
-		# pętla po posortowanych zamówieniach i dodawanie etykiet na wydruk
+		# pętla po posortowanych zamówieniach i dodawanie wierszy na wydruk
 		$amountSum=0;
 		$totalPriceSum=0;
 		$count=0;
+		$forReuseCount=0;
 		foreach ($Orders as $id => $Order) {
+			$pdf->order_id=$Orders[$id]->order_id;
 			$pdf->order_number=$Orders[$id]->order_number;
 			$pdf->article_number=$Orders[$id]->articleArticle->article_number;
 			$pdf->model_name=$Orders[$id]->articleArticle->model_name;
@@ -1288,25 +1307,213 @@ class OrderController extends Controller
 			$pdf->order_price=isset($Orders[$id]->order_price)? $Orders[$id]->order_price : "-";
 			$pdf->order_total_price=isset($Orders[$id]->order_total_price)? $Orders[$id]->order_total_price : "-"; $totalPriceSum+=$pdf->order_total_price;
 			$pdf->order_add_date=$Orders[$id]->order_add_date;
+			
 			$pdf->pattern_order_add_date=$title;
 			$count+=1;
 			
+			# weryfikacja czy mamy wykrojony materiał do ponownego użycia; jak tak, to odpowiedniio oznacz na planie
+			$pdf->for_reuse=0;
+			foreach ($orders_for_reuse as $order_for_reuse) {
+				$for_reuse_textile2=isset($order_for_reuse->textile2Textile->textile_number) ? $order_for_reuse->textile2Textile->textile_number : null;
+				$testile2=isset($Orders[$id]->textile2Textile->textile_number) ? $Orders[$id]->textile2Textile->textile_number : null;
+				
+				if ($order_for_reuse->articleArticle->article_number == $Orders[$id]->articleArticle->article_number &&
+					$order_for_reuse->articleArticle->model_name == $Orders[$id]->articleArticle->model_name &&
+					$order_for_reuse->textile1Textile->textile_number == $Orders[$id]->textile1Textile->textile_number &&
+					$for_reuse_textile2 == $testile2)
+				{	
+					$pdf->for_reuse=$order_for_reuse->order_number;
+					$forReuseCount+=1;
+					continue;
+				}
+			}
+			
 			# drukujemy wiersz
 			$pdf->DrawRow();
+			
+			# w przypadku druku planu (plan3) zapisujemy datę druku w bazie
+			if (isset($_GET['act']) && $_GET['act'] == 'plan3') {
+				$Order->article_planed=$pdf->date;
+				$Order->save();
+			}
 		}
 		# drukujemy podsumowanie
 		$pdf->article_amount=$amountSum;
 		$pdf->order_total_price=$totalPriceSum;
 		$pdf->article_number=$count;
+		$pdf->for_reuse=$forReuseCount;
 		$pdf->DrawSummary();
 		
 			
 		#Drukujemy - w sensie tworzymy plik PDF
 		#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
-		$pdf->Output("Plan" . date('Y-m-d') . ".pdf", "I");
+		$pdf->Output("Plan" . date('Y-m-d') . ".pdf", "I");	}
+	
+	public function actionPrintPlan4()
+	{
+		# ustalanie danych wejściowych, wraz z wstępnym sortowaniem
+		if (isset($_POST["select"])) {
+			$pks=array();
+			foreach ($_POST["select"] as $id => $checked) {
+				array_push($pks, $checked);
+			}
+				
+			$criteria=new CDbCriteria;
+			$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
+			$criteria->order='order_term ASC, order_number ASC, articleArticle.article_number ASC';
+			$orders=Order::model()->findAllByPk($pks, $criteria);
+		} else {
+			$criteria=new CDbCriteria;
+			$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
+			$criteria->condition=('article_exported is :article_exported AND article_canceled = :article_canceled');
+			$criteria->params=array(':article_exported'=>null, 'article_canceled'=>0);
+			$criteria->order='order_term ASC, order_number ASC, articleArticle.article_number ASC';
+			$orders=Order::model()->findAll($criteria);
+		}
+		
+		# ustalenie materiałów do ponownego wykożystania
+		$ordersForReuse=Order::model()->findAll(array(
+			'together'=>true,
+			'with'=>array('articleArticle', 'textile1Textile', 'textile2Textile'),
+			'condition'=>'textile_for_reuse = :textile_for_reuse',
+			'params'=>array(':textile_for_reuse'=>1),
+			'order'=>'order_number'
+		));
+		
+		# ustalenie daty wgrania najnowszych zamówień
+		$latestOrderAddDate=Order::model()->find(array(
+			'select'=>'order_add_date',
+			'order'=>'order_add_date DESC',
+			'limit'=>1
+		))->order_add_date;
+		
+		#####
+		# Wyszukanie dopasowań
+		#####
+		$ordersInfo=array();
+		$ordersForReuseInfo=array();
+		foreach ($orders as $order) {
+			//$order->order_id;
+			//$order->order_number;
+			//$order->articleArticle->article_number;
+			$textile1Number=isset($order->textile1Textile->textile_number) ? $order->textile1Textile->textile_number : null;
+			$textile2Number=isset($order->textile2Textile->textile_number) ? $order->textile2Textile->textile_number : null;
+			
+			foreach ($ordersForReuse as $orderForReuse) {
+				# dostępne pola
+				//$orderForReuse->order_number;
+				//$orderForReuse->articleArticle->article_number;
+				$textile1ForReuseNumber=isset($orderForReuse->textile1Textile->textile_number) ? $orderForReuse->textile1Textile->textile_number : null;
+				$textile2ForReuseNumber=isset($orderForReuse->textile2Textile->textile_number) ? $orderForReuse->textile2Textile->textile_number : null;
+				
+				# inicjalizujemy tablice na informacje
+				if (empty($ordersInfo[$order->order_id]["one"])) $ordersInfo[$order->order_id]["one"]=array();
+				if (empty($ordersInfo[$order->order_id]["two"])) $ordersInfo[$order->order_id]["two"]=array();
+				if (empty($ordersForReuseInfo[$orderForReuse->order_id]["both"])) $ordersForReuseInfo[$orderForReuse->order_id]["both"]=array();
+				if (empty($ordersForReuseInfo[$orderForReuse->order_id]["first"])) $ordersForReuseInfo[$orderForReuse->order_id]["first"]=array();
+				if (empty($ordersForReuseInfo[$orderForReuse->order_id]["second"])) $ordersForReuseInfo[$orderForReuse->order_id]["second"]=array();
+				
+				# wyszukujemy dopasowania do obydwuch materiałów
+				if ($order->articleArticle->article_number == $orderForReuse->articleArticle->article_number &&
+					$textile1Number == $textile1ForReuseNumber && $textile2Number == $textile2ForReuseNumber) 
+				{
+					# dla $order zapisz wszystkie id $orderForReuse
+					array_push($ordersInfo[$order->order_id]["two"], $orderForReuse->order_id . " " . $orderForReuse->order_number . " " . $textile2Number . " " . $textile2ForReuseNumber);
+					# dla $orderForReuse zapisz wszystkie id $order
+					array_push($ordersForReuseInfo[$orderForReuse->order_id]["both"], $order->order_number."(".$textile1Number." ".$textile2Number.")");
+				}
+				
+				# wyszukujemy dopasowania do pierwszego materiału
+				if ($order->articleArticle->article_number == $orderForReuse->articleArticle->article_number &&
+					$textile1Number == $textile1ForReuseNumber) 
+				{
+					# dla $order zapisz wszystkie id $orderForReuse
+					array_push($ordersInfo[$order->order_id]["one"], $orderForReuse->order_id . " " . $orderForReuse->order_number . " " . $textile1ForReuseNumber . " " . $textile2ForReuseNumber);
+					# dla $orderForReuse zapisz wszystkie id $order
+					array_push($ordersForReuseInfo[$orderForReuse->order_id]["first"], $order->order_number."(".$textile1Number." ".$textile2Number.")");
+				}
+				
+				# wyszukujemy dopasowania do drugiego materiału
+				if ($order->articleArticle->article_number == $orderForReuse->articleArticle->article_number &&
+				$textile2Number != null && $textile2ForReuseNumber != null && $textile2Number == $textile2ForReuseNumber)
+				{
+					# dla $order zapisz wszystkie id $orderForReuse
+					array_push($ordersInfo[$order->order_id]["one"], $orderForReuse->order_id . " " . $orderForReuse->order_number . " " . $textile1ForReuseNumber . " " . $textile2ForReuseNumber);
+					# dla $orderForReuse zapisz wszystkie id $order
+					array_push($ordersForReuseInfo[$orderForReuse->order_id]["second"], $order->order_number."(".$textile1Number." ".$textile2Number.")");
+				}
+				
+			}
+		}
+		#####
+		# Pokaż najlepsze dopasowania na osobnej liście
+		#####
+		echo "<table border=1>\n";
+		echo "<tr><td>model</td><td>typ</td><td>nr. modelu</td><td>do uzycia</td><td>obydwa</td><td>pierwszy</td><td>drugi</td>";
+		
+		foreach ($ordersForReuse as $orderForReuse) {
+			# dostępne pola
+			//$orderForReuse->order_number;
+			//$orderForReuse->articleArticle->article_number;
+			$textile1ForReuseNumber=isset($orderForReuse->textile1Textile->textile_number) ? $orderForReuse->textile1Textile->textile_number : null;
+			$textile2ForReuseNumber=isset($orderForReuse->textile2Textile->textile_number) ? $orderForReuse->textile2Textile->textile_number : null;
+			
+			# zamieniamy wartości w tablicy na ładny ciąg typu string
+			$both=implode($ordersForReuseInfo[$orderForReuse->order_id]["both"],", <br>");
+			# przed zamianą usówamy elementy które występiły w tablicy/zmiennej "both"
+			$first=implode(array_diff($ordersForReuseInfo[$orderForReuse->order_id]["first"],$ordersForReuseInfo[$orderForReuse->order_id]["both"]),", <br>");
+			$second=implode(array_diff($ordersForReuseInfo[$orderForReuse->order_id]["second"],$ordersForReuseInfo[$orderForReuse->order_id]["both"]),", <br>");
+			
+			echo "<tr>".
+				 "<td>".$orderForReuse->articleArticle->model_name."</td>".
+				 "<td>".$orderForReuse->articleArticle->model_type."</td>".
+				 "<td>".$orderForReuse->articleArticle->article_number."</td>".
+				 "<td>".$orderForReuse->order_number."<br>(".$textile1ForReuseNumber." ".$textile2ForReuseNumber.")</td>".
+				 "<td>".$both."</td>".
+				 "<td>".$first."</td>".
+				 "<td>".$second."</td></tr>";
+		}
+		echo "</table>\n";
+		
+		#####
+		# Pokaż najlepsze dopasowania na planie
+		#####
+		/* foreach ($orders as $order) {
+			//$order->order_id;
+			//$order->order_number;
+			//$order->articleArticle->article_number;
+			$textile1Number=isset($order->textile1Textile->textile_number) ? $order->textile1Textile->textile_number : null;
+			$textile2Number=isset($order->textile2Textile->textile_number) ? $order->textile2Textile->textile_number : null;
+			
+			echo "checked: " . $order->order_id . " " .  $order->order_number . " " . $textile1Number . " " . $textile2Number . "\n";
+			
+			# podaj dopasowania podwójne
+			$matched=0;
+			foreach ($ordersInfo[$order->order_id]["two"] as $matchOrder) {
+				echo "########## match (two): " . $matchOrder . "\n";
+				$matched+=1;
+			}
+			
+			# podaj dopasowania pojedyńcze (complett)
+			if ($matched == 0) {
+				foreach ($ordersInfo[$order->order_id]["one"] as $matchOrder) {
+					# tylko, jeżeli obydwa materiały udało się gdzieś dopasować
+					if (!empty($ordersForReuseInfo[$order->order_id]["first"]) && !empty($ordersForReuseInfo[$order->order_id]["second"])) {
+						echo "########## match (one - complett): " . $matchOrder . "\n";
+					}
+				}
+			}
+			
+			# podaj dopasowania pojedyńcze (partial)
+			if ($matched == 0) {
+				foreach ($ordersInfo[$order->order_id]["one"] as $matchOrder) {
+					echo "########## match (one - partial): " . $matchOrder . "\n";
+				}
+			}
+			
+		} */
 	}
 	
-
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
