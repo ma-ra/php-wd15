@@ -158,12 +158,6 @@
 	</div>
 	
 	<div class="row">
-		<?php echo $form->labelEx($model,'textile_for_reuse'); ?>
-		<?php echo $form->textField($model,'textile_for_reuse'); ?>
-		<?php echo $form->error($model,'textile_for_reuse'); ?>
-	</div>
-
-	<div class="row">
 		<?php echo $form->labelEx($model,'article_planed'); ?>
 		<?php echo $form->textField($model,'article_planed'); ?>
 		<?php echo $form->error($model,'article_planed'); ?>

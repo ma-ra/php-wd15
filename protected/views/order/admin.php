@@ -22,10 +22,10 @@ $this->menu=array(
 	array('label'=>'Drukuj etykiety transportowe #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_label')),
 	array('label'=>'Drukuj ladeliste #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_transport_list')),
 	array('label'=>'--------------------------------------------------'),
-	array('label'=>'Drukuj zamówienia #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan1')),
-	array('label'=>'Drukuj zamówienia (z cenami) #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan2')),
-	array('label'=>'Drukuj plan #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan3')),
-	array('label'=>'Drukuj zamówienia (z materiałami) #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan4')),
+	array('label'=>'Drukuj plan #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan')),
+	array('label'=>'Drukuj zamówienia #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_orders')),
+	array('label'=>'Drukuj zamówienia (z cenami) #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_orders_with_price')),
+	array('label'=>'Dopasuj materiały #', 'url'=>'#', 'itemOptions'=>array('id' => 'search_textiles')),
 	array('label'=>'--------------------------------------------------'),
 	array('label'=>'Wykrojono (Zaznacz/Odznacz) *', 'url'=>'#', 'itemOptions'=>array('id' => 'prepared')),
 	array('label'=>'Wyprodukowano (Zaznacz/Odznacz) *', 'url'=>'#', 'itemOptions'=>array('id' => 'manufactured')),
@@ -127,7 +127,6 @@ $columns=array(
 	'printed_minilabel',
 	'printed_shipping_label',
 	'textile_prepared',
-	'textile_for_reuse',
 	'article_planed',
 	array(
 		'name' => 'article_manufactured',
@@ -294,9 +293,9 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
 			event.preventDefault();
 		});
-		$("li#print_plan1 a").click(function(event) {
+		$("li#print_plan a").click(function(event) {
 			//zmieniamy cel wysłania danych
-			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/printPlan1", array('act'=>'plan1'))?>");
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/printPlan", array('act'=>'print_plan'))?>");
 			console.log($("form#check_form").attr("action"));
 			//zatwierdzenie formularza
 			$("form#check_form").attr("target","_blank")
@@ -306,9 +305,9 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
 			event.preventDefault();
 		});
-		$("li#print_plan2 a").click(function(event) {
+		$("li#print_orders a").click(function(event) {
 			//zmieniamy cel wysłania danych
-			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/printPlan2", array('act'=>'plan2'))?>");
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/printPlan", array('act'=>'print_orders'))?>");
 			console.log($("form#check_form").attr("action"));
 			//zatwierdzenie formularza
 			$("form#check_form").attr("target","_blank")
@@ -318,9 +317,9 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
 			event.preventDefault();
 		});
-		$("li#print_plan3 a").click(function(event) {
+		$("li#print_orders_with_price a").click(function(event) {
 			//zmieniamy cel wysłania danych
-			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/printPlan1", array('act'=>'plan3'))?>");
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/printOrdersWithPrice")?>");
 			console.log($("form#check_form").attr("action"));
 			//zatwierdzenie formularza
 			$("form#check_form").attr("target","_blank")
@@ -330,9 +329,9 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
 			event.preventDefault();
 		});
-		$("li#print_plan4 a").click(function(event) {
+		$("li#search_textiles a").click(function(event) {
 			//zmieniamy cel wysłania danych
-			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/printPlan4", array('act'=>'plan4'))?>");
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/searchTextiles")?>");
 			console.log($("form#check_form").attr("action"));
 			//zatwierdzenie formularza
 			$("form#check_form").attr("target","_blank")

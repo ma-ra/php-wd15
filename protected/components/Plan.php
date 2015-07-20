@@ -4,116 +4,16 @@ Yii::import('application.extensions.tcpdf.*');
 require_once('tcpdf/tcpdf.php');
 
 class Plan extends TCPDF {
-	public $order_id;
-	public $order_number;
-	public $article_number;
-	public $model_name;
-	public $model_type;
-	public $article_amount;
-	public $textil_pair;
-	public $textile_name1;
-	public $textile_name2;
-	public $order_term;
-	public $leg_type;
-	public $order_price;
-	public $order_total_price;
-	public $order_add_date;
-	public $pattern_order_add_date;
-	public $for_reuse;
 	
-	public $title;
 	public $date;
+	public $orderDateAdded;
+	public $lastOrderDateAdded;
+	public $title;
+	public $fieldsWidth=array();
+	public $headers=array();
+	public $row=array();
 	
-	public $start;
-	public $version;
-	private $fields_width=array(
-		0 => 20,
-		1 => 15,
-		2 => 15,
-		3 => 60,
-		4 => 12,
-		5 => 15,
-		6 => 55,
-		7 => 55,
-		8 => 15,
-		9 => 25,
-	);
-	
-	private $headers=array(
-		'zam. nr',
-		'art. nr',
-		'model',
-		'wersja',
-		'szt.',
-		'mat. nr',
-		'deseń 1',
-		'deseń 2',
-		'termin (kw)',
-		'nogi'
-	);
-	
-	//wersja planu
-	function SetVersion() {
-		if ($this->version == "plan3") {
-			$this->fields_width=array(
-				0 => 20,
-				1 => 15,
-				2 => 15,
-				3 => 50,
-				4 => 14,	
-				5 => 10,
-				6 => 14,	
-				7 => 13,
-				8 => 48,
-				9 => 48,
-				10 => 15,
-				11 => 25,
-			);
-			
-			$this->headers=array(
-				'zam. nr',
-				'art. nr',
-				'model',
-				'wersja',
-				'cena',
-				'szt.',
-				'cena całości',
-				'mat. nr',
-				'deseń 1',
-				'deseń 2',
-				'termin (kw)',
-				'nogi'
-			);
-		} else {
-			$this->fields_width=array(
-				0 => 20,
-				1 => 20,
-				2 => 15,
-				3 => 15,
-				4 => 50,
-				5 => 12,
-				6 => 15,
-				7 => 50,
-				8 => 50,
-				9 => 15,
-				10 => 25,
-			);
-			
-			$this->headers=array(
-				'zam. nr',
-				'notki',
-				'art. nr',
-				'model',
-				'wersja',
-				'szt.',
-				'mat. nr',
-				'deseń 1',
-				'deseń 2',
-				'termin (kw)',
-				'nogi'
-			);
-		}
-	}
+	private $start;
 	
 	// Page header
 	function Header() {
@@ -124,12 +24,10 @@ class Plan extends TCPDF {
 		$this->Cell(0, 0, $this->title, 0, 1, "C");
 		$this->Ln();
 		
-		
-		
 		## ustalamy najwyższy "MultiCell"
 		$textHeight=0;
 		$lines=0;
-		$w=$this->fields_width;
+		$w=$this->fieldsWidth;
 		foreach ($this->headers as $index => $header) {
 			// getStringHeight ($w, $txt, $reseth=false, $autopadding=true, $cellpadding='', $border=0)
 			if ($textHeight < $this->getStringHeight($w[$index], $header)) {
@@ -152,42 +50,11 @@ class Plan extends TCPDF {
 		$this->SetFont("FreeSans", "", 8);
 		$this->SetY($this->start);
 		
-		if ($this->version == "plan3") {
-			$row=array(
-				$this->order_number,
-				$this->article_number,
-				$this->model_name,
-				$this->model_type,
-				$this->order_price,		
-				$this->article_amount,
-				$this->order_total_price,
-				$this->textil_pair,
-				$this->textile_name1,
-				$this->textile_name2,
-				$this->order_term,
-				$this->leg_type
-			);
-		} else {
-			$row=array(
-				$this->order_number,
-				"",
-				$this->article_number,
-				$this->model_name,
-				$this->model_type,
-				$this->article_amount,
-				$this->textil_pair,
-				$this->textile_name1,
-				$this->textile_name2,
-				$this->order_term,
-				$this->leg_type
-			);
-		}
-		
 		## ustalamy najwyższy "MultiCell"
 		$textHeight=0;
 		$lines=0;
-		$w=$this->fields_width;
-		foreach ($row as $index => $field) {
+		$w=$this->fieldsWidth;
+		foreach ($this->row as $index => $field) {
 			// getStringHeight ($w, $txt, $reseth=false, $autopadding=true, $cellpadding='', $border=0)
 			if ($textHeight < $this->getStringHeight($w[$index], $field)) {
 				$textHeight=$this->getStringHeight($w[$index], $field);
@@ -195,30 +62,13 @@ class Plan extends TCPDF {
 		};
 				
 		## drukujemy
-		foreach ($row as $index => $field) {
+		foreach ($this->row as $index => $field) {
 			$fill=0;
-			$position='C';
-			if ($this->order_add_date == $this->pattern_order_add_date && $index == 0) {
+			if ($this->orderDateAdded == $this->lastOrderDateAdded && $index == 0) {
 				$fill=1;
 			} 
-			if ($this->for_reuse != 0 && $index == 1) {
-				$row[$index]=$this->for_reuse;
-				$position='R';
-			}
-			if ($this->for_reuse != 0 && $index == 2) {
-				$fill=1;
-			}
-			if ($this->for_reuse != 0 && $index == 3) {
-				$fill=1;
-			}
-			if ($this->for_reuse != 0 && $index == 7) {
-				$fill=1;
-			}
-			if ($this->for_reuse != 0 && $index == 8) {
-				$fill=1;
-			}
 			// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
-			$this->MultiCell($w[$index], $textHeight, $row[$index], 1, $position, $fill, 0, '', '', true, 1);
+			$this->MultiCell($w[$index], $textHeight, $this->row[$index], 1, 'C', $fill, 0, '', '', true, 1);
 		}
 		$this->Ln();
 		$this->start=$this->GetY();
@@ -234,61 +84,31 @@ class Plan extends TCPDF {
 		$this->SetFillColor(190, 190, 190);
 		$this->SetFont("FreeSans", "", 8);
 		$this->SetY($this->start);
-		if ($this->version == "plan3") {
-			$row=array(
-				$this->article_number,
-				"",
-				"",
-				"",
-				"",
-				$this->article_amount,
-				$this->order_total_price,
-				"",
-				"",
-				"",
-				"",
-				""
-			);
-		} else {
-			$row=array(
-				$this->article_number,
-				$this->for_reuse,
-				"",
-				"",
-				"",
-				$this->article_amount,
-				"",
-				"",
-				"",
-				"",
-				""
-			);
-		}
 	
 		## ustalamy najwyższy "MultiCell"
 		$textHeight=0;
 		$lines=0;
-		$w=$this->fields_width;
-		foreach ($row as $index => $field) {
+		$w=$this->fieldsWidth;
+		foreach ($this->row as $index => $field) {
 		// getStringHeight ($w, $txt, $reseth=false, $autopadding=true, $cellpadding='', $border=0)
 			if ($textHeight < $this->getStringHeight($w[$index], $field)) {
-			$textHeight=$this->getStringHeight($w[$index], $field);
+				$textHeight=$this->getStringHeight($w[$index], $field);
 			}
 		};
 	
 		## drukujemy
-		foreach ($row as $index => $field) {
+		foreach ($this->row as $index => $field) {
 			// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
-			$this->MultiCell($w[$index], $textHeight, $row[$index], 1, 'C', 0, 0, '', '', true, 1);
+			$this->MultiCell($w[$index], $textHeight, $this->row[$index], 1, 'C', 0, 0, '', '', true, 1);
 		}
 		$this->Ln();
 		$this->start=$this->GetY();
 	
 		# kolejna strona
 		if ($this->GetY()>=210-10-5) {
-		$this->AddPage();
-	}
+			$this->AddPage();
 		}
+	}
 	
 	// Page footer
 	function Footer() {
