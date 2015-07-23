@@ -45,7 +45,7 @@ class Plan extends TCPDF {
 	}
 	
 	// Draw row
-	function DrawRow() {
+	function DrawRow($strikethrough=0) {
 		$this->SetFillColor(180, 180, 180);
 		$this->SetFont("FreeSans", "", 8);
 		$this->SetY($this->start);
@@ -70,7 +70,12 @@ class Plan extends TCPDF {
 			// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
 			$this->MultiCell($w[$index], $textHeight, $this->row[$index], 1, 'C', $fill, 0, '', '', true, 1);
 		}
+		$y=$this->GetY();
 		$this->Ln();
+		# drukujemy przekreślenie jak potrzeba
+		if ($strikethrough==1) {
+			$this->Line(5, ($y+$this->GetY())/2, 292, ($y+$this->GetY())/2);
+		}
 		$this->start=$this->GetY();
 		
 		# kolejna strona

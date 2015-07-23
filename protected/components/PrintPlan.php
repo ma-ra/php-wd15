@@ -43,6 +43,10 @@ class PrintPlan {
 		# ustalenie tytułu
 		if ($this->version == "print_plan") {
 			$this->pdf->title=isset($lastOrderDateAdded)? "Plan z dnia " . $this->pdf->date . " - aktualizacja zamówień z dnia: " . $lastOrderDateAdded : "Plan z dnia " . $this->pdf->date ;
+		} else if ($this->version == "print_orders_for_cutting_department") {
+			$this->pdf->title=isset($lastOrderDateAdded)? "Zamówienia (krój) z dnia " . $this->pdf->date . " - aktualizacja zamówień z dnia: " . $lastOrderDateAdded : "Zamówienia (krój) z dnia " . $this->pdf->date ;
+		} else if ($this->version == "with_price") {
+			$this->pdf->title=isset($lastOrderDateAdded)? "Zamówienia (z cenami) z dnia " . $this->pdf->date . " - aktualizacja zamówień z dnia: " . $lastOrderDateAdded : "Zamówienia (krój) z dnia " . $this->pdf->date ;
 		} else {
 			$this->pdf->title=isset($lastOrderDateAdded)? "Zamówienia z dnia " . $this->pdf->date . " - aktualizacja zamówień z dnia: " . $lastOrderDateAdded : "Zamówienia z dnia " . $this->pdf->date ;
 		}
@@ -50,21 +54,23 @@ class PrintPlan {
 		# ustalenie szerokości, nagłówków
 			if ($this->version == "with_price") {
 				$this->pdf->fieldsWidth=array(
-					0 => 20,
-					1 => 15,
+					0 => 7,
+					1 => 17,
 					2 => 15,
-					3 => 50,
-					4 => 14,	
-					5 => 10,
-					6 => 14,	
-					7 => 13,
-					8 => 48,
-					9 => 48,
-					10 => 15,
+					3 => 15,
+					4 => 50,
+					5 => 14,	
+					6 => 10,
+					7 => 14,	
+					8 => 13,
+					9 => 46,
+					10 => 46,
 					11 => 25,
+					12 => 15,
 				);
 				
 				$this->pdf->headers=array(
+					'plan',
 					'zam. nr',
 					'art. nr',
 					'model',
@@ -75,25 +81,32 @@ class PrintPlan {
 					'mat. nr',
 					'deseń 1',
 					'deseń 2',
+					'nogi',
 					'termin (kw)',
-					'nogi'
 				);
 			} else {
 				$this->pdf->fieldsWidth=array(
-					0 => 20,
-					1 => 20,
-					2 => 15,
+					0 => 7,
+					1 => 17,
+					2 => 23,
 					3 => 15,
-					4 => 50,
-					5 => 12,
-					6 => 15,
-					7 => 50,
-					8 => 50,
-					9 => 15,
+					4 => 15,
+					5 => 50,
+					6 => 12,
+					7 => 13,
+					8 => 45,
+					9 => 45,
 					10 => 25,
+					11 => 15,
 				);
 				
+				if ($this->version == "print_orders_for_cutting_department") {
+					$leg_title='dostawca';
+				} else {
+					$leg_title='nogi';
+				}
 				$this->pdf->headers=array(
+					'plan',
 					'zam. nr',
 					'notki',
 					'art. nr',
@@ -103,8 +116,8 @@ class PrintPlan {
 					'mat. nr',
 					'deseń 1',
 					'deseń 2',
+					$leg_title,
 					'termin (kw)',
-					'nogi'
 				);
 			} //if
 	}	
@@ -123,6 +136,7 @@ class PrintPlan {
 		foreach ($this->orders as $id => $order) {
 			# zbieranie danych
 			$order_id=$order->order_id;
+			$article_planed=preg_replace('/\/.*/i', "", $order->article_planed);
 			$order_number=$order->order_number;
 			$article_number=$order->articleArticle->article_number;
 			$model_name=$order->articleArticle->model_name;
@@ -132,10 +146,16 @@ class PrintPlan {
 			$textile_name1=$order->textile1Textile->textile_name;
 			$textile_name2=isset($order->textile2Textile->textile_name) ? $order->textile2Textile->textile_name : "-";
 			$order_term=$order->order_term;
-			$leg_type=$order->legLeg->leg_type;
 			$order_price=isset($order->order_price)? $order->order_price : "-";
 			$order_total_price=isset($order->order_total_price)? $order->order_total_price : "-"; 
 			$order_add_date=$order->order_add_date;
+			$textile_prepared=$order->textile_prepared;
+			if ($this->version == "print_orders_for_cutting_department") {
+				//$leg_type=$order->textile1Textile->supplier_supplier_id;
+				$leg_type=$order->textile1Textile->supplierSupplier->supplier_name;
+			} else {
+				$leg_type=$order->legLeg->leg_type;
+			}
 			
 			$this->pdf->orderDateAdded=$order_add_date;
 
@@ -149,6 +169,7 @@ class PrintPlan {
 			# ustalenie danych na potrzeby wiersza
 			if ($this->version == "with_price") {
 				$this->pdf->row=array(
+					$article_planed,
 					$order_number,
 					$article_number,
 					$model_name,
@@ -159,11 +180,12 @@ class PrintPlan {
 					$textil_pair,
 					$textile_name1,
 					$textile_name2,
+					$leg_type,
 					$order_term,
-					$leg_type
 				);
 			} else {
 				$this->pdf->row=array(
+					$article_planed,
 					$order_number,
 					"",
 					$article_number,
@@ -173,13 +195,17 @@ class PrintPlan {
 					$textil_pair,
 					$textile_name1,
 					$textile_name2,
+					$leg_type,
 					$order_term,
-					$leg_type
 				);
 			} //if
 			
 			# drukujemy wiersz
-			$this->pdf->DrawRow();
+			if ($textile_prepared > 0 && $this->version == "print_orders_for_cutting_department") {
+				$this->pdf->DrawRow(1);
+			} else {
+				$this->pdf->DrawRow();
+			}
 			
 			# w przypadku druku planu zapisujemy datę druku w bazie
 			/* if ($this->version == "save") {
@@ -192,6 +218,7 @@ class PrintPlan {
 		# drukujemy podsumowanie
 		if ($this->version == "with_price") {
 			$this->pdf->row=array(
+				"",
 				$count,
 				"",
 				"",
@@ -207,6 +234,7 @@ class PrintPlan {
 			);
 		} else {
 			$this->pdf->row=array(
+				"",
 				$count,
 				"",
 				"",

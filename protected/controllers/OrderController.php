@@ -1062,27 +1062,52 @@ class OrderController extends Controller
 	
 	public function actionPrintPlan()
 	{
+		# w przypadku druku planu, zapisz jego numer do bazy
+		if (isset($_GET["week_number"])) {
+			if (isset($_POST["select"])) {
+				$pks=array();
+				foreach ($_POST["select"] as $id => $checked) {
+					array_push($pks, $checked);
+				}
+				
+				# zapis do bazy
+				if ($_GET["week_number"] == "null") {
+					Order::model()->updateByPk($pks, array('article_planed'=>null));
+				} else if ($_GET["week_number"] == "/2015"){
+					throw new CHttpException(405,'Nie podanu numeru tygodnia.');
+				} else {
+					Order::model()->updateByPk($pks, array('article_planed'=>$_GET["week_number"] . " " . date('mdhis')));
+				}
+				
+			} else {
+				throw new CHttpException(405,'Prawdopodobnie nie zostały zaznaczone żadne zamówienia.');
+			}
+		}
+		
 		# ustalanie danych oraz ich sortowania
+		$criteria=new CDbCriteria;
+		$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
+		
+		if ($_GET["act"] == "print_orders_for_cutting_department") {
+			$criteria->order='order_term ASC, order_number ASC, articleArticle.article_number ASC';
+		} else {
+			$criteria->order='-article_planed DESC, order_term ASC, order_number ASC, articleArticle.article_number ASC';
+		}
+		
+		# kryteria wyszukiwania wśród zaznaczonych
 		if (isset($_POST["select"])) {
 			$pks=array();
 			foreach ($_POST["select"] as $id => $checked) {
 				array_push($pks, $checked);
 			}
-			
-			# kryteria wyszukiwania wśród zaznaczonych
-			$criteria=new CDbCriteria;
-			$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
-			$criteria->order='order_term ASC, order_number ASC, articleArticle.article_number ASC';
 			$orders=Order::model()->findAllByPk($pks, $criteria);
+		# kryteria wyszukiwania wśród wszystkich uwzględnianych (SQL where)
 		} else {
-			# kryteria wyszukiwania wśród wszystkich uwzględnianych (SQL where)
-			$criteria=new CDbCriteria;
-			$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
 			$criteria->condition=('article_exported is :article_exported AND article_canceled = :article_canceled');
 			$criteria->params=array(':article_exported'=>null, 'article_canceled'=>0);
-			$criteria->order='order_term ASC, order_number ASC, articleArticle.article_number ASC';
 			$orders=Order::model()->findAll($criteria);
 		}
+		
 		
 		$plan=new PrintPlan();
 		$plan->orders=$orders;
@@ -1095,24 +1120,21 @@ class OrderController extends Controller
 	public function actionPrintOrdersWithPrice()
 	{
 		# ustalanie danych oraz ich sortowania
+		$criteria=new CDbCriteria;
+		$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
+		$criteria->order='-article_planed DESC, order_term ASC, order_number ASC, articleArticle.article_number ASC';
+		
+		# kryteria wyszukiwania wśród zaznaczonych
 		if (isset($_POST["select"])) {
 			$pks=array();
 			foreach ($_POST["select"] as $id => $checked) {
 				array_push($pks, $checked);
 			}
-			
-			# kryteria wyszukiwania wśród zaznaczonych
-			$criteria=new CDbCriteria;
-			$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
-			$criteria->order='order_term ASC, order_number ASC, articleArticle.article_number ASC';
 			$orders=Order::model()->findAllByPk($pks, $criteria);
+		# kryteria wyszukiwania wśród wszystkich uwzględnianych (SQL where)
 		} else {
-			# kryteria wyszukiwania wśród wszystkich uwzględnianych (SQL where)
-			$criteria=new CDbCriteria;
-			$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
 			$criteria->condition=('article_exported is :article_exported AND article_canceled = :article_canceled');
 			$criteria->params=array(':article_exported'=>null, 'article_canceled'=>0);
-			$criteria->order='order_term ASC, order_number ASC, articleArticle.article_number ASC';
 			$orders=Order::model()->findAll($criteria);
 		}
 		
