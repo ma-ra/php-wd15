@@ -64,7 +64,7 @@ class Plan extends TCPDF {
 		## drukujemy
 		foreach ($this->row as $index => $field) {
 			$fill=0;
-			if ($this->orderDateAdded == $this->lastOrderDateAdded && $index == 0) {
+			if ($this->orderDateAdded == $this->lastOrderDateAdded && $index == 1) {
 				$fill=1;
 			} 
 			// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)

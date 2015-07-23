@@ -54,19 +54,19 @@ class PrintPlan {
 		# ustalenie szerokości, nagłówków
 			if ($this->version == "with_price") {
 				$this->pdf->fieldsWidth=array(
-					0 => 7,
-					1 => 17,
-					2 => 15,
-					3 => 15,
-					4 => 50,
-					5 => 14,	
-					6 => 10,
-					7 => 14,	
-					8 => 13,
-					9 => 46,
-					10 => 46,
-					11 => 25,
-					12 => 15,
+					0 => 7, //plan
+					1 => 17, //zam. nr
+					2 => 15, //art. nr
+					3 => 15, //model
+					4 => 50, //wersja
+					5 => 14, //cena
+					6 => 10, //szt.
+					7 => 14, //cena całości
+					8 => 13, //mat. nr
+					9 => 46, //deseń 1
+					10 => 46, //deseń 2
+					11 => 25, //nogi
+					12 => 15, //termin
 				);
 				
 				$this->pdf->headers=array(
@@ -86,18 +86,18 @@ class PrintPlan {
 				);
 			} else {
 				$this->pdf->fieldsWidth=array(
-					0 => 7,
-					1 => 17,
-					2 => 23,
-					3 => 15,
-					4 => 15,
-					5 => 50,
-					6 => 12,
-					7 => 13,
-					8 => 45,
-					9 => 45,
-					10 => 25,
-					11 => 15,
+					0 => 9, //plan
+					1 => 16, //zam. nr
+					2 => 27, //notki
+					3 => 15, //art. nr
+					4 => 15, //model
+					5 => 50, //wersja
+					6 => 10, //szt.
+					7 => 13, //mat. nr
+					8 => 46, //deseń 1
+					9 => 46, //deseń 2
+					10 => 25, //nogi
+					11 => 15, //termin
 				);
 				
 				if ($this->version == "print_orders_for_cutting_department") {

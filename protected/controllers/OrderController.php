@@ -33,7 +33,7 @@ class OrderController extends Controller
 				'users'=>array('asia', 'gosia', 'mara', 'mariola', 'pawel'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-					'actions'=>array('create', 'admin2', 'delete', 'upload', 'printPlan2', 'printOrdersWithPrice'),
+					'actions'=>array('create', 'admin2', 'delete', 'upload', 'printOrdersWithPrice', 'searchTextiles'),
 					'users'=>array('mara','asia'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
