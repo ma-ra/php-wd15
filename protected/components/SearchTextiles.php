@@ -8,8 +8,8 @@ class SearchTextiles extends TCPDF {
 	private $mytitle="Niewykorzystane wykroje";
 	
 	public $cellWidth=array( //A4 portriat - max width: 200
-		0 => 28, //numer modelu
-		1 => 43, //do użycia (numer zamówienia)
+		0 => 43, //numer modelu
+		1 => 28, //do użycia (numer zamówienia)
 		2 => 43, //dopasowanie - obydwa
 		3 => 43, //dopasowanie - pierwszy
 		4 => 43, //dopasowanie - drugi
@@ -39,21 +39,22 @@ class SearchTextiles extends TCPDF {
 	// Page header
 	function Header() {
 		$this->SetFillColor(190, 190, 190);
-		$this->SetFont("FreeSans", "", 10);
+		$this->SetFont("FreeSans", "B", 12);
 		$this->SetXY(5,5);
 		// Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M')
 		$this->Cell(0, 0, $this->mytitle, 0, 1, "C");
 		$this->Ln();
+		$this->SetFont("FreeSans", "B", 10);
 		
 		## ustalamy najwyższy "MultiCell"
 		$textHeight=0;
 		$lines=0;
 		$headers=array(
-			'numer modelu',
-			'do użycia (numer zamówienia)',
-			'dopasowanie - obydwa',
-			'dopasowanie - pierwszy',
-			'dopasowanie - drugi',
+			'model',
+			'do wykorzystania',
+			"dopasowanie\n - obydwa desenie",
+			"dopasowanie\n - pierwszy deseń",
+			"dopasowanie\n - drugi deseń",
 		);
 		foreach ($headers as $index => $header) {
 			// getStringHeight ($w, $txt, $reseth=false, $autopadding=true, $cellpadding='', $border=0)
@@ -65,7 +66,7 @@ class SearchTextiles extends TCPDF {
 		## drukujemy
 		foreach ($headers as $index => $header) {
 			// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
-			$this->MultiCell($this->cellWidth[$index], $textHeight, $headers[$index], 1, 'C', 0, 0, '', '', true, 1);
+			$this->MultiCell($this->cellWidth[$index], $textHeight, $headers[$index], 1, 'C', 0, 0, '', '', true, 0, false, true, $textHeight, 'M', false);
 		}
 		$this->Ln();
 		$this->start=$this->GetY();

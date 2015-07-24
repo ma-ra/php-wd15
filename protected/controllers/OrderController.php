@@ -1208,30 +1208,42 @@ class OrderController extends Controller
 		$pdf=new SearchTextiles('P', 'mm', 'A4', true, 'UTF-8');
 		$pdf->Initiate();
 		
+		
 		#####
 		# Pokaż najlepsze dopasowania na osobnej liście
 		#####
 		foreach ($ordersForReuse as $orderForReuse) {
+			# pobieramy dodatkowe informacje o artykule
+			$article=Article::model()->find(array(
+				'select'=>'model_name, model_type',
+				'condition'=>'article_number=:article_number',
+				'params'=>array(':article_number'=>$orderForReuse->article_number),
+				'limit'=>1
+			));
+			
 			# dostępne pola
 			//$orderForReuse->order_number;
 			//$orderForReuse->article_number;
 			$textile1ForReuseNumber=isset($orderForReuse->textile1_number) ? $orderForReuse->textile1_number : null;
 			$textile2ForReuseNumber=isset($orderForReuse->textile2_number) ? $orderForReuse->textile2_number : null;
+			$modelName=$article->model_name;
+			$modelType=$article->model_type;
 			
 			# zamieniamy wartości w tablicy na ładny ciąg typu string
-			$both=implode($ordersForReuseInfo[$orderForReuse->for_reuse_id]["both"],", <br>");
+			$both=implode($ordersForReuseInfo[$orderForReuse->for_reuse_id]["both"],"\n");
 			# przed zamianą usówamy elementy które występiły w tablicy/zmiennej "both"
 			$first=implode(array_diff($ordersForReuseInfo[$orderForReuse->for_reuse_id]["first"],$ordersForReuseInfo[$orderForReuse->for_reuse_id]["both"]),"\n");
 			$second=implode(array_diff($ordersForReuseInfo[$orderForReuse->for_reuse_id]["second"],$ordersForReuseInfo[$orderForReuse->for_reuse_id]["both"]),"\n");
 			
 			$pdf->Draw(array(
-				$orderForReuse->article_number,
-				$orderForReuse->order_number." (".$textile1ForReuseNumber." ".$textile2ForReuseNumber.")",
+				$orderForReuse->article_number . "\n$modelName\n$modelType",
+				$orderForReuse->order_number."\n(".$textile1ForReuseNumber." ".$textile2ForReuseNumber.")",
 				$both,
 				$first,
 				$second
 			));
 		}
+		
 		#Drukujemy - w sensie tworzymy plik PDF
 		#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
 		$pdf->Output("Wolne wykroje " . date('Y-m-d') . ".pdf", "I");
