@@ -3,6 +3,7 @@
 class PrintPlan {
 	public $orders;
 	public $version;
+	public $type=""; //czy zaznaczone, czy wszystkie
 	
 	private $pdf;
 	
@@ -42,13 +43,13 @@ class PrintPlan {
 		
 		# ustalenie tytułu
 		if ($this->version == "print_plan") {
-			$this->pdf->title=isset($lastOrderDateAdded)? "Plan z dnia " . $this->pdf->date . " - aktualizacja zamówień z dnia: " . $lastOrderDateAdded : "Plan z dnia " . $this->pdf->date ;
+			$this->pdf->title=isset($lastOrderDateAdded)? "Plan z dnia " . $this->pdf->date . " - aktualizacja zamówień z dnia: " . $lastOrderDateAdded . $this->type : "Plan z dnia " . $this->pdf->date . $this->type ;
 		} else if ($this->version == "print_orders_for_cutting_department") {
-			$this->pdf->title=isset($lastOrderDateAdded)? "Zamówienia (krój) z dnia " . $this->pdf->date . " - aktualizacja zamówień z dnia: " . $lastOrderDateAdded : "Zamówienia (krój) z dnia " . $this->pdf->date ;
+			$this->pdf->title=isset($lastOrderDateAdded)? "Zamówienia (krój) z dnia " . $this->pdf->date . " - aktualizacja zamówień z dnia: " . $lastOrderDateAdded . $this->type : "Zamówienia (krój) z dnia " . $this->pdf->date . $this->type ;
 		} else if ($this->version == "with_price") {
-			$this->pdf->title=isset($lastOrderDateAdded)? "Zamówienia (z cenami) z dnia " . $this->pdf->date . " - aktualizacja zamówień z dnia: " . $lastOrderDateAdded : "Zamówienia (krój) z dnia " . $this->pdf->date ;
+			$this->pdf->title=isset($lastOrderDateAdded)? "Zamówienia (z cenami) z dnia " . $this->pdf->date . " - aktualizacja zamówień z dnia: " . $lastOrderDateAdded . $this->type : "Zamówienia (krój) z dnia " . $this->pdf->date . $this->type ;
 		} else {
-			$this->pdf->title=isset($lastOrderDateAdded)? "Zamówienia z dnia " . $this->pdf->date . " - aktualizacja zamówień z dnia: " . $lastOrderDateAdded : "Zamówienia z dnia " . $this->pdf->date ;
+			$this->pdf->title=isset($lastOrderDateAdded)? "Zamówienia z dnia " . $this->pdf->date . " - aktualizacja zamówień z dnia: " . $lastOrderDateAdded . $this->type : "Zamówienia z dnia " . $this->pdf->date . $this->type ;
 		}
 		
 		# ustalenie szerokości, nagłówków

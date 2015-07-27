@@ -22,7 +22,8 @@ $this->menu=array(
 	array('label'=>'Drukuj etykiety transportowe #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_label')),
 	array('label'=>'Drukuj ladeliste #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_transport_list')),
 	array('label'=>'--------------------------------------------------'),
-	array('label'=>'Twórz plan #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan')),
+	array('label'=>'Twórz plan #', 'url'=>'#', 'itemOptions'=>array('id' => 'create_plan')),
+	array('label'=>'Drukuj plan #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan')),
 	array('label'=>'Drukuj zamówienia #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_orders')),
 	array('label'=>'Drukuj zamówienia (krój) #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_orders_for_cutting_department')),
 	array('label'=>'Drukuj zamówienia (z cenami) #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_orders_with_price')),
@@ -294,7 +295,7 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
 			event.preventDefault();
 		});
-		$("li#print_plan a").click(function(event) {
+		$("li#create_plan a").click(function(event) {
 			//dialog - tytuł + treść html (zwykły input)
 			$("#mydialog").dialog( "option", "title", "Podaj numer planu" );
 			$("#mydialog").html('Numer tygodnia: <input type="text" id="week_number" value="/2015" >');
@@ -302,29 +303,47 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("#mydialog").dialog( "option", "buttons", {
 				 "Zamknij": function() { $(this).dialog("close"); },
 				 //pod ten przycisk podpinamy główną funkcjonalność
-				 "Drukuj": function() {
+				 "Zapisz": function() {
 					//pobieramy numer planu
 					var weekNumber=$("input#week_number").val();
-					//zmieniamy cel wysłania danych; za pomocą GET wysyłamy wersję wydruku oraz numer planu
-					$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/printPlan", array('act'=>'print_plan','week_number'=>'week_number_placeholder'))?>".replace("week_number_placeholder", weekNumber));
-					console.log($("form#check_form").attr("action"));
-					//zatwierdzenie formularza
-					$("form#check_form").attr("target","_blank")
-					$("form#check_form").submit();
-					$("form#check_form").attr("target","_self")
-					//przywracamy cel wysłania danych
-					$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
-					//zakończenie
-					$("#mydialog").html('Kliknięcie na OK spowoduje odświerzenie listy');
-					$("#mydialog").dialog( "option", "buttons", {
-						 "OK": function() { 
-							 $('#order-grid').yiiGridView('update');
-							 $(this).dialog("close"); 
-						  },
+					
+					//zmiana opisu w dialogu
+					$("#mydialog").html('Trwa zapisywanie, proszę czekać');
+						$("#mydialog").dialog( "option", "buttons", {
+							 "OK": function() { 
+								 $('#order-grid').yiiGridView('update');
+								 $(this).dialog("close"); 
+							  },
+						});
+					
+					//wysyłka ajaxem
+					$.ajax({
+						type: 'POST',
+						url : "<?php echo Yii::app()->createUrl("Order/printPlan", array('act'=>'create_plan','week_number'=>'week_number_placeholder'))?>".replace("week_number_placeholder", weekNumber),
+						data: $("form#check_form").serialize(),
+						success : function(data) {
+							//zmiana opisu w dialogu
+							$("#mydialog").html('Zapisano. Kliknięcie na OK spowoduje odświerzenie listy zamówień');
+						},
+						error : function(data) {
+							console.log(data);
+						}
 					});
 				 } 
 			});
 			$("#mydialog").dialog( "open" );
+			event.preventDefault();
+		});
+		$("li#print_plan a").click(function(event) {
+			//zmieniamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/printPlan", array('act'=>'print_plan'))?>");
+			console.log($("form#check_form").attr("action"));
+			//zatwierdzenie formularza
+			$("form#check_form").attr("target","_blank")
+			$("form#check_form").submit();
+			$("form#check_form").attr("target","_self")
+			//przywracamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
 			event.preventDefault();
 		});
 		$("li#print_orders a").click(function(event) {

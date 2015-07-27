@@ -1045,7 +1045,7 @@ class OrderController extends Controller
 	
 	public function actionPrintPlan()
 	{
-		# w przypadku druku planu, zapisz jego numer do bazy
+		# w przypadku tworzenia planu (otrzymano nr tyg w GET), zapisz jego numer do bazy; wywoływane przez Ajax
 		if (isset($_GET["week_number"])) {
 			if (isset($_POST["select"])) {
 				$pks=array();
@@ -1060,6 +1060,7 @@ class OrderController extends Controller
 					throw new CHttpException(405,'Nie podanu numeru tygodnia.');
 				} else {
 					Order::model()->updateByPk($pks, array('article_planed'=>$_GET["week_number"] . " " . date('mdhis')));
+					return;
 				}
 				
 			} else {
@@ -1084,17 +1085,25 @@ class OrderController extends Controller
 				array_push($pks, $checked);
 			}
 			$orders=Order::model()->findAllByPk($pks, $criteria);
+			$type=" (Wybrane)";
 		# kryteria wyszukiwania wśród wszystkich uwzględnianych (SQL where)
 		} else {
-			$criteria->condition=('article_exported is :article_exported AND article_canceled = :article_canceled');
-			$criteria->params=array(':article_exported'=>null, 'article_canceled'=>0);
+			if ($_GET["act"] == "print_plan") {
+				$criteria->condition=('article_exported is :article_exported AND article_canceled = :article_canceled AND article_planed is not :articel_planed');
+				$criteria->params=array(':article_exported'=>null, ':article_canceled'=>0, ':articel_planed'=>null);
+			} else {
+				$criteria->condition=('article_exported is :article_exported AND article_canceled = :article_canceled');
+				$criteria->params=array(':article_exported'=>null, ':article_canceled'=>0);
+			}
 			$orders=Order::model()->findAll($criteria);
+			$type=" (Wszystkie)";
 		}
 		
 		
 		$plan=new PrintPlan();
 		$plan->orders=$orders;
 		$plan->version=$_GET["act"];
+		$plan->type=$type;
 		$plan->TcpdfInitiate();
 		$plan->DataInitiate();
 		$plan->DrawPages();
@@ -1114,16 +1123,19 @@ class OrderController extends Controller
 				array_push($pks, $checked);
 			}
 			$orders=Order::model()->findAllByPk($pks, $criteria);
+			$type=" (Wybrane)";
 		# kryteria wyszukiwania wśród wszystkich uwzględnianych (SQL where)
 		} else {
 			$criteria->condition=('article_exported is :article_exported AND article_canceled = :article_canceled');
 			$criteria->params=array(':article_exported'=>null, 'article_canceled'=>0);
 			$orders=Order::model()->findAll($criteria);
+			$type=" (Wszystkie)";
 		}
 		
 		$plan=new PrintPlan();
 		$plan->orders=$orders;
 		$plan->version='with_price';
+		$plan->type=$type;
 		$plan->TcpdfInitiate();
 		$plan->DataInitiate();
 		$plan->DrawPages();
