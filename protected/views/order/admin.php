@@ -1,4 +1,9 @@
 <?php
+
+$baseUrl = Yii::app()->baseUrl; 
+$cs = Yii::app()->getClientScript();
+$cs->registerCssFile($baseUrl.'/css/wd15.css');
+
 /* @var $model Order */
 $this->setPageTitle('Lista zamówień, tydz. ' . date('W'));
 $this->breadcrumbs=array(
@@ -230,9 +235,18 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 ", CClientScript::POS_READY);
 ?> 
 
+<div class="modal"><!-- Place at bottom of page --></div>
+
 <script type="text/javascript">
 /*<![CDATA[*/
 	 $(document).ready(function() {
+		//obsługa ikonki ładowania
+		$body = $("body");
+		$(document).on({
+		    ajaxStart: function() { $body.addClass("loading");    },
+		    ajaxStop: function() { $body.removeClass("loading"); }    
+		});     
+		 
 		//najpierw ukrywamy orginalne przyciski
 		$('input[value="Drukuj etykiety na wykroje"]').hide();
 		$('input[value="Drukuj etykiety"]').hide();
@@ -306,15 +320,9 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 				 "Zapisz": function() {
 					//pobieramy numer planu
 					var weekNumber=$("input#week_number").val();
-					
-					//zmiana opisu w dialogu
-					$("#mydialog").html('Trwa zapisywanie, proszę czekać');
-						$("#mydialog").dialog( "option", "buttons", {
-							 "OK": function() { 
-								 $('#order-grid').yiiGridView('update');
-								 $(this).dialog("close"); 
-							  },
-						});
+
+					//zamykamy dialog
+					$(this).dialog("close");
 					
 					//wysyłka ajaxem
 					$.ajax({
@@ -322,8 +330,15 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 						url : "<?php echo Yii::app()->createUrl("Order/printPlan", array('act'=>'create_plan','week_number'=>'week_number_placeholder'))?>".replace("week_number_placeholder", weekNumber),
 						data: $("form#check_form").serialize(),
 						success : function(data) {
-							//zmiana opisu w dialogu
+							//zmiana opisu w dialogu i wyświetlenie
+							$("#mydialog").dialog("open");
 							$("#mydialog").html('Zapisano. Kliknięcie na OK spowoduje odświerzenie listy zamówień');
+							$("#mydialog").dialog( "option", "buttons", {
+								 "OK": function() { 
+									 $('#order-grid').yiiGridView('update');
+									 $(this).dialog("close"); 
+								  },
+							});
 						},
 						error : function(data) {
 							console.log(data);
