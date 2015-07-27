@@ -1070,7 +1070,7 @@ class OrderController extends Controller
 		
 		# ustalanie danych oraz ich sortowania
 		$criteria=new CDbCriteria;
-		$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
+		$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile', 'shopping1Shopping', 'shopping2Shopping');
 		
 		if ($_GET["act"] == "print_orders_for_cutting_department") {
 			$criteria->order='order_term ASC, order_number ASC, articleArticle.article_number ASC';
@@ -1113,7 +1113,7 @@ class OrderController extends Controller
 	{
 		# ustalanie danych oraz ich sortowania
 		$criteria=new CDbCriteria;
-		$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile');
+		$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile', 'shopping1Shopping', 'shopping2Shopping');
 		$criteria->order='-article_planed DESC, order_term ASC, order_number ASC, articleArticle.article_number ASC';
 		
 		# kryteria wyszukiwania wśród zaznaczonych

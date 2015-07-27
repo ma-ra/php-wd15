@@ -40,16 +40,17 @@ class PrintPlan {
 		
 		# bieżący czas
 		$this->pdf->date=date('Y-m-d H:i:s');
+		$week=date('W');
 		
 		# ustalenie tytułu
 		if ($this->version == "print_plan") {
-			$this->pdf->title=isset($lastOrderDateAdded)? "Plan z dnia " . $this->pdf->date . " - aktualizacja zamówień z dnia: " . $lastOrderDateAdded . $this->type : "Plan z dnia " . $this->pdf->date . $this->type ;
+			$this->pdf->title=isset($lastOrderDateAdded)? "Plan z dnia " . $this->pdf->date . " (tyg. $week) - aktualizacja zamówień z dnia: " . $lastOrderDateAdded . $this->type : "Plan z dnia " . $this->pdf->date . " (tyg. $week)" . $this->type ;
 		} else if ($this->version == "print_orders_for_cutting_department") {
-			$this->pdf->title=isset($lastOrderDateAdded)? "Zamówienia (krój) z dnia " . $this->pdf->date . " - aktualizacja zamówień z dnia: " . $lastOrderDateAdded . $this->type : "Zamówienia (krój) z dnia " . $this->pdf->date . $this->type ;
+			$this->pdf->title=isset($lastOrderDateAdded)? "Zamówienia (krój) z dnia " . $this->pdf->date . " (tyg. $week) - aktualizacja zamówień z dnia: " . $lastOrderDateAdded . $this->type : "Zamówienia (krój) z dnia " . $this->pdf->date . " (tyg. $week)" . $this->type ;
 		} else if ($this->version == "with_price") {
-			$this->pdf->title=isset($lastOrderDateAdded)? "Zamówienia (z cenami) z dnia " . $this->pdf->date . " - aktualizacja zamówień z dnia: " . $lastOrderDateAdded . $this->type : "Zamówienia (krój) z dnia " . $this->pdf->date . $this->type ;
+			$this->pdf->title=isset($lastOrderDateAdded)? "Zamówienia (z cenami) z dnia " . $this->pdf->date . " (tyg. $week) - aktualizacja zamówień z dnia: " . $lastOrderDateAdded . $this->type : "Zamówienia (krój) z dnia " . $this->pdf->date . " (tyg. $week)" . $this->type ;
 		} else {
-			$this->pdf->title=isset($lastOrderDateAdded)? "Zamówienia z dnia " . $this->pdf->date . " - aktualizacja zamówień z dnia: " . $lastOrderDateAdded . $this->type : "Zamówienia z dnia " . $this->pdf->date . $this->type ;
+			$this->pdf->title=isset($lastOrderDateAdded)? "Zamówienia z dnia " . $this->pdf->date . " (tyg. $week) - aktualizacja zamówień z dnia: " . $lastOrderDateAdded . $this->type : "Zamówienia z dnia " . $this->pdf->date . " (tyg. $week)" . $this->type ;
 		}
 		
 		# ustalenie szerokości, nagłówków
@@ -152,6 +153,29 @@ class PrintPlan {
 			$order_add_date=$order->order_add_date;
 			$textile_prepared=$order->textile_prepared;
 			if ($this->version == "print_orders_for_cutting_department") {
+				$shopping1_status=isset($order->shopping1Shopping->shopping_status) ? $order->shopping1Shopping->shopping_status : null;
+				$shopping2_status=isset($order->shopping2Shopping->shopping_status) ? $order->shopping2Shopping->shopping_status : null;
+				//$textile_name1=isset($order->shopping1Shopping->shopping_status) ? $order->shopping1Shopping->shopping_status : null;
+				//$textile_name2=isset($order->shopping2Shopping->shopping_status) ? $order->shopping2Shopping->shopping_status : null;
+	
+				$this->pdf->emptyShopping=0;
+				# dla jednego materiału
+				if ($textile_name2 == "" || $textile_name2 == "-") {
+					if ($shopping1_status != "wydrukowane" && $shopping1_status != "dostarczono" && $shopping1_status != "częsciowo") {
+						$this->pdf->emptyShopping=1;
+					}
+				# dla dwuch materiałów
+				} else {
+					if ($shopping1_status != "wydrukowane" && $shopping1_status != "dostarczono" && $shopping1_status != "częściowo")
+					{
+						$this->pdf->emptyShopping+=1;
+					}
+					if ($shopping2_status != "wydrukowane" && $shopping2_status != "dostarczono" && $shopping2_status != "częściowo")
+					{
+						$this->pdf->emptyShopping+=2;
+					}
+				}
+				
 				//$leg_type=$order->textile1Textile->supplier_supplier_id;
 				$leg_type=$order->textile1Textile->supplierSupplier->supplier_name;
 			} else {

@@ -12,6 +12,7 @@ class Plan extends TCPDF {
 	public $fieldsWidth=array();
 	public $headers=array();
 	public $row=array();
+	public $emptyShopping=0;
 	
 	private $start;
 	
@@ -45,7 +46,7 @@ class Plan extends TCPDF {
 	}
 	
 	// Draw row
-	function DrawRow($strikethrough=0) {
+	function DrawRow($strikethrough=0, $shoppingstatus=0) {
 		$this->SetFillColor(180, 180, 180);
 		$this->SetFont("FreeSans", "", 8);
 		$this->SetY($this->start);
@@ -67,6 +68,16 @@ class Plan extends TCPDF {
 			if ($this->orderDateAdded == $this->lastOrderDateAdded && $index == 1) {
 				$fill=1;
 			} 
+			/* if ($this->emptyShopping == 1 && $index == 8) {
+				$fill=1;
+			}  */
+			if ($this->emptyShopping == 2 && $index == 9) {
+				$fill=1;
+			} 
+			if ($this->emptyShopping == 3 && ($index == 8 || $index == 9)) {
+				$fill=1;
+			} 
+			
 			// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
 			$this->MultiCell($w[$index], $textHeight, $this->row[$index], 1, 'C', $fill, 0, '', '', true, 1);
 		}

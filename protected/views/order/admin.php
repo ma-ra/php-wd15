@@ -27,7 +27,7 @@ $this->menu=array(
 	array('label'=>'Drukuj etykiety transportowe #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_label')),
 	array('label'=>'Drukuj ladeliste #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_transport_list')),
 	array('label'=>'--------------------------------------------------'),
-	array('label'=>'Twórz plan #', 'url'=>'#', 'itemOptions'=>array('id' => 'create_plan')),
+	array('label'=>'Twórz plan *', 'url'=>'#', 'itemOptions'=>array('id' => 'create_plan')),
 	array('label'=>'Drukuj plan #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_plan')),
 	array('label'=>'Drukuj zamówienia #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_orders')),
 	array('label'=>'Drukuj zamówienia (krój) #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_orders_for_cutting_department')),
