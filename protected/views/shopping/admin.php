@@ -21,6 +21,66 @@ Wprowadzone filtry należy zatwierdzić klawiszem "Enter". Można dodatkowo uży
 lub <b>=</b>) na początku każdej wyszukiwanej wartości aby sprecyzować sposób działania porównania. W niektórych polach można użyć cyfry 0, aby wyszukać puste wartości.
 </p>
 
+<?php 
+$dialog = $this->widget('ext.ecolumns.EColumnsDialog', array(
+       'options'=>array(
+            'title' => 'Konfiguracja tabeli',
+            'autoOpen' => false,
+            'show' =>  'fade',
+            'hide' =>  'fade',
+        ),
+       'htmlOptions' => array('style' => 'display: none'), //disable flush of dialog content
+       'ecolumns' => array(
+            'gridId' => 'shopping-grid', //id of related grid
+            'storage' => 'session',  //where to store settings: 'db', 'session', 'cookie'
+            'fixedLeft' => array('CCheckBoxColumn'), //fix checkbox to the left side 
+            'model' => $model->search()->model, //model is used to get attribute labels
+            'columns' => array(
+				array(
+					'id'=>'check',
+					'class' => 'CCheckBoxColumn',
+				),
+				'shopping_id',
+				'shopping_number',
+				array(
+						'header' => 'dostawca',
+						'filter'=>CHtml::activeTextField($model,'textile_supplier_supplier_name'),
+						'type' => 'raw',
+						'value' => 'CHtml::encode(isset($data->textileTextile->supplierSupplier->supplier_name) ? $data->textileTextile->supplierSupplier->supplier_name : "-" )'
+				),
+				//'textile_textile_id',
+				array(
+						'name' => 'textileTextile.textile_number',
+						'filter'=>CHtml::activeTextField($model,'textile_textile_number'),
+						'type' => 'raw',
+						'value' => 'CHtml::encode($data->textileTextile->textile_number)'
+				),
+				array(
+						'name' => 'textileTextile.textile_name',
+						'filter'=>CHtml::activeTextField($model,'textile_textile_name'),
+						'type' => 'raw',
+						'value' => 'CHtml::encode($data->textileTextile->textile_name)'
+				),
+				'article_amount',
+				'article_calculated_amount',
+				'shopping_term',
+				array(
+						'name' => 'shopping_status',
+						'filter'=>array('w trakcie'=>'w trakcie','nowy'=>'nowy', 'wydrukowane'=>'wydrukowane', 'dostarczono'=>'dostarczono', 'częściowo'=>'częściowo'),
+						'type' => 'raw',
+						'value' => 'CHtml::encode($data->shopping_status)'
+				),
+				'shopping_printed',
+				'creation_time',
+				array(
+					'class'=>'CButtonColumn',
+					'template'=>'{update}',
+				),
+			),
+       )
+    ));
+?>
+
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'shopping-form',
 	'enableAjaxValidation'=>true,
@@ -33,48 +93,8 @@ lub <b>=</b>) na początku każdej wyszukiwanej wartości aby sprecyzować spos�
 	'dataProvider'=>$model->search(),
 	'selectableRows' => 2,
 	'filter'=>$model,
-	'columns'=>array(
-		array(
-			'id'=>'check',
-			'class' => 'CCheckBoxColumn',
-		),
-		'shopping_id',
-		'shopping_number',
-		array(
-				'header' => 'dostawca',
-				'filter'=>CHtml::activeTextField($model,'textile_supplier_supplier_name'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode(isset($data->textileTextile->supplierSupplier->supplier_name) ? $data->textileTextile->supplierSupplier->supplier_name : "-" )'
-		),
-		//'textile_textile_id',
-		array(
-				'name' => 'textileTextile.textile_number',
-				'filter'=>CHtml::activeTextField($model,'textile_textile_number'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->textileTextile->textile_number)'
-		),
-		array(
-				'name' => 'textileTextile.textile_name',
-				'filter'=>CHtml::activeTextField($model,'textile_textile_name'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->textileTextile->textile_name)'
-		),
-		'article_amount',
-		'article_calculated_amount',
-		'shopping_term',
-		array(
-				'name' => 'shopping_status',
-				'filter'=>array('w trakcie'=>'w trakcie','nowy'=>'nowy', 'wydrukowane'=>'wydrukowane', 'dostarczono'=>'dostarczono', 'częściowo'=>'częściowo'),
-				'type' => 'raw',
-				'value' => 'CHtml::encode($data->shopping_status)'
-		),
-		'shopping_printed',
-		'creation_time',
-		array(
-			'class'=>'CButtonColumn',
-			'template'=>'{update}',
-		),
-	),
+	'columns'=>$dialog->columns(),
+	'template' => $dialog->link()."{summary}\n{items}\n{pager}",
 )); ?>
 <script>
 function reloadGrid(data) {
