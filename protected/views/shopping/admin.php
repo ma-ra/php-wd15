@@ -32,7 +32,7 @@ $dialog = $this->widget('ext.ecolumns.EColumnsDialog', array(
        'htmlOptions' => array('style' => 'display: none'), //disable flush of dialog content
        'ecolumns' => array(
             'gridId' => 'shopping-grid', //id of related grid
-            'storage' => 'session',  //where to store settings: 'db', 'session', 'cookie'
+            'storage' => 'cookie',  //where to store settings: 'db', 'session', 'cookie'
             'fixedLeft' => array(), //fix checkbox to the left side 
             'model' => $model->search()->model, //model is used to get attribute labels
             'columns' => array(

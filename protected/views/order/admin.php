@@ -208,13 +208,12 @@ $dialog = $this->widget('ext.ecolumns.EColumnsDialog', array(
 	'htmlOptions' => array('style' => 'display: none'), //disable flush of dialog content
 	'ecolumns' => array(
 	     'gridId' => 'order-grid', //id of related grid
-	     'storage' => 'session',  //where to store settings: 'db', 'session', 'cookie'
+	     'storage' => 'cookie',  //where to store settings: 'db', 'session', 'cookie'
 	     'fixedLeft' => array(), //fix checkbox to the left side 
 	     'model' => $model->search()->model, //model is used to get attribute labels
 	     'columns' => $columns,
 	)
 ));
-$viewColumns=$dialog->columns();
 
 echo CHtml::beginForm(array('Order/print'),'post', array('enctype'=>'multipart/form-data', 'id'=>'check_form'));
 $this->widget('ext.selgridview.SelGridView', array(
@@ -222,7 +221,7 @@ $this->widget('ext.selgridview.SelGridView', array(
 	'dataProvider'=>$model->search(),
 	'selectableRows' => 2,
 	'filter'=>$model,
-	'columns'=>$viewColumns,
+	'columns'=>$dialog->columns(),
     'template' => $dialog->link()."{summary}\n{items}\n{pager}",
 )); 
 echo CHtml::submitButton('Drukuj etykiety') . "<br>";

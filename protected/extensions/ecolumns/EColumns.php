@@ -97,6 +97,7 @@ class EColumns extends CJuiSortable
 
         $formId = $this->gridId.'-ecolumns';
 
+        echo "Wybierz kolumny oraz ułóż je <br>(za pomocą przeciągania)";
         echo CHtml::beginForm('', 'POST', array(
            'id' => $formId,
         ));         
