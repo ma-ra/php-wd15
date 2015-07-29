@@ -37,7 +37,6 @@ $this->menu=array(
 	array('label'=>'Wykrojono (Zaznacz/Odznacz) *', 'url'=>'#', 'itemOptions'=>array('id' => 'prepared')),
 	array('label'=>'Wyprodukowano (Zaznacz/Odznacz) *', 'url'=>'#', 'itemOptions'=>array('id' => 'manufactured')),
 	array('label'=>'Storno (Zaznacz/Odznacz) *', 'url'=>'#', 'itemOptions'=>array('id' => 'canceled')),
-	array('label'=>'Do użycia (Zaznacz/Odznacz) *', 'url'=>'#', 'itemOptions'=>array('id' => 'for_reuse')),
 	array('label'=>'--------------------------------------------------'),
 	array('label'=>'Podsumowanie #', 'url'=>'#', 'itemOptions'=>array('id' => 'summary')),
 	array('label'=>'Wyliczenie materiałów #', 'url'=>'#', 'itemOptions'=>array('id' => 'textile_summary')),
@@ -562,28 +561,15 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			});
 			event.preventDefault();
 		});
-		$("li#for_reuse a").click(function(event) {
-			//wysyłka ajaxem
-			$.ajax({
-				type: 'POST',
-				url : "<?php echo Yii::app()->createUrl("Order/forReuse")?>",
-				data: $("form#check_form").serialize(),
-				success : function(data) {
-					console.log(data);
-					$('#order-grid').yiiGridView('update');
-					$("#mydialog").dialog( "option", "title", "Do użycia" );
-					$("#mydialog").html("Zapisano zmiany");
-					$("#mydialog").dialog( "open" );
-				},
-				error : function(data) {
-					console.log(data);
-				}
-			});
-			event.preventDefault();
-		});
 		
 		//Rozszeżanie kontenera
-		$('div#page').css("width","2800px");
+		var width=$('#order-grid table').width();
+		console.log(width);
+		if (width >= 950) {
+			$('div#page').css("width",width+270+40);
+		} else {
+			$('div#page').css("width","1250px");
+		}
 		
 	});
 /*]]>*/
