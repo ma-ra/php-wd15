@@ -563,13 +563,15 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 		});
 		
 		//Rozszeżanie kontenera
-		var width=$('#order-grid table').width();
-		console.log(width);
-		if (width >= 950) {
-			$('div#page').css("width",width+270+40);
+		width1=$('.span-7').width();
+		width2=$('.span-24').width();
+		width3=$('#order-grid table').width();
+		if (width3 > width2) {
+			allWidth=width3+width1+40;
 		} else {
-			$('div#page').css("width","1250px");
+			allWidth=width2+width1+40;
 		}
+		$('div#page').css("width",allWidth);
 		
 	});
 /*]]>*/
