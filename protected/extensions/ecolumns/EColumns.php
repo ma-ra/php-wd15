@@ -138,7 +138,7 @@ class EColumns extends CJuiSortable
                        el;
                                                                                               
                    for(var i=0; i<defaultOrder.length; i++) {
-                      el = buffer.children('#'+defaultOrder[i].key);
+                      el = buffer.children('#'+defaultOrder[i].key.replace('.','\\\.'));
                       el.find('input').attr('checked', defaultOrder[i].visible);
                       ul.append(el);
                    }
@@ -388,6 +388,9 @@ class EColumns extends CJuiSortable
     */
     protected function getColumnHeader($key, $column) 
     {
+        if (substr($key,0,15) == "CCheckBoxColumn") return "Zaznaczenie";
+        if (substr($key,0,13) == "CButtonColumn") return "Przyciski";
+        if (substr($key,0,7) == "checked") return "Filtr zaznaczenia";
         if(is_string($column)) {
             if(!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $column, $matches)) throw new CException(Yii::t('zii','The column must be specified in the format of "Name:Type:Label", where "Type" and "Label" are optional.'));
             $name = $matches[1];
@@ -398,7 +401,7 @@ class EColumns extends CJuiSortable
             if(is_array($column)) {
                 if(isset($column['header'])) return $column['header'];
                 if(isset($column['name']) && $this->model instanceOf CModel) return $this->model->getAttributeLabel($column['name']);
-            } 
+            }
             return $key;
         } 
     }

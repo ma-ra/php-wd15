@@ -194,9 +194,9 @@ $columns=array(
 );
 
 # wybranym osobą włączamy dodatkowe kolumny
-/* if (in_array(Yii::app()->user->name, array('asia', 'gosia', 'mara', 'mariola'))) {
+if (in_array(Yii::app()->user->name, array('asia', 'gosia', 'mara', 'mariola'))) {
 	array_push($columns, 'order_price', 'order_total_price');
-} */
+}
 
 $dialog = $this->widget('ext.ecolumns.EColumnsDialog', array(
 	'options'=>array(
@@ -209,7 +209,7 @@ $dialog = $this->widget('ext.ecolumns.EColumnsDialog', array(
 	'ecolumns' => array(
 	     'gridId' => 'order-grid', //id of related grid
 	     'storage' => 'session',  //where to store settings: 'db', 'session', 'cookie'
-	     'fixedLeft' => array('CCheckBoxColumn'), //fix checkbox to the left side 
+	     'fixedLeft' => array(), //fix checkbox to the left side 
 	     'model' => $model->search()->model, //model is used to get attribute labels
 	     'columns' => $columns,
 	)

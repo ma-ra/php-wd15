@@ -33,7 +33,7 @@ $dialog = $this->widget('ext.ecolumns.EColumnsDialog', array(
        'ecolumns' => array(
             'gridId' => 'shopping-grid', //id of related grid
             'storage' => 'session',  //where to store settings: 'db', 'session', 'cookie'
-            'fixedLeft' => array('CCheckBoxColumn'), //fix checkbox to the left side 
+            'fixedLeft' => array(), //fix checkbox to the left side 
             'model' => $model->search()->model, //model is used to get attribute labels
             'columns' => array(
 				array(
