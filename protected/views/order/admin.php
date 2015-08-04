@@ -141,6 +141,7 @@ $columns=array(
 	'article_exported',
 	'article_canceled',
 	'order_error',
+	'order_notes',
 	array(
 		'class'=>'CButtonColumn',
 		'template'=>'{update}',

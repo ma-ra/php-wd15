@@ -1,18 +1,12 @@
-* weryfikacja drugiego materiału (czy np. pojawia się dla 4cyfrowego numeru pary).
-* inteligentniejsza data wgrania
+* Wczytywanie zamówień - poprawna obsługa zdublowanych wierszy (zwiększać ilość zamówienia, która odpowiada sumie z wszystkich dublii). Na podstawie e-mail z dnia 2015-08-03
+* Dodać możliwość dodawania notatek do zamówień, które wydrukują się na zamówieniach.
+* Wykrywanie niekompletności w planie (brak rozplanowanego całego numeru zamówienia).
+* Dodatć następujące pola do zakupów: notki, data wysyłki, planowana data dostarczenia
+* Weryfikacja drugiego materiału (czy np. pojawia się dla 4cyfrowego numeru pary).
+* Sumowanie zakupów do jednego zamówienia.
+* Zamówienia na krój - obsługa drugiego dostawcy.
 
+* Kilkukrotne przyjęcie na magazyn nie zmiania statusu z częściowo na dostarczono - do poprawy.
+* Shopping create/automatic create error - ukryte pola na numery id zamówień. Czy po błędzie nie zmini się numer zamówienia? Pewnie tak, a nie powinien.
 * Kody kreskowe dla działu wykrojów.
 * Tłumaczenia.
-* Rozbudowa bazy o: plan, zamówiono, dotarło.
-
-+ Informacje do faktury.
-+ Jeżeli puste pole to null do bazy.
-+ Ładny komunikat informujący o poprawnym wgraniu, lub komunikat błędu.
-+ Ustaleanie storno podczas wgrywania.
-+ Obsługa błędów: storno, niepoprawne storno, wgranie zamówienia które wyjechało, niepełna produkcja. 
-  Inteligentne kasowanie błędów: storno, niepełna produkcja,  wgranie zamówienia które wyjechało. Reszta kasowana przez edycję.
-+ update `order` set `order_error` = null WHERE `order_error` LIKE '0';
-+ Obliczanie materiałów.
-+ Teraz mamy nic nie rób lub insert podczas wgrywania. Zmienić na update lub insert (Na razie poprawione tylko dla Order).
-+ Podczas powtórnego drukowania ladeliste odznacz te które nie zostały ponownie wydane.
-+ Dokończenie z kodami kreskowymi.

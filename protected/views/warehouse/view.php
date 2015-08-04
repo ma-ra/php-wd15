@@ -30,6 +30,7 @@ $this->menu=array(
 		'document_name',
 		'warehouse_error',
 		'shopping_shopping_id',
+		'warehouse_delivery_date',
 		'creation_date',
 	),
 )); ?>

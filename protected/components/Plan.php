@@ -56,6 +56,12 @@ class Plan extends TCPDF {
 		$lines=0;
 		$w=$this->fieldsWidth;
 		foreach ($this->row as $index => $field) {
+			# zmniejszenie czcionki dla notatek
+			$this->SetFont("FreeSans", "", 8);
+			if ($index == 2) {
+				$this->SetFont("FreeSans", "", 6);
+			} 
+			
 			// getStringHeight ($w, $txt, $reseth=false, $autopadding=true, $cellpadding='', $border=0)
 			if ($textHeight < $this->getStringHeight($w[$index], $field)) {
 				$textHeight=$this->getStringHeight($w[$index], $field);
@@ -64,6 +70,7 @@ class Plan extends TCPDF {
 				
 		## drukujemy
 		foreach ($this->row as $index => $field) {
+			# obsługa tała do wybranych pól
 			$fill=0;
 			if ($this->orderDateAdded == $this->lastOrderDateAdded && $index == 1) {
 				$fill=1;
@@ -77,6 +84,13 @@ class Plan extends TCPDF {
 			if ($this->emptyShopping == 3 && ($index == 8 || $index == 9)) {
 				$fill=1;
 			} 
+			
+			# zmniejszenie czcionki dla notatek
+			$this->SetFont("FreeSans", "", 8);
+			if ($index == 2) {
+				$this->SetFont("FreeSans", "", 6);
+			} 
+			
 			
 			// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
 			$this->MultiCell($w[$index], $textHeight, $this->row[$index], 1, 'C', $fill, 0, '', '', true, 1);

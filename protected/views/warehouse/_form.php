@@ -68,6 +68,12 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->labelEx($model,'warehouse_delivery_date'); ?>
+		<?php echo $form->textField($model,'warehouse_delivery_date'); ?>
+		<?php echo $form->error($model,'warehouse_delivery_date'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->labelEx($model,'creation_date'); ?>
 		<?php echo $form->textField($model,'creation_date'); ?>
 		<?php echo $form->error($model,'creation_date'); ?>

@@ -34,6 +34,7 @@
  * @property string $article_exported
  * @property integer $article_canceled
  * @property string $order_error
+ * @property string $order_notes
  * @property string $order_add_date
  * @property string $order_storno_date
  * @property integer $checked
@@ -87,14 +88,14 @@ class Order extends CActiveRecord
 		return array(
 			array('order_number, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textile1_textile_id', 'required'),
 			array('article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id,  textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, textile_prepared, article_manufactured, article_canceled, checked, shopping1_shopping_id, shopping2_shopping_id, article_prepared_to_export', 'numerical', 'integerOnly'=>true),
-			array('order_number, buyer_order_number, order_term, article_exported, order_error, article_planed', 'length', 'max'=>50),
+			array('order_number, buyer_order_number, order_term, article_exported, order_error, article_planed, order_notes', 'length', 'max'=>50),
 			array('buyer_comments, order_reference', 'length', 'max'=>150),
 			array('order_price, order_total_price', 'length', 'max'=>9),
 			array('order_date, order_add_date, order_storno_date, printed_minilabel, printed_shipping_label', 'safe'),
 			array('order_date, buyer_order_number, buyer_comments, order_reference, textil_pair, textilpair_price_group, textile2_textile_id, printed_minilabel, printed_shipping_label, article_exported, article_planed', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, printed_minilabel, printed_shipping_label, article_manufactured, article_exported, manufacturerManufacturer_manufacturer_name, brokerBroker_broker_name, buyerBuyer_buyer_name_1, articleArticle_article_number, articleArticle_model_name, articleArticle_model_type, articleArticle_article_colli, legLeg_leg_type, textiles1_textile_number, textiles1_textile_name, textiles1_textile_price_groupe, textiles2_textile_number, textiles2_textile_name, textiles2_textile_price_group, textile1_textile_id, textile2_textile_id, checked, shopping1_shopping_id, shopping2_shopping_id, article_planed, article_prepared_to_export, shopping1Shopping_shopping_status, shopping2Shopping_shopping_status, order_price, order_total_price, order_storno_date, article_planed', 'safe', 'on'=>'search'),
+			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, printed_minilabel, printed_shipping_label, article_manufactured, article_exported, manufacturerManufacturer_manufacturer_name, brokerBroker_broker_name, buyerBuyer_buyer_name_1, articleArticle_article_number, articleArticle_model_name, articleArticle_model_type, articleArticle_article_colli, legLeg_leg_type, textiles1_textile_number, textiles1_textile_name, textiles1_textile_price_groupe, textiles2_textile_number, textiles2_textile_name, textiles2_textile_price_group, textile1_textile_id, textile2_textile_id, checked, shopping1_shopping_id, shopping2_shopping_id, article_planed, article_prepared_to_export, shopping1Shopping_shopping_status, shopping2Shopping_shopping_status, order_price, order_total_price, order_storno_date, article_planed, order_notes', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -150,6 +151,7 @@ class Order extends CActiveRecord
 			'article_exported' => 'wywieziono',
 			'article_canceled' => 'storno',
 			'order_error' => 'błąd',
+			'order_notes' => 'notatki',
 			'order_add_date' => 'data wgrania',
 			'order_storno_date' => 'data aktualizacji',
 			'checked' => '&nbsp&nbsp&nbsp&nbsp',
@@ -226,6 +228,7 @@ class Order extends CActiveRecord
 		}
 		$criteria->compare('article_canceled',$this->article_canceled);
 		$criteria->compare('order_error',$this->order_error,true);
+		$criteria->compare('order_notes',$this->order_notes,true);
 		$criteria->compare('order_add_date',$this->order_add_date,true);
 		$criteria->compare('order_storno_date',$this->order_storno_date,true);
 		$criteria->compare('checked',$this->checked);

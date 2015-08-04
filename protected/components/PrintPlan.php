@@ -140,6 +140,7 @@ class PrintPlan {
 			$order_id=$order->order_id;
 			$article_planed=preg_replace('/\/.*/i', "", $order->article_planed);
 			$order_number=$order->order_number;
+			$order_notes=$order->order_notes;
 			$article_number=$order->articleArticle->article_number;
 			$model_name=$order->articleArticle->model_name;
 			$model_type=$order->articleArticle->model_type;
@@ -212,7 +213,7 @@ class PrintPlan {
 				$this->pdf->row=array(
 					$article_planed,
 					$order_number,
-					"",
+					$order_notes,
 					$article_number,
 					$model_name,
 					$model_type,

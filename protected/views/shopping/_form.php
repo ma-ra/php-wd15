@@ -51,8 +51,26 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'shopping_term'); ?>
-		<?php echo $form->textField($model,'shopping_term'); ?>
+		<?php echo $form->textField($model,'shopping_term',array('size'=>50,'maxlength'=>50)); ?>
 		<?php echo $form->error($model,'shopping_term'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'shopping_date_of_shipment'); ?>
+		<?php echo $form->textField($model,'shopping_date_of_shipment',array('size'=>50,'maxlength'=>50)); ?>
+		<?php echo $form->error($model,'shopping_date_of_shipment'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'shopping_scheduled_delivery'); ?>
+		<?php echo $form->textField($model,'shopping_scheduled_delivery',array('size'=>50,'maxlength'=>50)); ?>
+		<?php echo $form->error($model,'shopping_scheduled_delivery'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'shopping_notes'); ?>
+		<?php echo $form->textField($model,'shopping_notes',array('size'=>50,'maxlength'=>50)); ?>
+		<?php echo $form->error($model,'shopping_notes'); ?>
 	</div>
 
 	<div class="row">

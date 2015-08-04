@@ -42,6 +42,10 @@
 	<?php echo CHtml::encode($data->shopping_shopping_id); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('warehouse_delivery_date')); ?>:</b>
+	<?php echo CHtml::encode($data->warehouse_delivery_date); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('creation_date')); ?>:</b>
 	<?php echo CHtml::encode($data->creation_date); ?>
 	<br />

@@ -13,6 +13,7 @@
  * @property string $document_name
  * @property string $warehouse_error
  * @property integer $shopping_shopping_id
+ * @property string $warehouse_delivery_date
  * @property string $creation_date
  *
  * The followings are the available model relations:
@@ -41,10 +42,11 @@ class Warehouse extends CActiveRecord
 			array('shopping_shopping_id', 'numerical', 'integerOnly'=>true),
 			array('warehouse_type, article_number, article_name, document_name, warehouse_error', 'length', 'max'=>50),
 			array('article_count, article_price', 'length', 'max'=>9),
-			array('shopping_shopping_id, warehouse_error, article_price', 'default', 'setOnEmpty' => true, 'value' => null),
+			array('shopping_shopping_id, warehouse_error, article_price, warehouse_delivery_date', 'default', 'setOnEmpty' => true, 'value' => null),
+			array('warehouse_delivery_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('warehouse_id, warehouse_type, article_number, article_name, article_count, article_price, document_name, warehouse_error, shopping_shopping_id, creation_date', 'safe', 'on'=>'search'),
+			array('warehouse_id, warehouse_type, article_number, article_name, article_count, article_price, document_name, warehouse_error, shopping_shopping_id, creation_date, warehouse_delivery_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -76,6 +78,7 @@ class Warehouse extends CActiveRecord
 			'document_name' => 'dokument',
 			'warehouse_error' => 'error',
 			'shopping_shopping_id' => 'id zakupu',
+			'warehouse_delivery_date' => 'data dostawy',
 			'creation_date' => 'data utworzenia',
 		);
 	}
@@ -107,6 +110,7 @@ class Warehouse extends CActiveRecord
 		$criteria->compare('document_name',$this->document_name,true);
 		$criteria->compare('warehouse_error',$this->warehouse_error,true);
 		$criteria->compare('shopping_shopping_id',$this->shopping_shopping_id);
+		$criteria->compare('warehouse_delivery_date',$this->warehouse_delivery_date,true);
 		$criteria->compare('creation_date',$this->creation_date,true);
 
 		return new CActiveDataProvider($this, array(

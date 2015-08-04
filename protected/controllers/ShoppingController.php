@@ -85,8 +85,8 @@ class ShoppingController extends Controller
 				$check[$key]=true;
 				$models[$key]->attributes=$_POST['Shopping'][$key];
 				# nie wiem dalczego, ale trzeba ręcznie przepisać
-				$models[$key]->order1_ids=$_POST['Shopping'][$key]['order1_ids'];
-				$models[$key]->order2_ids=$_POST['Shopping'][$key]['order2_ids'];
+				$models[$key]->order1_ids=isset($_POST['Shopping'][$key]['order1_ids']) ? $_POST['Shopping'][$key]['order1_ids'] : null;
+				$models[$key]->order2_ids=isset($_POST['Shopping'][$key]['order2_ids']) ? $_POST['Shopping'][$key]['order2_ids'] : null;
 				
 				#jeżeli podano 0, to znaczy, że nie zamawiamy
 				if ($models[$key]->article_amount != null and $models[$key]->article_amount == 0) {
@@ -231,7 +231,7 @@ class ShoppingController extends Controller
 	{
 		$model=new Shopping('search');
 		$model->unsetAttributes();  // clear any default values
-		$model->shopping_status='nowy';
+		$model->shopping_status='w trakcie';
 		if(isset($_GET['Shopping']))
 			$model->attributes=$_GET['Shopping'];
 

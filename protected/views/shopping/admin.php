@@ -9,6 +9,7 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 	//array('label'=>'Dodaj', 'url'=>array('create')),
+	array('label'=>'Dodaj ręcznie', 'url'=>array('create')),
 	array('label'=>'Wyświetl zamówienie', 'url'=>'#', 'itemOptions'=>array('id' => 'html-menu')),
 	array('label'=>'Drukuj zamówienie', 'url'=>'#', 'itemOptions'=>array('id' => 'print-menu')),
 );
@@ -44,6 +45,7 @@ $dialog = $this->widget('ext.ecolumns.EColumnsDialog', array(
 				'shopping_number',
 				array(
 						'header' => 'dostawca',
+						'name' => 'supplierSupplier.supplier_name',
 						'filter'=>CHtml::activeTextField($model,'textile_supplier_supplier_name'),
 						'type' => 'raw',
 						'value' => 'CHtml::encode(isset($data->textileTextile->supplierSupplier->supplier_name) ? $data->textileTextile->supplierSupplier->supplier_name : "-" )'
@@ -64,6 +66,9 @@ $dialog = $this->widget('ext.ecolumns.EColumnsDialog', array(
 				'article_amount',
 				'article_calculated_amount',
 				'shopping_term',
+            	'shopping_date_of_shipment',
+				'shopping_scheduled_delivery',
+				'shopping_notes',
 				array(
 						'name' => 'shopping_status',
 						'filter'=>array('w trakcie'=>'w trakcie','nowy'=>'nowy', 'wydrukowane'=>'wydrukowane', 'dostarczono'=>'dostarczono', 'częściowo'=>'częściowo'),

@@ -11,6 +11,9 @@
  * @property string $article_amount
  * @property string $article_calculated_amount
  * @property string $shopping_term
+ * @property string $shopping_date_of_shipment
+ * @property string $shopping_scheduled_delivery
+ * @property string $shopping_notes
  * @property string $shopping_status
  * @property string $shopping_printed
  * @property string $creation_time
@@ -48,13 +51,13 @@ class Shopping extends CActiveRecord
 		return array(
 			array('shopping_number, shopping_type, textile_textile_id, article_calculated_amount, creation_time', 'required'),
 			array('shopping_number, textile_textile_id', 'numerical', 'integerOnly'=>true),
-			array('shopping_type, shopping_status', 'length', 'max'=>50),
+			array('shopping_type, shopping_status, shopping_term, shopping_date_of_shipment, shopping_scheduled_delivery, shopping_notes', 'length', 'max'=>50),
 			array('article_amount, article_calculated_amount', 'length', 'max'=>9),
-			array('shopping_term, shopping_printed', 'safe'),
+			array('shopping_printed', 'safe'),
 			array('article_amount, shopping_term, shopping_status, shopping_printed', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('shopping_number, shopping_id, shopping_type, textile_textile_id, article_amount, article_calculated_amount, shopping_term, shopping_status, shopping_printed, creation_time, textile_supplier_supplier_name, textile_textile_number, textile_textile_name', 'safe', 'on'=>'search'),
+			array('shopping_number, shopping_id, shopping_type, textile_textile_id, article_amount, article_calculated_amount, shopping_term, shopping_status, shopping_printed, creation_time, textile_supplier_supplier_name, textile_textile_number, textile_textile_name, shopping_date_of_shipment, shopping_scheduled_delivery, shopping_notes', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -86,6 +89,9 @@ class Shopping extends CActiveRecord
 			'article_amount' => 'ilość',
 			'article_calculated_amount' => 'wyliczona ilość',
 			'shopping_term' => 'termin',
+			'shopping_date_of_shipment' => 'data wysyłki',
+			'shopping_scheduled_delivery' => 'planowana dostawa',
+			'shopping_notes' => 'notatki',
 			'shopping_status' => 'status zakupów',
 			'shopping_printed' => 'wydrukowane',
 			'creation_time' => 'data utworzenia',
@@ -117,11 +123,14 @@ class Shopping extends CActiveRecord
 		$criteria->compare('article_amount',$this->article_amount,true);
 		$criteria->compare('article_calculated_amount',$this->article_calculated_amount,true);
 		$criteria->compare('shopping_term',$this->shopping_term,true);
+		$criteria->compare('shopping_date_of_shipment',$this->shopping_date_of_shipment,true);
+		$criteria->compare('shopping_scheduled_delivery',$this->shopping_scheduled_delivery,true);
+		$criteria->compare('shopping_notes',$this->shopping_notes,true);
 		$criteria->compare('shopping_printed',$this->shopping_printed,true);
 		$criteria->compare('creation_time',$this->creation_time,true);
 		if ($this->shopping_status == "w trakcie") {
-			$criteria->addCondition('shopping_status not like :shopping_status' );
-			$criteria->params=array_merge($criteria->params,array(':shopping_status'=>'%dostarczono%'));
+			$criteria->addCondition('shopping_status not like :shopping_status and shopping_status not like :canceled');
+			$criteria->params=array_merge($criteria->params,array(':shopping_status'=>'%dostarczono%', ':canceled'=>'%anulowan%'));
 		} else {
 			$criteria->compare('shopping_status',$this->shopping_status,true);
 		}

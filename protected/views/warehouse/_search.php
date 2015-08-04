@@ -57,6 +57,11 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->label($model,'warehouse_delivery_date'); ?>
+		<?php echo $form->textField($model,'warehouse_delivery_date'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->label($model,'creation_date'); ?>
 		<?php echo $form->textField($model,'creation_date'); ?>
 	</div>

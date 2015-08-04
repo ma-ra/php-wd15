@@ -43,7 +43,22 @@
 
 	<div class="row">
 		<?php echo $form->label($model,'shopping_term'); ?>
-		<?php echo $form->textField($model,'shopping_term'); ?>
+		<?php echo $form->textField($model,'shopping_term',array('size'=>50,'maxlength'=>50)); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'shopping_date_of_shipment'); ?>
+		<?php echo $form->textField($model,'shopping_date_of_shipment',array('size'=>50,'maxlength'=>50)); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'shopping_scheduled_delivery'); ?>
+		<?php echo $form->textField($model,'shopping_scheduled_delivery',array('size'=>50,'maxlength'=>50)); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'shopping_notes'); ?>
+		<?php echo $form->textField($model,'shopping_notes',array('size'=>50,'maxlength'=>50)); ?>
 	</div>
 
 	<div class="row">

@@ -66,6 +66,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'document_name',
 		'warehouse_error',
 		'shopping_shopping_id',
+		'warehouse_delivery_date',
 		'creation_date',
 		array(
 			'class'=>'CButtonColumn',

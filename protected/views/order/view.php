@@ -50,6 +50,7 @@ $this->menu=array(
 		'article_exported',
 		'article_canceled',
 		'order_error',
+		'order_notes',
 		'order_add_date',
 		'order_storno_date',
 		'checked',

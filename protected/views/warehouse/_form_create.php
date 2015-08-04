@@ -51,6 +51,9 @@ die(); */
 			<td>
 					<?php echo $form->labelEx($models[key($models)],'document_name'); ?>
 			</td>
+			<td>
+					<?php echo $form->labelEx($models[key($models)],'warehouse_delivery_date'); ?>
+			</td>
 			<td>							
 					<?php echo $form->labelEx($models[key($models)],'shopping_shopping_id'); ?>
 			</td>				
@@ -79,6 +82,10 @@ die(); */
 				echo "<td>\n";
 					echo $form->textField($model,"[$key]" . 'document_name',array('size'=>20,'maxlength'=>50));
 					echo $form->error($model,"[$key]" . 'document_name');
+				echo "</td>\n";
+				echo "<td>\n";							
+					echo $form->dateField($model,"[$key]" . 'warehouse_delivery_date');
+					echo $form->error($model,"[$key]" . 'warehouse_delivery_date');
 				echo "</td>\n";
 				echo "<td>\n";							
 					echo $form->textField($model,"[$key]" . 'shopping_shopping_id');

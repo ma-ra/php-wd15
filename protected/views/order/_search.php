@@ -133,7 +133,7 @@
 
 	<div class="row">
 		<?php echo $form->label($model,'article_planed'); ?>
-		<?php echo $form->textField($model,'article_planed'); ?>
+		<?php echo $form->textField($model,'article_planed',array('size'=>50,'maxlength'=>50)); ?>
 	</div>
 
 	<div class="row">
@@ -159,6 +159,11 @@
 	<div class="row">
 		<?php echo $form->label($model,'order_error'); ?>
 		<?php echo $form->textField($model,'order_error',array('size'=>50,'maxlength'=>50)); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'order_notes'); ?>
+		<?php echo $form->textField($model,'order_notes',array('size'=>50,'maxlength'=>50)); ?>
 	</div>
 
 	<div class="row">

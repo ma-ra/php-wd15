@@ -34,6 +34,18 @@
 	<br />
 
 	<?php /*
+	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping_date_of_shipment')); ?>:</b>
+	<?php echo CHtml::encode($data->shopping_date_of_shipment); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping_scheduled_delivery')); ?>:</b>
+	<?php echo CHtml::encode($data->shopping_scheduled_delivery); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping_notes')); ?>:</b>
+	<?php echo CHtml::encode($data->shopping_notes); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping_status')); ?>:</b>
 	<?php echo CHtml::encode($data->shopping_status); ?>
 	<br />

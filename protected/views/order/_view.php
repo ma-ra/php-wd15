@@ -126,6 +126,10 @@
 	<?php echo CHtml::encode($data->order_error); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('order_notes')); ?>:</b>
+	<?php echo CHtml::encode($data->order_notes); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('order_add_date')); ?>:</b>
 	<?php echo CHtml::encode($data->order_add_date); ?>
 	<br />

@@ -159,7 +159,7 @@
 	
 	<div class="row">
 		<?php echo $form->labelEx($model,'article_planed'); ?>
-		<?php echo $form->textField($model,'article_planed'); ?>
+		<?php echo $form->textField($model,'article_planed',array('size'=>50,'maxlength'=>50)); ?>
 		<?php echo $form->error($model,'article_planed'); ?>
 	</div>
 	
@@ -191,6 +191,12 @@
 		<?php echo $form->labelEx($model,'order_error'); ?>
 		<?php echo $form->textField($model,'order_error', array('size'=>50,'maxlength'=>50)); ?>
 		<?php echo $form->error($model,'order_error'); ?>
+	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'order_notes'); ?>
+		<?php echo $form->textField($model,'order_notes',array('size'=>50,'maxlength'=>50)); ?>
+		<?php echo $form->error($model,'order_notes'); ?>
 	</div>
 
 	<div class="row">
