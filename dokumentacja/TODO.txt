@@ -1,8 +1,4 @@
-* Wczytywanie zamówień - poprawna obsługa zdublowanych wierszy (zwiększać ilość zamówienia, która odpowiada sumie z wszystkich dublii). Na podstawie e-mail z dnia 2015-08-03
-* Dodać możliwość dodawania notatek do zamówień, które wydrukują się na zamówieniach.
 * Wykrywanie niekompletności w planie (brak rozplanowanego całego numeru zamówienia).
-* Dodatć następujące pola do zakupów: notki, data wysyłki, planowana data dostarczenia
-* Weryfikacja drugiego materiału (czy np. pojawia się dla 4cyfrowego numeru pary).
 * Sumowanie zakupów do jednego zamówienia.
 * Zamówienia na krój - obsługa drugiego dostawcy.
 
@@ -10,3 +6,9 @@
 * Shopping create/automatic create error - ukryte pola na numery id zamówień. Czy po błędzie nie zmini się numer zamówienia? Pewnie tak, a nie powinien.
 * Kody kreskowe dla działu wykrojów.
 * Tłumaczenia.
+
++ Dodać możliwość dodawania notatek do zamówień, które wydrukują się na zamówieniach.
++ Dodatć następujące pola do zakupów: notki, data wysyłki, planowana data dostarczenia
++ Wczytywanie zamówień - poprawna obsługa zdublowanych wierszy (zwiększać ilość zamówienia, która odpowiada sumie z wszystkich dublii). Na podstawie e-mail z dnia 2015-08-03
++ Weryfikacja drugiego materiału (czy np. pojawia się dla 4cyfrowego numeru pary).
++ Zmiany w adresie odbiorcy.

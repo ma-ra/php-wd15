@@ -139,6 +139,8 @@ class OrderController extends Controller
 					}
 					
 					$transaction->commit();
+					# komunikaty sa zapisywane do tablicy, gdzie 1success jest kluczem - stąd jedynka, aby kilka succes nie nałożyło się;
+					# 1success po obcięciu pierwszej cyfry, jest również nazwą klasy css wpływającej na kolor powiadomienia
 					Yii::app()->user->setFlash('1success','Poprawnie skasowane stare błędy typu: "exported".');
 				} catch(Exception $e) {
 					$transaction->rollBack();
@@ -160,6 +162,46 @@ class OrderController extends Controller
 					if ($handle) {
 						while (($buffer = fgets($handle, 4096)) !== false) {
 							$line=explode("^",$buffer);
+							####
+							# Rozpiska kolumn z zaczytywanego pliku
+							# $line[0] - Lieferant Nr.
+							# $line[1] - Lieferant
+							# $line[2] - Jahr
+							# $line[3] - Best.Nr.
+							# $line[4] - Best.Datum
+							# $line[5] - Lieferanschrift - Name
+							# $line[6] - Lieferanschrift - Name 2
+							# $line[7] - Lieferanschrift - Strasse
+							# $line[8] - Lieferanschrift - PLZ & Ort
+							# $line[9] - Bestellnr./Kunde
+							# $line[10] - Werbung
+							# $line[11] - Art.Nr.
+							# $line[12] - Modelltext
+							# $line[13] - Ausführung
+							# $line[14] - Füße
+							# $line[15] - Stoff Nr.
+							# $line[16] - Stoff Text 1
+							# $line[17] - Stoff Text 2
+							# $line[18] - EK Gruppe
+							# $line[19] - Referenz
+							# $line[20] - Kommission
+							# $line[21] - Termintext
+							# $line[22] - Termin KW
+							# $line[23] - Preis
+							# $line[24] - Rückstand
+							# $line[25] - Betrag
+							# $line[26] - Rabatt/Z. 1
+							# $line[27] - Rabatt/Z. Text 1
+							# $line[28] - Rabatt/Z. 2
+							# $line[29] - Rabatt/Z. Text 2
+							# $line[30] - Rabatt/Z. 3
+							# $line[31] - Rabatt/Z. Text 3
+							# $line[32] - Rabatt/Z. 4
+							# $line[33] - Rabatt/Z. Text 4
+							# $line[34] - Rabatt/Z. 5
+							# $line[35] - Rabatt/Z. Text 5
+							####
+							
 							if ($line[0] != 75007) {
 								continue;
 							}
@@ -257,7 +299,15 @@ class OrderController extends Controller
 							$article->article_number=$line[11];
 							$article->save();
 							
-							# pierwszy deseń
+							####
+							# Textile - update or insert
+							####
+							
+							###
+							# Pierwszy deseń
+							###
+							
+							# zebranie informacji o pierwszym deseniu
 							if ($line[15]>999) { #Jeden deseń na zamówieniu
 								$textile_number=$line[15];
 								$textile_price_group=$line[18];
@@ -267,9 +317,7 @@ class OrderController extends Controller
 								$textile_price_group=0; #przy dwuch, mamy grupę dla dwuch materiałów i zapisujemy gdzie indziej
 							}
 							
-							####
-							# Textile - update or insert
-							####
+							# textile1 - update or insert
 							$textile=Textile::model()->find(array(
 								'condition'=>'textile_number=:number AND textile_name=:name AND textile_price_group=:group',
 								'params'=>array(':number'=>$textile_number,
@@ -288,7 +336,10 @@ class OrderController extends Controller
 							$textile->textile_name=$line[16];
 							$textile->save();
 							
-							# drugi deseń
+							###
+							# Drugi deseń
+							###
+							$secTextileError=null;
 							if ($line[15]<=999) {
 								preg_match('/([0-9]{4})/i',$line[17],$matches);
 								# textile2 - update or insert
@@ -309,14 +360,23 @@ class OrderController extends Controller
 								$textile2->textile_name=$line[17];
 								$textile2->textile_price_group=0; #przy dwuch, mamy grupę dla dwuch materiałów i zapisujemy gdzie indziej
 								$textile2->save();
+							} else {
+								# zgłoś błąd, jeżeli numer pary jest 4-cyfrowy, a pojawi sie drugi deseń
+								$test=rtrim(preg_match('/([0-9]{4})/i',$line[17],$matches));
+								if (!empty($test)) {
+									$secTextileError="sec-textile";
+								}
 							}
 							
 							####
 							# Order - update or insert
 							####
+							
+							# order_storno_date!=:currenDate -> jeżeli podczas jednego wgrywania pojawi się dubel, to zapisujemy go do bazy
+							# na podstawie e-maila wysłanego/odebranego od Bartka Rabsha z dnia: 2015-08-03
 							$order=Order::model()->find(array(
-								'condition'=>'order_number=:order_number AND article_article_id=:article_id',
-								'params'=>array(':order_number'=>$line[3], ':article_id'=>$article->article_id),
+								'condition'=>'order_number=:order_number AND article_article_id=:article_id AND order_storno_date!=:currenDate',
+								'params'=>array(':order_number'=>$line[3], ':article_id'=>$article->article_id, ':currenDate'=>$currentDate),
 								#ostatni element
 								'order' => "order_id DESC",
 								'limit' => 1
@@ -326,6 +386,7 @@ class OrderController extends Controller
 								# jak nowy, to ustaw datę wgrania, w przeciwnym wypadku zostanie poprzednia data wgrania
 								$order->order_add_date=$currentDate;
 							}
+							# storno_date - czyli data aktualizacji
 							$order->order_storno_date=$currentDate;
 							# oznacz zmianę ilości
 							if (isset($order->article_amount) && $order->article_amount != $line[24]) {
@@ -345,8 +406,27 @@ class OrderController extends Controller
 							$order->order_number=$line[3];
 							$order->order_reference=$line[19];
 							$order->order_term=$line[22];
+							
+							###
+							# Wiązanie Order z innymi tabelami
+							###
 							$order->article_article_id=$article->article_id;
 							$order->leg_leg_id=$leg->leg_id;
+							$order->broker_broker_id=$broker->broker_id;
+							$order->manufacturer_manufacturer_id=$manufacturer->manufacturer_id;
+							
+							# jeżeli zmienił się adres dostawy (zmiana id kupującego), to zgłoś błąd
+							if (isset($order->buyer_buyer_id) && $order->buyer_buyer_id != $buyer->buyer_id) {
+								$buyerError="buyer";
+							} else {
+								$buyerError=null;
+							}
+							$order->buyer_buyer_id=$buyer->buyer_id;
+							
+							###
+							# Wiązanie Order z odpowiednimi materiałami, oraz pobranie informacji o nich
+							###
+							
 							#Jeżeli mamy dwa desenie							
 							if ($line[15]<=999) {
 								$order->textil_pair=$line[15];
@@ -355,11 +435,12 @@ class OrderController extends Controller
 							} else {
 								$order->textile2_textile_id=null;
 							}
-							# pierwszy deseń zawsze zapisuj
+							# pierwszy deseń zawsze występuje
 							$order->textile1_textile_id=$textile->textile_id;
-							$order->buyer_buyer_id=$buyer->buyer_id;
-							$order->broker_broker_id=$broker->broker_id;
-							$order->manufacturer_manufacturer_id=$manufacturer->manufacturer_id;
+							
+							###
+							# Dodatkowe operacje
+							###
 							
 							# oznacz niepoprawne storno
 							if (isset($order->article_canceled) && $order->article_canceled != 0) {
@@ -381,6 +462,29 @@ class OrderController extends Controller
 								$order->order_error=$error;
 							}
 							
+							# oznacz błąd typu "sec-textile" wykryty w sekcji "Textile - update or insert"
+							if (isset($secTextileError)) {
+								$error=explode("|", $order->order_error);
+								if (!in_array($secTextileError, $error)) {
+									array_push ( $error , $secTextileError);
+								}
+								$error=implode("|", $error);
+								$order->order_error=$error;
+							}
+							
+							# oznacz błąd typu "buyer" wykryty w sekcji "Wiązanie Order z innymi tabelami"
+							if (isset($buyerError)) {
+								$error=explode("|", $order->order_error);
+								if (!in_array($buyerError, $error)) {
+									array_push ( $error , $buyerError);
+								}
+								$error=implode("|", $error);
+								$order->order_error=$error;
+							}
+							
+							###
+							# Finalny zapis Order
+							###
 							$order->save();
 							
 						}
