@@ -224,9 +224,6 @@ $this->widget('ext.selgridview.SelGridView', array(
 	'columns'=>$dialog->columns(),
     'template' => $dialog->link()."{summary}\n{items}\n{pager}",
 )); 
-echo CHtml::submitButton('Drukuj etykiety') . "<br>";
-echo CHtml::submitButton('Drukuj listę załadunkową') . "<br>";
-echo CHtml::submitButton('Drukuj etykiety na wykroje') . "<br>";
 echo CHtml::endForm();
 
 $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
@@ -263,33 +260,56 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 		    ajaxStart: function() { $body.addClass("loading");    },
 		    ajaxStop: function() { $body.removeClass("loading"); }    
 		});     
-		 
-		//najpierw ukrywamy orginalne przyciski
-		$('input[value="Drukuj etykiety na wykroje"]').hide();
-		$('input[value="Drukuj etykiety"]').hide();
-		$('input[value="Drukuj listę załadunkową"]').hide();
-		
-		//realizujemy kliknięcie za pomocą linku
+
+		//
+		// Wysyłka za pomocą linku i dodatkowej informacji w formularzu
+		//
 		$("li#print_label a").click(function(event) {
+			//dodajemy informację do POST po przez ukryte pole
+			var input = $("<input>")
+	            .attr("type", "hidden")
+	            .attr("name", "shipping_label")
+	            .val("shipping_label");
+			$("form#check_form").append($(input));
+			//zatwierdzenie formularza
 			$("form#check_form").attr("target","_blank");
-			$('input[value="Drukuj etykiety"]').click();
+			$("form#check_form").submit();
 			$("form#check_form").attr("target","_self");
+			input.remove();
 			event.preventDefault();
 		});
 		$("li#print_transport_list a").click(function(event) {
+			//dodajemy informację do POST po przez ukryte pole
+			var input = $("<input>")
+	            .attr("type", "hidden")
+	            .attr("name", "ladeliste")
+	            .val("ladeliste");
+			$("form#check_form").append($(input));
+			//zatwierdzenie formularza
 			$("form#check_form").attr("target","_blank");
-			$('input[value="Drukuj listę załadunkową"]').click();
+			$("form#check_form").submit();
 			$("form#check_form").attr("target","_self");
+			input.remove();
 			event.preventDefault();
 		});
 		$("li#print_minilabel a").click(function(event) {
+			//dodajemy informację do POST po przez ukryte pole
+			var input = $("<input>")
+	            .attr("type", "hidden")
+	            .attr("name", "minilabel")
+	            .val("minilabel");
+			$("form#check_form").append($(input));
+			//zatwierdzenie formularza
 			$("form#check_form").attr("target","_blank");
-			$('input[value="Drukuj etykiety na wykroje"]').click();
+			$("form#check_form").submit();
 			$("form#check_form").attr("target","_self");
+			input.remove();
 			event.preventDefault();
 		});
-		
-		//wysyłka za pomocą linku i dodatkowej informacji w POST
+
+		//
+		// Wysyłka za pomocą linku ze zmianą celu i dodatkowej informacji w POST
+		//
 		$("li#summary a").click(function(event) {
 			//dodajemy informację do POST po przez ukryte pole
 			var input = $("<input>")
@@ -304,6 +324,7 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("form#check_form").attr("target","_blank")
 			$("form#check_form").submit();
 			$("form#check_form").attr("target","_self")
+			input.remove();
 			//przywracamy cel wysłania danych
 			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
 			event.preventDefault();
@@ -322,10 +343,15 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("form#check_form").attr("target","_blank")
 			$("form#check_form").submit();
 			$("form#check_form").attr("target","_self")
+			input.remove();
 			//przywracamy cel wysłania danych
 			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
 			event.preventDefault();
 		});
+
+		//
+		// Wysyłka za pomocą linku i dodatkowej informacji w GET pobranej ze specjalnego formularza
+		//
 		$("li#create_plan a").click(function(event) {
 			//dialog - tytuł + treść html (zwykły input)
 			$("#mydialog").dialog( "option", "title", "Podaj numer planu" );
@@ -366,6 +392,10 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("#mydialog").dialog( "open" );
 			event.preventDefault();
 		});
+
+		//
+		// Wysyłka za pomocą linku i dodatkowej informacji w GET
+		//
 		$("li#print_plan a").click(function(event) {
 			//zmieniamy cel wysłania danych
 			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/printPlan", array('act'=>'print_plan'))?>");
@@ -426,9 +456,10 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
 			event.preventDefault();
 		});
-		
 
-		//wysyłka za pomocą linku i dodatkowej informacji w GET
+		//
+		// Wysyłka ajaxem
+		//
 		$("li#set_check a").click(function(event) {
 			//wysyłka ajaxem
 			$.ajax({

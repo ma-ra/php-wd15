@@ -871,7 +871,7 @@ class OrderController extends Controller
 	public function actionPrint()
 	{
 		#Mini etykiety
-		if (isset($_POST) && isset($_POST["yt2"])) {
+		if (isset($_POST) && isset($_POST["minilabel"])) {
 			if (isset($_POST["select"])) {
 				#Przygotowanie wydruku
 				// Instanciation of inherited class
@@ -941,7 +941,7 @@ class OrderController extends Controller
 		}
 		
 		#Ladeliste
-		if (isset($_POST) && isset($_POST["yt1"])) {
+		if (isset($_POST) && isset($_POST["ladeliste"])) {
 			if (isset($_POST["select"])) {
 				#Przygotowanie wydruku
 				// Instanciation of inherited class
@@ -1043,7 +1043,7 @@ class OrderController extends Controller
 		}
 		
 		#Etykiety transportowe
-		if (isset($_POST) && isset($_POST["yt0"])) {
+		if (isset($_POST) && isset($_POST["shipping_label"])) {
 			if (isset($_POST["select"])) {
 				#Przygotowanie wydruku
 				// Instanciation of inherited class
