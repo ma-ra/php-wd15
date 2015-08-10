@@ -43,7 +43,7 @@ class EColumnsDialog extends CJuiDialog
         
         //handler for click on link
         yii::app()->clientScript->registerScript($this->getLinkId(), "
-           jQuery('#{$this->getLinkId()}').live('click', function() { jQuery('#{$this->getId()}').dialog('open'); return false; })
+           jQuery(document).on('click', '#{$this->getLinkId()}', function() { jQuery('#{$this->getId()}').dialog('open'); return false; })
         ", CClientScript::POS_READY);       
     }    
     
