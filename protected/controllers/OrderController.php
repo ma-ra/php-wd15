@@ -1096,7 +1096,7 @@ class OrderController extends Controller
 			#zdekodowanie otrzymanych danych
 			$json = json_decode($_POST["data"]);
 			
-			#liczymy ilości w tablicy, a dopiero póniej zapisujemy policzone do bazy
+			#liczymy ilości dla każdego id w tablicy, a dopiero póniej zapisujemy policzone do bazy
 			$orders=array();
 			foreach ($json->values as $key => $values) {
 				$id=substr($values, 0, 7);
@@ -1104,15 +1104,24 @@ class OrderController extends Controller
 				$coli=substr($values, 10, 1);
 				$coli_amount=substr($values, 11, 1);
 				
-				#inicjujemy indeks, na potrzeby dalszej inkrementacji
+				# inicjujemy indeks, na potrzeby dalszej inkrementacji
 				if (!array_key_exists($id, $orders)) {
 					$orders[$id]["count"] = 0;
-					$orders[$id]["coli"] = 0;
+					# osobno zliczamy coli dla kroju i tapicernii
+					$orders[$id]["cut_coli"] = 0;
+					$orders[$id]["upholstery_coli"] = 0;
 				} 
 				
-				$orders[$id]["coli"]+=1;
+				# W przypadku skanowanie etykiet z kroju nie rozróżniamy coli, z tąd otrzymujemy wartość 0,
+	        	# którą traktujemy, tak jakby wszystkie coli były zeskanowane.
+	        	if ($coli == 0) {
+	        		$orders[$id]["cut_coli"]+=$coli_amount;
+	        	} else {
+					$orders[$id]["upholstery_coli"]+=1;
+	        	}
 				
-				if ($coli_amount == 1) {
+	        	# jw. 0 coli traktujemy tak jakby wszystkie były zeskanowane, co jest podobne do zeskanowania 1 z 1 coli
+				if ($coli_amount == 1 || $coli == 0) {
 					$orders[$id]["count"]+=1;
 				} else if ($coli_amount == 2) {
 					$orders[$id]["count"]+=0.5;
@@ -1145,7 +1154,7 @@ class OrderController extends Controller
 				if (empty($order)) {
 					#przygotowanie odpowiedzi dla aplikacji w przypadku nieznanych kodów kreskowych
 					$totalBadCount+=$values["count"];
-					$totalBadColi+=$values["coli"];
+					$totalBadColi+=$values["cut_coli"] + $values["upholstery_coli"];
 					
 					#pobranie listy kodów kreskowych
 					foreach ($json->values as $nothing => $barcode) {
@@ -1155,10 +1164,11 @@ class OrderController extends Controller
 						}
 					}
 				} else {
-					$order->article_manufactured+=$values["coli"];
+					$order->article_manufactured+=$values["upholstery_coli"];
+					$order->textile_prepared+=$values["cut_coli"];
 					$order->save();
 					$totalCount+=$values["count"];
-					$totalColi+=$values["coli"];
+					$totalColi+=$values["cut_coli"] + $values["upholstery_coli"];
 				}
 			}
 			

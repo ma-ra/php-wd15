@@ -98,8 +98,9 @@ class MiniLabel extends FPDF {
 		$this->Cell(25, 25, "", 1, 1, "L");
 		
 		# QRCode
+		$number=sprintf('%012d', $this->qrcode);
 		# $Qrcode = new QRCode ("Twoja wiadomość tutaj", "H");  // Poziom błędu: L, M, P, H
-		$qrcode = new QRcode($this->qrcode, "L"); //The string you want to encode
+		$qrcode = new QRcode($number, "L"); //The string you want to encode
 		$qrcode->disableBorder();
 		$qrcode->displayFPDF($this, $x+1.5, $y+1.5, 22); //PDF object, X pos, Y pos, Size of the QR code 
 	}
