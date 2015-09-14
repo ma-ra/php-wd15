@@ -29,7 +29,7 @@ class ConfigurationController extends Controller
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
 				'actions'=>array('index','view', 'update', 'admin'),
-				'users'=>array('asia', 'gosia', 'mara', 'mariola', 'pawel'),
+				'users'=>array('asia', 'gosia', 'mara', 'mariola', 'michalina' ,'pawel'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
 					'actions'=>array('create', 'delete'),

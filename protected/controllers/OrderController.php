@@ -30,10 +30,10 @@ class OrderController extends Controller
 			array('allow',  // allow all users to perform 'index' and 'view' actions
 				'actions'=>array('index','view', 'update', 'admin', 'checked', 'manufactured', 
 						         'prepared', 'canceled', 'summary', 'textileSummary', 'print', 'printPlan'),
-				'users'=>array('asia', 'gosia', 'mara', 'mariola', 'pawel'),
+				'users'=>array('asia', 'gosia', 'mara', 'mariola', 'michalina', 'pawel'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-					'actions'=>array('create', 'admin2', 'delete', 'upload', 'printOrdersWithPrice', 'searchTextiles'),
+					'actions'=>array('create', 'delete', 'upload', 'printOrdersWithPrice', 'searchTextiles'),
 					'users'=>array('mara','asia'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
