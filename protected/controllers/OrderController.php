@@ -488,7 +488,7 @@ class OrderController extends Controller
 						while (($buffer = fgets($handle, 4096)) !== false) {
 							$line=explode("^",$buffer);
 							####
-							# Rozpiska kolumn z zaczytywanego pliku
+							# Rozpiska kolumn z zaczytywanego pliku (stara wersja)
 							# $line[0] - Lieferant Nr.
 							# $line[1] - Lieferant
 							# $line[2] - Jahr
@@ -527,7 +527,54 @@ class OrderController extends Controller
 							# $line[35] - Rabatt/Z. Text 5
 							####
 							
-							if ($line[0] != 75007) {
+							####
+							# Rozpiska kolumn z zaczytywanego pliku (nowa wersja)
+							# $line[0] - Bestellnr.
+							# $line[1] - Registrierungsdatum
+							# $line[2] - Registriert bei
+							# $line[3] - Bestellstatus
+							# $line[4] - Produktionswoche
+							# $line[5] - Lieferant Nummer
+							# $line[6] - Lieferant Name
+							# $line[7] - Kunde - Name
+							# $line[8] - Kunde - Straße
+							# $line[9] - Kunde - PLZ
+							# $line[10] - Kunde - Stadt
+							# $line[11] - Kundenauftragsnummer
+							# $line[12] - Kunde - Email
+							# $line[13] - Kunde - Telefonnummer
+							# $line[14] - Kunde - Faxnummer
+							# $line[15] - Lieferanschrift - Name
+							# $line[16] - Lieferanschrift - Straße
+							# $line[17] - Lieferanschrift - PLZ
+							# $line[18] - Lieferanschrift - Stadt
+							# $line[19] - Möbel-Status
+							# $line[20] - Position
+							# $line[21] - EAN-Nr.
+							# $line[22] - Art.Nr.
+							# $line[23] - Modelltext
+							# $line[24] - Ausführung
+							# $line[25] - Stoff Nr.
+							# $line[26] - Stoff Text 1
+							# $line[27] - Stoff Text 2
+							# $line[28] - Füße
+							# $line[29] - Preis
+							# $line[30] - Referenz
+							# $line[31] - Kommission
+							# $line[32] - Versand Woche
+							# $line[33] - Colli
+							# $line[34] - [m3]
+							# $line[35] - [kg]
+							# $line[36] - Preis
+							# $line[37] - Tour nr.
+							# $line[38] - Versand Datum
+							# $line[39] - Grund für die Rückgabe
+							# $line[40] - Transport Nummer
+							# $line[41] - Transport Datum
+							# $line[42] - Kommentar
+							####
+							
+							if ($line[5] != 75007) {
 								continue;
 							}
 							
@@ -535,11 +582,11 @@ class OrderController extends Controller
 							# Buyer - update or insert
 							####
 							$buyer=Buyer::model()->find(array(
-								'condition'=>'buyer_name_1=:name1 AND buyer_name_2=:name2 AND buyer_street=:street AND buyer_zip_code=:zip_code',
-								'params'=>array(':name1'=>$line[5], 
-									':name2'=>$line[6],
-					 				':street'=>$line[7],
-									':zip_code'=>$line[8],
+								'condition'=>'buyer_name_1=:name1 AND buyer_name_2 is :name2 AND buyer_street=:street AND buyer_zip_code=:zip_code',
+								'params'=>array(':name1'=>$line[15], 
+									':name2'=>null,
+					 				':street'=>$line[16],
+									':zip_code'=>$line[17] . " " . $line[18],
 								),
 								# ostatni element
 								'order' => "buyer_id DESC",
@@ -548,10 +595,10 @@ class OrderController extends Controller
 							if (empty($buyer)) {
 								$buyer=new Buyer('upload');
 							}
-							$buyer->buyer_name_1=$line[5];
-							$buyer->buyer_name_2=$line[6];
-							$buyer->buyer_street=$line[7];
-							$buyer->buyer_zip_code=$line[8];
+							$buyer->buyer_name_1=$line[15];
+							$buyer->buyer_name_2=null;
+							$buyer->buyer_street=$line[16];
+							$buyer->buyer_zip_code=$line[17] . " " . $line[18];
 							$buyer->save();
 							
 							####
@@ -575,8 +622,8 @@ class OrderController extends Controller
 							####
 							$manufacturer=Manufacturer::model()->find(array(
 								'condition'=>'manufacturer_name=:name AND manufacturer_number=:number',
-								'params'=>array(':name'=>$line[1],
-												':number'=>$line[0],
+								'params'=>array(':name'=>$line[6],
+												':number'=>$line[5],
 								),
 								# ostatni element
 								'order' => "manufacturer_id DESC",
@@ -585,8 +632,8 @@ class OrderController extends Controller
 							if (empty($manufacturer)) {
 								$manufacturer=new Manufacturer('upload');
 							}
-							$manufacturer->manufacturer_number=$line[0];
-							$manufacturer->manufacturer_name=$line[1];
+							$manufacturer->manufacturer_number=$line[5];
+							$manufacturer->manufacturer_name=$line[6];
 							$manufacturer->save();
 							
 							####
@@ -594,7 +641,7 @@ class OrderController extends Controller
 							####
 							$leg=Leg::model()->find(array(
 								'condition'=>'leg_type=:leg',
-								'params'=>array(':leg'=>$line[14]),
+								'params'=>array(':leg'=>$line[28]),
 								#ostatni element
 								'order' => "leg_id DESC",
 								'limit' => 1
@@ -602,7 +649,7 @@ class OrderController extends Controller
 							if (empty($leg)) {
 								$leg=new Leg('upload');
 							}
-							$leg->leg_type=$line[14];
+							$leg->leg_type=$line[28];
 							$leg->save();
 							
 							####
@@ -610,21 +657,21 @@ class OrderController extends Controller
 							####
 							$article=Article::model()->find(array(
 								'condition'=>'article_number=:number',
-								'params'=>array(':number'=>$line[11]),
+								'params'=>array(':number'=>$line[22]),
 								#ostatni element
 								'order' => "article_id DESC",
 								'limit' => 1
 							));
 							if (empty($article)) {
 								$article=new Article('upload');
-								$article->article_colli=1;
-								$article->model_name=$line[12];
-								$article->model_type=$line[13];
+								$article->article_colli=$line[33];
+								$article->model_name=$line[23];
+								$article->model_type=$line[24];
 							}
-							$article->article_number=$line[11];
+							$article->article_number=$line[22];
 							# poprawiamy nazwę/typ modelu na podstawie wzorca - często nazwy w pliku są ucięte
-							if (array_key_exists($article->article_number, $correctTypeList)) {
-								$article->model_type=$correctTypeList[$article->article_number];
+							if (array_key_exists(substr($article->article_number,0,8), $correctTypeList)) {
+								$article->model_type=$correctTypeList[substr($article->article_number,0,8)];
 							} 
 							$article->save();
 							
@@ -637,20 +684,21 @@ class OrderController extends Controller
 							###
 							
 							# zebranie informacji o pierwszym deseniu
-							if ($line[15]>999) { #Jeden deseń na zamówieniu
-								$textile_number=$line[15];
-								$textile_price_group=$line[18];
+							if ($line[25]>999) { #Jeden deseń na zamówieniu
+								$textile_number=$line[25];
 							} else { # dwa desenie na zamówieniu
-								preg_match('/([0-9]{4})/i',$line[16],$matches);
+								preg_match('/([0-9]{4})/i',$line[26],$matches);
 								$textile_number=$matches[1];
-								$textile_price_group=0; #przy dwuch, mamy grupę dla dwuch materiałów i zapisujemy gdzie indziej
 							}
+							# grupa cenowa
+							preg_match('/\( *PG *([0-9]) *\)/',$line[26],$matches);
+							$textile_price_group=isset($matches[1]) ? $matches[1] : 99 ;
 							
 							# textile1 - update or insert
 							$textile=Textile::model()->find(array(
 								'condition'=>'textile_number=:number AND textile_name=:name AND textile_price_group=:group',
 								'params'=>array(':number'=>$textile_number,
-												':name'=>$line[16],
+												':name'=>$line[26],
 												':group'=>$textile_price_group,
 								),
 								#ostatni element
@@ -662,21 +710,25 @@ class OrderController extends Controller
 							}
 							$textile->textile_number=$textile_number;
 							$textile->textile_price_group=$textile_price_group;
-							$textile->textile_name=$line[16];
+							$textile->textile_name=$line[26];
 							$textile->save();
 							
 							###
 							# Drugi deseń
 							###
 							$secTextileError=null;
-							if ($line[15]<=999) {
-								preg_match('/([0-9]{4})/i',$line[17],$matches);
+							if ($line[25]<=999) {
+								# grupa cenowa
+								preg_match('/\( *PG *([0-9]) *\)/',$line[27],$matches);
+								$textile_price_group=isset($matches[1]) ? $matches[1] : 99 ;
+								# numer mat
+								preg_match('/([0-9]{4})/i',$line[27],$matches);
 								# textile2 - update or insert
 								$textile2=Textile::model()->find(array(
 									'condition'=>'textile_number=:number AND textile_name=:name AND textile_price_group=:group',
 									'params'=>array(':number'=>$matches[1],
-									':name'=>$line[17],
-									':group'=>0,
+									':name'=>$line[27],
+									':group'=>$textile_price_group,
 									),
 									# ostatni element
 									'order' => "textile_id DESC",
@@ -686,12 +738,12 @@ class OrderController extends Controller
 									$textile2=new Textile('upload');
 								}
 								$textile2->textile_number=$matches[1];
-								$textile2->textile_name=$line[17];
-								$textile2->textile_price_group=0; #przy dwuch, mamy grupę dla dwuch materiałów i zapisujemy gdzie indziej
+								$textile2->textile_name=$line[27];
+								$textile2->textile_price_group=$textile_price_group;
 								$textile2->save();
 							} else {
 								# zgłoś błąd, jeżeli numer pary jest 4-cyfrowy, a pojawi sie drugi deseń
-								$test=rtrim(preg_match('/([0-9]{4})/i',$line[17],$matches));
+								$test=rtrim(preg_match('/([0-9]{4})/i',$line[27],$matches));
 								if (!empty($test)) {
 									$secTextileError="sec-textile";
 								}
@@ -705,7 +757,7 @@ class OrderController extends Controller
 							# na podstawie e-maila wysłanego/odebranego od Bartka Rabsha z dnia: 2015-08-03
 							$order=Order::model()->find(array(
 								'condition'=>'order_number=:order_number AND article_article_id=:article_id AND order_storno_date!=:currenDate',
-								'params'=>array(':order_number'=>$line[3], ':article_id'=>$article->article_id, ':currenDate'=>$currentDate),
+								'params'=>array(':order_number'=>$line[0], ':article_id'=>$article->article_id, ':currenDate'=>$currentDate),
 								#ostatni element
 								'order' => "order_id DESC",
 								'limit' => 1
@@ -718,23 +770,23 @@ class OrderController extends Controller
 							# storno_date - czyli data aktualizacji
 							$order->order_storno_date=$currentDate;
 							# oznacz zmianę ilości
-							if (isset($order->article_amount) && $order->article_amount != $line[24]) {
+							/* if (isset($order->article_amount) && $order->article_amount != $line[24]) {
 								$error=explode("|", $order->order_error);
 								array_push ( $error , "amount-$order->article_amount");
 								$error=implode("|", $error);
 								$order->order_error=$error;
-							}
+							} */
 							
 							# dalsze przetwarzanie wczytywania zamówienia
-							$order->order_price=$line[23];
-							$order->article_amount=$line[24];
-							$order->order_total_price=$line[25];
-							$order->buyer_comments=$line[10];
-							$order->buyer_order_number=$line[9];
-							$order->order_date=$line[4];
-							$order->order_number=$line[3];
-							$order->order_reference=$line[19];
-							$order->order_term=$line[22];
+							$order->order_price=$line[36];
+							$order->article_amount=1;
+							$order->order_total_price=$line[36];
+							$order->buyer_comments=$line[11];
+							$order->buyer_order_number=$line[11];
+							$order->order_date=$line[1];
+							$order->order_number=$line[0];
+							$order->order_reference=$line[30];
+							$order->order_term="?";
 							
 							###
 							# Wiązanie Order z innymi tabelami
@@ -757,10 +809,11 @@ class OrderController extends Controller
 							###
 							
 							#Jeżeli mamy dwa desenie							
-							if ($line[15]<=999) {
-								$order->textil_pair=$line[15];
-								$order->textilpair_price_group=$line[18];
+							if ($line[25]<=999) {
+								$order->textil_pair=$line[25];
 								$order->textile2_textile_id=$textile2->textile_id;
+								# Uśredniamy grupę cenową
+								$order->textilpair_price_group=round(($textile->textile_price_group+$textile2->textile_price_group)/2);
 							} else {
 								$order->textile2_textile_id=null;
 							}

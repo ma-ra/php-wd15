@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.40, for CYGWIN (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.35, for CYGWIN (x86_64)
 --
 -- Host: 127.0.0.1    Database: wd15
 -- ------------------------------------------------------
--- Server version	5.6.19
+-- Server version	5.6.14
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -32,7 +32,7 @@ CREATE TABLE `article` (
   `article_first_textile_amount` decimal(9,2) DEFAULT NULL,
   `article_second_textile_amount` decimal(9,2) DEFAULT NULL,
   PRIMARY KEY (`article_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,7 +46,7 @@ CREATE TABLE `broker` (
   `broker_id` int(11) NOT NULL AUTO_INCREMENT,
   `broker_name` varchar(100) COLLATE utf8_polish_ci NOT NULL,
   PRIMARY KEY (`broker_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -63,7 +63,7 @@ CREATE TABLE `buyer` (
   `buyer_street` varchar(150) COLLATE utf8_polish_ci NOT NULL,
   `buyer_zip_code` varchar(150) COLLATE utf8_polish_ci NOT NULL,
   PRIMARY KEY (`buyer_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,7 +94,7 @@ CREATE TABLE `for_reuse` (
   `textile1_number` varchar(50) COLLATE utf8_polish_ci NOT NULL,
   `textile2_number` varchar(50) COLLATE utf8_polish_ci DEFAULT NULL,
   PRIMARY KEY (`for_reuse_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -108,7 +108,7 @@ CREATE TABLE `leg` (
   `leg_id` int(11) NOT NULL AUTO_INCREMENT,
   `leg_type` varchar(45) COLLATE utf8_polish_ci NOT NULL,
   PRIMARY KEY (`leg_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -143,7 +143,7 @@ CREATE TABLE `manufacturer` (
   `manufacturer_number` varchar(50) COLLATE utf8_polish_ci NOT NULL,
   `manufacturer_name` varchar(100) COLLATE utf8_polish_ci NOT NULL,
   PRIMARY KEY (`manufacturer_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -184,6 +184,7 @@ CREATE TABLE `order` (
   `article_exported` varchar(50) COLLATE utf8_polish_ci DEFAULT NULL,
   `article_canceled` int(11) NOT NULL DEFAULT '0',
   `order_error` varchar(50) CHARACTER SET latin2 DEFAULT NULL,
+  `order_notes` varchar(50) COLLATE utf8_polish_ci DEFAULT NULL,
   `order_add_date` datetime NOT NULL,
   `order_storno_date` datetime DEFAULT NULL,
   `checked` int(11) NOT NULL DEFAULT '0',
@@ -206,7 +207,7 @@ CREATE TABLE `order` (
   CONSTRAINT `fk_order_shopping2` FOREIGN KEY (`shopping2_shopping_id`) REFERENCES `shopping` (`shopping_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_order_textile1` FOREIGN KEY (`textile1_textile_id`) REFERENCES `textile` (`textile_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_order_textile2` FOREIGN KEY (`textile2_textile_id`) REFERENCES `textile` (`textile_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -324,14 +325,17 @@ CREATE TABLE `shopping` (
   `textile_textile_id` int(11) NOT NULL,
   `article_amount` decimal(9,2) DEFAULT NULL,
   `article_calculated_amount` decimal(9,2) NOT NULL,
-  `shopping_term` datetime DEFAULT NULL,
+  `shopping_term` varchar(50) COLLATE utf8_polish_ci DEFAULT NULL,
+  `shopping_date_of_shipment` varchar(50) COLLATE utf8_polish_ci DEFAULT NULL,
+  `shopping_scheduled_delivery` varchar(50) COLLATE utf8_polish_ci DEFAULT NULL,
+  `shopping_notes` varchar(50) COLLATE utf8_polish_ci DEFAULT NULL,
   `shopping_status` varchar(50) COLLATE utf8_polish_ci DEFAULT NULL,
   `shopping_printed` datetime DEFAULT NULL,
   `creation_time` datetime NOT NULL,
   PRIMARY KEY (`shopping_id`),
   KEY `fk_shopping_textile1_idx` (`textile_textile_id`),
   CONSTRAINT `fk_shopping_textile1` FOREIGN KEY (`textile_textile_id`) REFERENCES `textile` (`textile_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -348,7 +352,7 @@ CREATE TABLE `supplier` (
   `supplier_email` varchar(45) COLLATE utf8_polish_ci DEFAULT NULL,
   `supplier_lang` varchar(45) COLLATE utf8_polish_ci NOT NULL,
   PRIMARY KEY (`supplier_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -369,7 +373,7 @@ CREATE TABLE `textile` (
   KEY `fk_textile_supplier1_idx` (`supplier_supplier_id`),
   KEY `fk_textile_warehouse1_idx` (`textile_number`),
   CONSTRAINT `fk_textile_supplier1` FOREIGN KEY (`supplier_supplier_id`) REFERENCES `supplier` (`supplier_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -389,13 +393,14 @@ CREATE TABLE `warehouse` (
   `document_name` varchar(50) COLLATE utf8_polish_ci NOT NULL,
   `warehouse_error` varchar(50) COLLATE utf8_polish_ci DEFAULT NULL,
   `shopping_shopping_id` int(11) DEFAULT NULL,
+  `warehouse_delivery_date` datetime DEFAULT NULL,
   `creation_date` datetime NOT NULL,
   PRIMARY KEY (`warehouse_id`),
   KEY `fk_warehouse_shopping1_idx` (`shopping_shopping_id`),
   KEY `fk_warehouse_textile1_idx` (`article_number`),
   CONSTRAINT `fk_warehouse_shopping1` FOREIGN KEY (`shopping_shopping_id`) REFERENCES `shopping` (`shopping_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_warehouse_textile1` FOREIGN KEY (`article_number`) REFERENCES `textile` (`textile_number`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -502,4 +507,4 @@ CREATE TABLE `warehouse` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-24 12:42:29
+-- Dump completed on 2015-10-05 19:40:10
