@@ -558,14 +558,14 @@ class OrderController extends Controller
 							# $line[26] - Stoff Text 1
 							# $line[27] - Stoff Text 2
 							# $line[28] - Füße
-							# $line[29] - Preis
-							# $line[30] - Referenz
-							# $line[31] - Kommission
-							# $line[32] - Versand Woche
-							# $line[33] - Colli
-							# $line[34] - [m3]
-							# $line[35] - [kg]
-							# $line[36] - Preis
+							# $line[29] - EK- Termin Woche
+							# $line[30] - Preis
+							# $line[31] - Referenz
+							# $line[32] - Kommission
+							# $line[33] - Versand Woche
+							# $line[34] - Colli
+							# $line[35] - [m3]
+							# $line[36] - [kg]
 							# $line[37] - Tour nr.
 							# $line[38] - Versand Datum
 							# $line[39] - Grund für die Rückgabe
@@ -657,21 +657,21 @@ class OrderController extends Controller
 							####
 							$article=Article::model()->find(array(
 								'condition'=>'article_number=:number',
-								'params'=>array(':number'=>$line[22]),
+								'params'=>array(':number'=>substr($line[22],0,-1)),
 								#ostatni element
 								'order' => "article_id DESC",
 								'limit' => 1
 							));
 							if (empty($article)) {
 								$article=new Article('upload');
-								$article->article_colli=$line[33];
+								$article->article_colli=$line[34];
 								$article->model_name=$line[23];
 								$article->model_type=$line[24];
 							}
-							$article->article_number=$line[22];
+							$article->article_number=substr($line[22],0,-1);
 							# poprawiamy nazwę/typ modelu na podstawie wzorca - często nazwy w pliku są ucięte
-							if (array_key_exists(substr($article->article_number,0,8), $correctTypeList)) {
-								$article->model_type=$correctTypeList[substr($article->article_number,0,8)];
+							if (array_key_exists($article->article_number, $correctTypeList)) {
+								$article->model_type=$correctTypeList[$article->article_number];
 							} 
 							$article->save();
 							
@@ -691,7 +691,7 @@ class OrderController extends Controller
 								$textile_number=$matches[1];
 							}
 							# grupa cenowa
-							preg_match('/\( *PG *([0-9]) *\)/',$line[26],$matches);
+							preg_match('/\(? *PG *([0-9]{1})/',$line[26],$matches);
 							$textile_price_group=isset($matches[1]) ? $matches[1] : 99 ;
 							
 							# textile1 - update or insert
@@ -708,8 +708,8 @@ class OrderController extends Controller
 							if (empty($textile)) {
 								$textile=new Textile('upload');
 							}
-							$textile->textile_number=$textile_number;
-							$textile->textile_price_group=$textile_price_group;
+							$textile->textile_number=isset($textile_number) ? $textile_number : "-" ;
+							$textile->textile_price_group=isset($textile_price_group) ? $textile_price_group : 99 ;
 							$textile->textile_name=$line[26];
 							$textile->save();
 							
@@ -719,7 +719,8 @@ class OrderController extends Controller
 							$secTextileError=null;
 							if ($line[25]<=999) {
 								# grupa cenowa
-								preg_match('/\( *PG *([0-9]) *\)/',$line[27],$matches);
+								//D.4105:Microf. mittelbraun(PG9
+								preg_match('/\(? *PG *([0-9]{1})/',$line[27],$matches);
 								$textile_price_group=isset($matches[1]) ? $matches[1] : 99 ;
 								# numer mat
 								preg_match('/([0-9]{4})/i',$line[27],$matches);
@@ -737,9 +738,9 @@ class OrderController extends Controller
 								if (empty($textile2)) {
 									$textile2=new Textile('upload');
 								}
-								$textile2->textile_number=$matches[1];
+								$textile2->textile_number=isset($matches[1]) ? $matches[1] : "-" ;
 								$textile2->textile_name=$line[27];
-								$textile2->textile_price_group=$textile_price_group;
+								$textile2->textile_price_group=isset($textile_price_group) ? $textile_price_group : 99 ;
 								$textile2->save();
 							} else {
 								# zgłoś błąd, jeżeli numer pary jest 4-cyfrowy, a pojawi sie drugi deseń
@@ -756,8 +757,8 @@ class OrderController extends Controller
 							# order_storno_date!=:currenDate -> jeżeli podczas jednego wgrywania pojawi się dubel, to zapisujemy go do bazy
 							# na podstawie e-maila wysłanego/odebranego od Bartka Rabsha z dnia: 2015-08-03
 							$order=Order::model()->find(array(
-								'condition'=>'order_number=:order_number AND article_article_id=:article_id AND order_storno_date!=:currenDate',
-								'params'=>array(':order_number'=>$line[0], ':article_id'=>$article->article_id, ':currenDate'=>$currentDate),
+								'condition'=>'order_number=:order_number AND article_article_id=:article_id  AND buyer_order_number=:buyer_order_number',
+								'params'=>array(':order_number'=>$line[0], ':article_id'=>$article->article_id, ':buyer_order_number'=>$line[20]),
 								#ostatni element
 								'order' => "order_id DESC",
 								'limit' => 1
@@ -778,15 +779,21 @@ class OrderController extends Controller
 							} */
 							
 							# dalsze przetwarzanie wczytywania zamówienia
-							$order->order_price=$line[36];
+							$order->order_price=$line[30];
 							$order->article_amount=1;
-							$order->order_total_price=$line[36];
+							$order->order_total_price=$line[30];
 							$order->buyer_comments=$line[11];
-							$order->buyer_order_number=$line[11];
+							$order->buyer_order_number=$line[20];
 							$order->order_date=$line[1];
 							$order->order_number=$line[0];
-							$order->order_reference=$line[30];
-							$order->order_term="?";
+							$order->order_reference=$line[31];
+							
+							preg_match('/([0-9]+)\/([0-9]+)/',$line[29],$matches);
+							$week=min($matches[1], $matches[2]);
+							$year=max($matches[1], $matches[2]);
+							
+							$order->order_term="$year/$week";
+							$order->article_planed=$line[4];
 							
 							###
 							# Wiązanie Order z innymi tabelami
@@ -1572,9 +1579,9 @@ class OrderController extends Controller
 		$criteria->with=array('articleArticle', 'legLeg', 'textile1Textile', 'textile2Textile', 'shopping1Shopping', 'shopping2Shopping');
 		
 		if ($_GET["act"] == "print_orders_for_cutting_department") {
-			$criteria->order='order_term ASC, order_number ASC, articleArticle.article_number ASC';
+			$criteria->order='order_term ASC, order_number ASC, buyer_order_number ASC, articleArticle.article_number ASC';
 		} else {
-			$criteria->order='-article_planed DESC, order_term ASC, order_number ASC, articleArticle.article_number ASC';
+			$criteria->order='-article_planed DESC, order_term ASC, order_number ASC, buyer_order_number ASC, articleArticle.article_number ASC';
 		}
 		
 		# kryteria wyszukiwania wśród zaznaczonych

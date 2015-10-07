@@ -34,9 +34,9 @@ class MiniLabel extends FPDF {
 		$this->SetFont('arial_ce','',11);
 		
 		# first column
-		$this->GetStringWidth($this->orderNumber) > 18 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',11);
-		$this->GetStringWidth($this->orderNumber) > 18 ? $this->SetFont('arial_ce','',8): $this->SetFont('arial_ce','',11);
-		$this->Cell(18, 25, $this->orderNumber, 1, 0, "R");
+		$this->GetStringWidth($this->orderNumber) > 21 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',11);
+		$this->GetStringWidth($this->orderNumber) > 21 ? $this->SetFont('arial_ce','',8): $this->SetFont('arial_ce','',11);
+		$this->Cell(21, 25, $this->orderNumber, 1, 0, "R");
 		
 		# second column - three line
 		$x=$this->GetX(); $y=$this->GetY();
@@ -61,7 +61,7 @@ class MiniLabel extends FPDF {
 		$x=$this->GetX(); $y=$this->GetY();
 		
 		# first number and name cells
-		$this->Cell(17, 9, $this->textileNumber1, "RTL", 0, "C");
+		$this->Cell(14, 9, $this->textileNumber1, "RTL", 0, "C");
 		$this->GetStringWidth($this->textileName1) > 73 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',11);
 		$this->GetStringWidth($this->textileName1) > 73 ? $this->SetFont('arial_ce','',8): $this->SetFont('arial_ce','',11);
 		$this->Cell(73, 9, $this->textileName1, "RTL", 0, "L");
@@ -69,7 +69,7 @@ class MiniLabel extends FPDF {
 
 		# senond number and name cells
 		$this->SetXY($x, $y+9);
-		$this->Cell(17, 8, $this->textileNumber2, "RL", 0, "C");
+		$this->Cell(14, 8, $this->textileNumber2, "RL", 0, "C");
 		$this->GetStringWidth($this->textileName2) > 73 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',11);
 		$this->GetStringWidth($this->textileName2) > 73 ? $this->SetFont('arial_ce','',8): $this->SetFont('arial_ce','',11);
 		$this->Cell(73, 8, $this->textileName2, "RL", 0, "L");
@@ -77,11 +77,11 @@ class MiniLabel extends FPDF {
 		
 		# empty two cells
 		$this->SetXY($x, $y+17);
-		$this->Cell(17, 8, "", "BT", 0, "L");
+		$this->Cell(14, 8, "", "BT", 0, "L");
 		$this->Cell(73, 8, "", "BT", 0, "L");
 		
 		# fifth column
-		$this->SetXY($x+90, $y);
+		$this->SetXY($x+87, $y);
 		$x=$this->GetX(); $y=$this->GetY();
 		
 		$this->SetFont('arial_ce','',7);

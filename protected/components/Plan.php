@@ -87,7 +87,7 @@ class Plan extends TCPDF {
 			
 			# zmniejszenie czcionki dla notatek
 			$this->SetFont("FreeSans", "", 8);
-			if ($index == 2) {
+			if ($index == 3) {
 				$this->SetFont("FreeSans", "", 6);
 			} 
 			

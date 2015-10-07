@@ -58,11 +58,11 @@ class PrintPlan {
 				$this->pdf->fieldsWidth=array(
 					0 => 7, //plan
 					1 => 17, //zam. nr
-					2 => 15, //art. nr
-					3 => 15, //model
-					4 => 50, //wersja
-					5 => 14, //cena
-					6 => 10, //szt.
+					2 => 10, //pos.
+					3 => 15, //art. nr
+					4 => 15, //model
+					5 => 50, //wersja
+					6 => 14, //cena
 					7 => 14, //cena całości
 					8 => 13, //mat. nr
 					9 => 46, //deseń 1
@@ -74,11 +74,11 @@ class PrintPlan {
 				$this->pdf->headers=array(
 					'plan',
 					'zam. nr',
+					'pos.',
 					'art. nr',
 					'model',
 					'wersja',
 					'cena',
-					'szt.',
 					'cena całości',
 					'mat. nr',
 					'deseń 1',
@@ -90,11 +90,11 @@ class PrintPlan {
 				$this->pdf->fieldsWidth=array(
 					0 => 9, //plan
 					1 => 16, //zam. nr
-					2 => 27, //notki
-					3 => 15, //art. nr
-					4 => 15, //model
-					5 => 50, //wersja
-					6 => 10, //szt.
+					2 => 10, //pos.
+					3 => 27, //notki
+					4 => 15, //art. nr
+					5 => 15, //model
+					6 => 50, //wersja
 					7 => 13, //mat. nr
 					8 => 46, //deseń 1
 					9 => 46, //deseń 2
@@ -110,11 +110,11 @@ class PrintPlan {
 				$this->pdf->headers=array(
 					'plan',
 					'zam. nr',
+					'pos.',
 					'notki',
 					'art. nr',
 					'model',
 					'wersja',
-					'szt.',
 					'mat. nr',
 					'deseń 1',
 					'deseń 2',
@@ -144,7 +144,7 @@ class PrintPlan {
 			$article_number=$order->articleArticle->article_number;
 			$model_name=$order->articleArticle->model_name;
 			$model_type=$order->articleArticle->model_type;
-			$article_amount=$order->article_amount; 
+			$article_amount=$order->buyer_order_number; 
 			$textil_pair=isset($order->textil_pair) ? $order->textil_pair : $order->textile1Textile->textile_number ;
 			$textile_name1=$order->textile1Textile->textile_name;
 			$textile_name2=isset($order->textile2Textile->textile_name) ? $order->textile2Textile->textile_name : "-";
@@ -178,7 +178,7 @@ class PrintPlan {
 				}
 				
 				//$leg_type=$order->textile1Textile->supplier_supplier_id;
-				$leg_type=$order->textile1Textile->supplierSupplier->supplier_name;
+				$leg_type=isset($order->textile1Textile->supplierSupplier->supplier_name) ? $order->textile1Textile->supplierSupplier->supplier_name : "-" ;
 			} else {
 				$leg_type=$order->legLeg->leg_type;
 			}
@@ -188,7 +188,7 @@ class PrintPlan {
 			# liczba wierszy
 			$count+=1;
 			# suma ilości mebli
-			$amountSum+=$article_amount;
+			$amountSum='';
 			# suma cen w przypadku wersji z cenami
 			$totalPriceSum+=$order_total_price;
 			
@@ -197,11 +197,11 @@ class PrintPlan {
 				$this->pdf->row=array(
 					$article_planed,
 					$order_number,
+					$article_amount,
 					$article_number,
 					$model_name,
 					$model_type,
 					$order_price,		
-					$article_amount,
 					$order_total_price,
 					$textil_pair,
 					$textile_name1,
@@ -213,11 +213,11 @@ class PrintPlan {
 				$this->pdf->row=array(
 					$article_planed,
 					$order_number,
+					$article_amount,
 					$order_notes,
 					$article_number,
 					$model_name,
 					$model_type,
-					$article_amount,
 					$textil_pair,
 					$textile_name1,
 					$textile_name2,
@@ -246,11 +246,11 @@ class PrintPlan {
 			$this->pdf->row=array(
 				"",
 				$count,
-				"",
-				"",
-				"",
-				"",
 				$amountSum,
+				"",
+				"",
+				"",
+				"",
 				$totalPriceSum,
 				"",
 				"",
@@ -262,11 +262,11 @@ class PrintPlan {
 			$this->pdf->row=array(
 				"",
 				$count,
-				"",
-				"",
-				"",
-				"",
 				$amountSum,
+				"",
+				"",
+				"",
+				"",
 				"",
 				"",
 				"",
