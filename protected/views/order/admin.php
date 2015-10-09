@@ -66,6 +66,7 @@ $columns=array(
 	'order_id',
 	'article_amount',
 	'order_number',
+	'buyer_order_number',
 	'order_term',
 	array(
 		'name' => 'articleArticle.article_number',
@@ -149,7 +150,6 @@ $columns=array(
 	'order_add_date',
 	'order_storno_date',
 	'order_date',
-	'buyer_order_number',
 	'buyer_comments',
 	'order_reference',
 	array(

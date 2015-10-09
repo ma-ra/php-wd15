@@ -24,7 +24,7 @@ ORDER BY model_name ASC, model_type ASC
 
 --- Nowe zamówienia, które już kiedyś wyjechały
 SELECT SUBSTRING(order_number,1,6)  FROM `order` WHERE `order_add_date` > '2015-10-07 00:00:00' AND
-SUBSTRING(order_number,1,6) IN (SELECT SUBSTRING(order_number,1,6)  FROM `order` WHERE `article_exported` IS NOT NULL `order_add_date` < '2015-10-07 00:00:00')
+SUBSTRING(order_number,1,6) IN (SELECT SUBSTRING(order_number,1,6)  FROM `order` WHERE `article_exported` IS NOT NULL AND `order_add_date` < '2015-10-07 00:00:00')
 
 --- Nowe zamówienia z takimi samymi numerami jak stare
 SELECT SUBSTRING(order_number,1,6) FROM `order` WHERE `order_add_date` > '2015-10-07 00:00:00' AND 
@@ -43,3 +43,8 @@ UPDATE textile
 SET textile.supplier_supplier_id=(SELECT temporary_textiles.supplier_supplier_id FROM temporary_textiles WHERE pattern=1 AND 
     textile.textile_number=temporary_textiles.textile_number)
 WHERE `supplier_supplier_id` IS NULL
+
+--- Lista zaplanowanych zamówień na potrzeby pliku Excel
+SELECT CONCAT_WS("_", order_number, buyer_order_number) article_planed 
+FROM `order` 
+WHERE article_planed IS NOT NULL and article_exported IS NULL AND article_canceled=0

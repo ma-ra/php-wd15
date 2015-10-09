@@ -793,7 +793,9 @@ class OrderController extends Controller
 							$year=max($matches[1], $matches[2]);
 							
 							$order->order_term="$year/$week";
-							$order->article_planed=$line[4];
+							if (!empty(trim($line[4]))) {
+								$order->article_planed=trim($line[4]);
+							}
 							
 							###
 							# Wiązanie Order z innymi tabelami
