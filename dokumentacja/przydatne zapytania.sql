@@ -48,3 +48,45 @@ WHERE `supplier_supplier_id` IS NULL
 SELECT CONCAT_WS("_", order_number, buyer_order_number) article_planed 
 FROM `order` 
 WHERE article_planed IS NOT NULL and article_exported IS NULL AND article_canceled=0
+
+--- Lista zużycia materiałów z firmy Hypke w poszczególnych miesiącach
+SELECT order_add as 'miesiąc', textile_number as 'nr mat.', SUM(des1) as 'm.'
+FROM (SELECT SUBSTR(order_add_date,1,7) as order_add,
+textile1.textile_number,
+IFNULL(article_first_textile_amount, article_all_textile_amount) as 'des1'
+
+FROM `order`
+
+LEFT JOIN article
+ON order.article_article_id = article.article_id
+
+LEFT JOIN textile textile1
+ON order.textile1_textile_id = textile1.textile_id
+
+LEFT JOIN textile textile2
+ON order.textile2_textile_id = textile2.textile_id
+
+WHERE article_canceled = 0 AND textile1.textile_number in (4001, 4002, 4003, 4005, 4006, 4007, 4008)
+
+UNION ALL
+
+SELECT SUBSTR(order_add_date,1,7) as order_add,
+textile2.textile_number,
+article_second_textile_amount as 'des1'
+
+FROM `order`
+
+LEFT JOIN article
+ON order.article_article_id = article.article_id
+
+LEFT JOIN textile textile1
+ON order.textile1_textile_id = textile1.textile_id
+
+LEFT JOIN textile textile2
+ON order.textile2_textile_id = textile2.textile_id
+
+WHERE article_canceled = 0 AND textile2.textile_number in (4001, 4002, 4003, 4005, 4006, 4007, 4008)) as sub
+
+
+GROUP BY order_add, textile_number
+ORDER BY order_add ASC
