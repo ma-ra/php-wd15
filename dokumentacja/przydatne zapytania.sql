@@ -173,3 +173,63 @@ WHERE article_planed like '43/%' AND article_exported is null AND article_cancel
 
 GROUP BY model_name, model_type, article_planed
 ORDER BY model_name ASC, model_type ASC
+
+--- Lista zamówień w danym materiale oraz lista zamówień powiązanych
+SELECT 
+   order_number,
+   buyer_order_number,
+   order_term, 
+   article.model_name,
+   article.model_type,
+   textile1.textile_number, 
+   textile2.textile_number
+
+FROM `order`
+LEFT JOIN article
+   ON order.article_article_id = article.article_id
+LEFT JOIN textile textile1
+   ON order.textile1_textile_id = textile1.textile_id
+LEFT JOIN textile textile2
+   ON order.textile2_textile_id = textile2.textile_id
+   
+WHERE
+   article_canceled = 0 AND
+   article_exported is NULL AND
+   (textile1.textile_number = 4005 OR textile2.textile_number = 4005);
+   
+SELECT 
+   order_number,
+   buyer_order_number,
+   order_term, 
+   article.model_name,
+   article.model_type,
+   textile1.textile_number, 
+   textile2.textile_number
+
+FROM `order` as order1
+LEFT JOIN article
+   ON order1.article_article_id = article.article_id
+LEFT JOIN textile textile1
+   ON order1.textile1_textile_id = textile1.textile_id
+LEFT JOIN textile textile2
+   ON order1.textile2_textile_id = textile2.textile_id
+   
+WHERE
+   article_canceled = 0 AND
+   article_exported is NULL AND
+   (textile1.textile_number != 4005 OR textile2.textile_number != 4005) AND
+   order_number IN 
+      (SELECT 
+         order_number
+        
+      FROM `order` as order2
+      LEFT JOIN textile textile1
+         ON order2.textile1_textile_id = textile1.textile_id
+      LEFT JOIN textile textile2
+         ON order2.textile2_textile_id = textile2.textile_id
+         
+      WHERE
+         article_canceled = 0 AND
+         article_exported is NULL AND
+         (textile1.textile_number = 4005 OR textile2.textile_number = 4005)
+      );
