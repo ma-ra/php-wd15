@@ -233,3 +233,29 @@ WHERE
          article_exported is NULL AND
          (textile1.textile_number = 4005 OR textile2.textile_number = 4005)
       );
+
+
+--- Ustalenie notki na podstawie powyższego
+CREATE TEMPORARY TABLE IF NOT EXISTS temporary_order AS 
+(SELECT 
+     order_number
+    
+  FROM `order` as order2
+  LEFT JOIN textile textile1
+     ON order2.textile1_textile_id = textile1.textile_id
+  LEFT JOIN textile textile2
+     ON order2.textile2_textile_id = textile2.textile_id
+     
+  WHERE
+     article_canceled = 0 AND
+     article_exported is NULL AND
+     (textile1.textile_number = 4005 OR textile2.textile_number = 4005)
+);
+
+
+UPDATE `order`
+SET order_notes = 'Dostawa 4005 w 49/50' 
+WHERE
+   article_canceled = 0 AND
+   article_exported is NULL AND
+   order_number IN (SELECT * FROM temporary_order);
