@@ -1058,16 +1058,22 @@ class OrderController extends Controller
 				'select'=>array(
 					'articleArticle.model_name as articleArticle_model_name',
 					'articleArticle.model_type as articleArticle_model_type',
-					new CDbExpression('ROUND((fabric1.fabric_price_group + fabric2.fabric_price_group)/2) as fabrics_fabric_price_group'),
+					new CDbExpression('IFNULL(ROUND((fabric1.fabric_price_group + fabric2.fabric_price_group)/2),fabric1.fabric_price_group) as fabrics_fabric_price_group'),
 					'articleArticle.article_all_textile_amount as articleArticle_article_all_textile_amount',
 					 'COUNT(model_name) as article_amount',
 					 't.order_total_price as order_price',
-					 new CDbExpression('COUNT(model_name) * t.order_total_price as order_total_price'),
+					 'articleArticle.price_in_pg1 as articleArticle_price_in_pg1',
+					 'articleArticle.price_in_pg2 as articleArticle_price_in_pg2',
+					 'articleArticle.price_in_pg3 as articleArticle_price_in_pg3',
+					 'articleArticle.price_in_pg4 as articleArticle_price_in_pg4',
+					 'articleArticle.price_in_pg5 as articleArticle_price_in_pg5',
+					 'articleArticle.price_in_pg6 as articleArticle_price_in_pg6',
+					 'articleArticle.price_in_pg7 as articleArticle_price_in_pg7',
 					
 				),
 				'with'=>array('articleArticle', 'textile1Textile'=>array('with'=>'fabric1', 'together'=>true), 'textile2Textile'=>array('with'=>'fabric2', 'together'=>true)),
 				'together'=>true,
-				'group'=>'articleArticle.model_name, articleArticle.model_type, ROUND((fabric1.fabric_price_group + fabric2.fabric_price_group)/2), articleArticle.article_all_textile_amount',
+				'group'=>'articleArticle.model_name, articleArticle.model_type, IFNULL(ROUND((fabric1.fabric_price_group + fabric2.fabric_price_group)/2),fabric1.fabric_price_group), articleArticle.article_all_textile_amount, t.order_total_price, articleArticle.price_in_pg1, articleArticle.price_in_pg2, articleArticle.price_in_pg3, articleArticle.price_in_pg4, articleArticle.price_in_pg5, articleArticle.price_in_pg6, articleArticle.price_in_pg7',
 				'order'=>'articleArticle.article_number ASC, textilpair_price_group ASC',
 			));
 			

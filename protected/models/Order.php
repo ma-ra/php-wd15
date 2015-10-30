@@ -61,6 +61,13 @@ class Order extends CActiveRecord
 	public $articleArticle_model_type;
 	public $articleArticle_article_colli;
 	public $articleArticle_article_all_textile_amount;
+	public $articleArticle_price_in_pg1;
+	public $articleArticle_price_in_pg2;
+	public $articleArticle_price_in_pg3;
+	public $articleArticle_price_in_pg4;
+	public $articleArticle_price_in_pg5;
+	public $articleArticle_price_in_pg6;
+	public $articleArticle_price_in_pg7;
 	public $legLeg_leg_type;
 	public $textiles1_textile_number;
 	public $textiles1_textile_name;

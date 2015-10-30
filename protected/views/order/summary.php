@@ -21,10 +21,28 @@
 		echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_model_type</td>";
 		echo "<td style=\"border: 1px solid black;\">$Order->fabrics_fabric_price_group</td>";
 		echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_article_all_textile_amount</td>";
-		echo "<td style=\"border: 1px solid black;\"></td>";
+		$our_price=array(
+			1 =>$Order->articleArticle_price_in_pg1,
+			2 =>$Order->articleArticle_price_in_pg2,
+			3 =>$Order->articleArticle_price_in_pg3,
+			4 =>$Order->articleArticle_price_in_pg4,
+			5 =>$Order->articleArticle_price_in_pg5,
+			6 =>$Order->articleArticle_price_in_pg6,
+			7 =>$Order->articleArticle_price_in_pg7,				 	
+		);
+		echo "<td style=\"border: 1px solid black;\">" . $our_price[$Order->fabrics_fabric_price_group] . "</td>";
 		echo "<td style=\"border: 1px solid black;\">$Order->order_price</td>";
 		echo "<td style=\"border: 1px solid black;\">$Order->article_amount</td>";
-		echo "<td style=\"border: 1px solid black;\">$Order->order_total_price</td>";
+		echo "<td style=\"border: 1px solid black;\">" . $our_price[$Order->fabrics_fabric_price_group] * $Order->article_amount . "</td>";
+		
+		// echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_price_in_pg1</td>";
+		// echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_price_in_pg2</td>";
+		// echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_price_in_pg3</td>";
+		// echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_price_in_pg4</td>";
+		// echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_price_in_pg5</td>";
+		// echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_price_in_pg6</td>";
+		// echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_price_in_pg7</td>";
+		
 		$suma+=$Order->order_total_price;
 		$liczba+=$Order->article_amount;
 		echo "</tr>";
@@ -42,6 +60,12 @@
 	echo "</tr>";
 ?>
 	</table>
+	
+<?php 
+/* echo "<pre>";
+var_dump($Order);
+echo "</pre>"; */
+?>
 	
 	<b>Lista numerów zamówień do faktury</b>
 	<table style="border-collapse: collapse; border: 1px solid black;">
