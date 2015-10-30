@@ -60,6 +60,48 @@
 		<?php echo $form->textField($model,'article_second_textile_amount', array('size'=>9,'maxlength'=>9)); ?>
 		<?php echo $form->error($model,'article_second_textile_amount'); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'price_in_pg1'); ?>
+		<?php echo $form->textField($model,'price_in_pg1',array('size'=>9,'maxlength'=>9)); ?>
+		<?php echo $form->error($model,'price_in_pg1'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'price_in_pg2'); ?>
+		<?php echo $form->textField($model,'price_in_pg2',array('size'=>9,'maxlength'=>9)); ?>
+		<?php echo $form->error($model,'price_in_pg2'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'price_in_pg3'); ?>
+		<?php echo $form->textField($model,'price_in_pg3',array('size'=>9,'maxlength'=>9)); ?>
+		<?php echo $form->error($model,'price_in_pg3'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'price_in_pg4'); ?>
+		<?php echo $form->textField($model,'price_in_pg4',array('size'=>9,'maxlength'=>9)); ?>
+		<?php echo $form->error($model,'price_in_pg4'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'price_in_pg5'); ?>
+		<?php echo $form->textField($model,'price_in_pg5',array('size'=>9,'maxlength'=>9)); ?>
+		<?php echo $form->error($model,'price_in_pg5'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'price_in_pg6'); ?>
+		<?php echo $form->textField($model,'price_in_pg6',array('size'=>9,'maxlength'=>9)); ?>
+		<?php echo $form->error($model,'price_in_pg6'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'price_in_pg7'); ?>
+		<?php echo $form->textField($model,'price_in_pg7',array('size'=>9,'maxlength'=>9)); ?>
+		<?php echo $form->error($model,'price_in_pg7'); ?>
+	</div>
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Dodaj' : 'Zapisz'); ?>

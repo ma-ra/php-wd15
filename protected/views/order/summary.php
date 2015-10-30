@@ -4,22 +4,29 @@
 		<tr>
 			<td style="border: 1px solid black;">Model:</td> 
 			<td style="border: 1px solid black;">Typ:</td> 
-			<td style="border: 1px solid black;">Grupa cenowa:</td>
-			<td style="border: 1px solid black;">Nazwa na FV:</td>
+			<td style="border: 1px solid black;">Średnia grupa cenowa:</td>
+			<td style="border: 1px solid black;">Ilość mat:</td>
+			<td style="border: 1px solid black;">Cena jednostkowa (Nasza):</td>
+			<td style="border: 1px solid black;">Cena jednostkowa (Reality):</td>
 			<td style="border: 1px solid black;">Liczba:</td>
+			<td style="border: 1px solid black;">Cena całkowita:</td>
 		</tr>
 <?php 
 	$suma=0;
+	$liczba=0;
+	
 	foreach ($Orders1 as $key => $Order) {
 		echo "<tr>";
 		echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_model_name</td>";
 		echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_model_type</td>";
-		echo "<td style=\"border: 1px solid black;\">$Order->textilpair_price_group</td>";
-		
-		echo "<td style=\"border: 1px solid black;\">" . strtoupper($Order->articleArticle_model_name) . " - $Order->articleArticle_model_type (PG $Order->textilpair_price_group)" . "</td>";
-		
+		echo "<td style=\"border: 1px solid black;\">$Order->fabrics_fabric_price_group</td>";
+		echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_article_all_textile_amount</td>";
+		echo "<td style=\"border: 1px solid black;\"></td>";
+		echo "<td style=\"border: 1px solid black;\">$Order->order_price</td>";
 		echo "<td style=\"border: 1px solid black;\">$Order->article_amount</td>";
-		$suma+=$Order->article_amount;
+		echo "<td style=\"border: 1px solid black;\">$Order->order_total_price</td>";
+		$suma+=$Order->order_total_price;
+		$liczba+=$Order->article_amount;
 		echo "</tr>";
 	}
 	echo "<tr><td></td></tr>";
@@ -28,6 +35,9 @@
 	echo "<td style=\"border: 1px solid black;\"></td>";
 	echo "<td style=\"border: 1px solid black;\"></td>";
 	echo "<td style=\"border: 1px solid black;\"></td>";
+	echo "<td style=\"border: 1px solid black;\"></td>";
+	echo "<td style=\"border: 1px solid black;\"></td>";
+	echo "<td style=\"border: 1px solid black;\">$liczba</td>";
 	echo "<td style=\"border: 1px solid black;\">$suma</td>";
 	echo "</tr>";
 ?>

@@ -60,6 +60,7 @@ class Order extends CActiveRecord
 	public $articleArticle_model_name;
 	public $articleArticle_model_type;
 	public $articleArticle_article_colli;
+	public $articleArticle_article_all_textile_amount;
 	public $legLeg_leg_type;
 	public $textiles1_textile_number;
 	public $textiles1_textile_name;
@@ -67,6 +68,7 @@ class Order extends CActiveRecord
 	public $textiles2_textile_number;
 	public $textiles2_textile_name;
 	public $textiles2_textile_price_groupe;
+	public $fabrics_fabric_price_group;
 	public $shopping1Shopping_shopping_status;
 	public $shopping2Shopping_shopping_status;
 	

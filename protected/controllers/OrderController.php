@@ -1058,12 +1058,16 @@ class OrderController extends Controller
 				'select'=>array(
 					'articleArticle.model_name as articleArticle_model_name',
 					'articleArticle.model_type as articleArticle_model_type',
-					new CDbExpression('IFNULL(t.textilpair_price_group, textile1Textile.textile_price_group) as textilpair_price_group'),
-					new CDbExpression('SUM(t.article_amount) as article_amount'),
+					new CDbExpression('ROUND((fabric1.fabric_price_group + fabric2.fabric_price_group)/2) as fabrics_fabric_price_group'),
+					'articleArticle.article_all_textile_amount as articleArticle_article_all_textile_amount',
+					 'COUNT(model_name) as article_amount',
+					 't.order_total_price as order_price',
+					 new CDbExpression('COUNT(model_name) * t.order_total_price as order_total_price'),
+					
 				),
-				'with'=>array('articleArticle', 'textile1Textile'),
+				'with'=>array('articleArticle', 'textile1Textile'=>array('with'=>'fabric1', 'together'=>true), 'textile2Textile'=>array('with'=>'fabric2', 'together'=>true)),
 				'together'=>true,
-				'group'=>'articleArticle.model_name, articleArticle.model_type, IFNULL(t.textilpair_price_group, textile1Textile.textile_price_group)',
+				'group'=>'articleArticle.model_name, articleArticle.model_type, ROUND((fabric1.fabric_price_group + fabric2.fabric_price_group)/2), articleArticle.article_all_textile_amount',
 				'order'=>'articleArticle.article_number ASC, textilpair_price_group ASC',
 			));
 			

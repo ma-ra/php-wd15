@@ -12,6 +12,13 @@
  * @property string $article_all_textile_amount
  * @property string $article_first_textile_amount
  * @property string $article_second_textile_amount
+ * @property string $price_in_pg1
+ * @property string $price_in_pg2
+ * @property string $price_in_pg3
+ * @property string $price_in_pg4
+ * @property string $price_in_pg5
+ * @property string $price_in_pg6
+ * @property string $price_in_pg7
  *
  * The followings are the available model relations:
  * @property Order[] $orders
@@ -38,11 +45,11 @@ class Article extends CActiveRecord
 			array('article_colli', 'numerical', 'integerOnly'=>true),
 			array('article_number', 'length', 'max'=>50),
 			array('model_name, model_type', 'length', 'max'=>100),
-			array('article_all_textile_amount, article_first_textile_amount, article_second_textile_amount', 'length', 'max'=>9),
-			array('article_all_textile_amount, article_first_textile_amount, article_second_textile_amount', 'default', 'setOnEmpty' => true, 'value' => null),
+			array('article_all_textile_amount, article_first_textile_amount, article_second_textile_amount, price_in_pg1, price_in_pg2, price_in_pg3, price_in_pg4, price_in_pg5, price_in_pg6, price_in_pg7', 'length', 'max'=>9),
+			array('article_all_textile_amount, article_first_textile_amount, article_second_textile_amount, price_in_pg1, price_in_pg2, price_in_pg3, price_in_pg4, price_in_pg5, price_in_pg6, price_in_pg7', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('article_id, article_number, model_name, model_type, article_colli, article_all_textile_amount, article_first_textile_amount, article_second_textile_amount', 'safe', 'on'=>'search'),
+			array('article_id, article_number, model_name, model_type, article_colli, article_all_textile_amount, article_first_textile_amount, article_second_textile_amount, price_in_pg1, price_in_pg2, price_in_pg3, price_in_pg4, price_in_pg5, price_in_pg6, price_in_pg7', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -72,6 +79,13 @@ class Article extends CActiveRecord
 			'article_all_textile_amount' => 'ilość materiału (m)',
 			'article_first_textile_amount' => 'Deseń 1 - ilość materiału (m)',
 			'article_second_textile_amount' => 'Deseń 2 - ilość materiału (m)',
+			'price_in_pg1' => 'PG1',
+			'price_in_pg2' => 'PG2',
+			'price_in_pg3' => 'PG3',
+			'price_in_pg4' => 'PG4',
+			'price_in_pg5' => 'PG5',
+			'price_in_pg6' => 'PG6',
+			'price_in_pg7' => 'PG7',
 		);
 	}
 
@@ -101,6 +115,13 @@ class Article extends CActiveRecord
 		$criteria->compare('article_all_textile_amount',$this->article_all_textile_amount);
 		$criteria->compare('article_first_textile_amount',$this->article_first_textile_amount);
 		$criteria->compare('article_second_textile_amount',$this->article_second_textile_amount);
+		$criteria->compare('price_in_pg1',$this->price_in_pg1,true);
+		$criteria->compare('price_in_pg2',$this->price_in_pg2,true);
+		$criteria->compare('price_in_pg3',$this->price_in_pg3,true);
+		$criteria->compare('price_in_pg4',$this->price_in_pg4,true);
+		$criteria->compare('price_in_pg5',$this->price_in_pg5,true);
+		$criteria->compare('price_in_pg6',$this->price_in_pg6,true);
+		$criteria->compare('price_in_pg7',$this->price_in_pg7,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

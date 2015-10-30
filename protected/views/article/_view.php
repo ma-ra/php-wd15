@@ -33,11 +33,36 @@
 	<?php echo CHtml::encode($data->article_first_textile_amount); ?>
 	<br />
 
-	<?php /*
 	<b><?php echo CHtml::encode($data->getAttributeLabel('article_second_textile_amount')); ?>:</b>
 	<?php echo CHtml::encode($data->article_second_textile_amount); ?>
 	<br />
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('price_in_pg1')); ?>:</b>
+	<?php echo CHtml::encode($data->price_in_pg1); ?>
+	<br />
 
-	*/ ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('price_in_pg2')); ?>:</b>
+	<?php echo CHtml::encode($data->price_in_pg2); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('price_in_pg3')); ?>:</b>
+	<?php echo CHtml::encode($data->price_in_pg3); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('price_in_pg4')); ?>:</b>
+	<?php echo CHtml::encode($data->price_in_pg4); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('price_in_pg5')); ?>:</b>
+	<?php echo CHtml::encode($data->price_in_pg5); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('price_in_pg6')); ?>:</b>
+	<?php echo CHtml::encode($data->price_in_pg6); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('price_in_pg7')); ?>:</b>
+	<?php echo CHtml::encode($data->price_in_pg7); ?>
+	<br />
 
 </div>

@@ -60,6 +60,8 @@ class Textile extends CActiveRecord
 			'supplierSupplier' => array(self::BELONGS_TO, 'Supplier', 'supplier_supplier_id'),
 			'supplierSupplier2' => array(self::BELONGS_TO, 'Supplier', 'supplier_supplier_id'),
 			'warehouses' => array(self::HAS_MANY, 'Warehouse', 'article_number'),
+			'fabric1' => array(self::BELONGS_TO, 'FabricCollection', array('textile_number'=>'fabric_number')),
+			'fabric2' => array(self::BELONGS_TO, 'FabricCollection', array('textile_number'=>'fabric_number')),
 		);
 	}
 

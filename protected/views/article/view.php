@@ -28,5 +28,12 @@ $this->menu=array(
 		'article_all_textile_amount',
 		'article_first_textile_amount',
 		'article_second_textile_amount',
+		'price_in_pg1',
+		'price_in_pg2',
+		'price_in_pg3',
+		'price_in_pg4',
+		'price_in_pg5',
+		'price_in_pg6',
+		'price_in_pg7',
 	),
 )); ?>
