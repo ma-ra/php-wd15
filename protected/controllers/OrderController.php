@@ -1047,20 +1047,23 @@ class OrderController extends Controller
 	
 	public function actionSummary()
 	{
+		$this->layout='//layouts/column1';
+		
 		if (isset($_POST["summary"]) && isset($_POST["select"])) {
 			#Budujemy tablicę pod zapytanie wyszukujące chciane krotki
 			$pks=array();
 			foreach ($_POST["select"] as $id => $checked) {
 				array_push($pks, $checked);
 			}
-			#Pozycje na potrzeby faktury
+			#Pozycje na potrzeby faktury (zgrupowane)
 			$Orders1=Order::model()->findAllByPk($pks, array(
 				'select'=>array(
+					'articleArticle.article_number as articleArticle_article_number',
 					'articleArticle.model_name as articleArticle_model_name',
 					'articleArticle.model_type as articleArticle_model_type',
 					new CDbExpression('IFNULL(ROUND((fabric1.fabric_price_group + fabric2.fabric_price_group)/2),fabric1.fabric_price_group) as fabrics_fabric_price_group'),
 					'articleArticle.article_all_textile_amount as articleArticle_article_all_textile_amount',
-					 'COUNT(model_name) as article_amount',
+					 'SUM(t.article_amount) as article_amount',
 					 't.order_total_price as order_price',
 					 'articleArticle.price_in_pg1 as articleArticle_price_in_pg1',
 					 'articleArticle.price_in_pg2 as articleArticle_price_in_pg2',
@@ -1071,10 +1074,26 @@ class OrderController extends Controller
 					 'articleArticle.price_in_pg7 as articleArticle_price_in_pg7',
 					
 				),
-				'with'=>array('articleArticle', 'textile1Textile'=>array('with'=>'fabric1', 'together'=>true), 'textile2Textile'=>array('with'=>'fabric2', 'together'=>true)),
+				'with'=>array('articleArticle', 
+							  'textile1Textile'=>array('with'=>'fabric1', 'together'=>true), 
+							  'textile2Textile'=>array('with'=>'fabric2', 'together'=>true)
+				),
 				'together'=>true,
-				'group'=>'articleArticle.model_name, articleArticle.model_type, IFNULL(ROUND((fabric1.fabric_price_group + fabric2.fabric_price_group)/2),fabric1.fabric_price_group), articleArticle.article_all_textile_amount, t.order_total_price, articleArticle.price_in_pg1, articleArticle.price_in_pg2, articleArticle.price_in_pg3, articleArticle.price_in_pg4, articleArticle.price_in_pg5, articleArticle.price_in_pg6, articleArticle.price_in_pg7',
-				'order'=>'articleArticle.article_number ASC, textilpair_price_group ASC',
+				'group'=>'articleArticle.article_number,
+						  articleArticle.model_name, 
+						  articleArticle.model_type, 
+						  IFNULL(ROUND((fabric1.fabric_price_group + fabric2.fabric_price_group)/2),fabric1.fabric_price_group),
+						  articleArticle.article_all_textile_amount, 
+						  t.order_total_price, 
+						  articleArticle.price_in_pg1, 
+						  articleArticle.price_in_pg2, 
+						  articleArticle.price_in_pg3, 
+						  articleArticle.price_in_pg4, 
+						  articleArticle.price_in_pg5, 
+						  articleArticle.price_in_pg6, 
+						  articleArticle.price_in_pg7',
+				'order'=>'articleArticle.article_number ASC, 
+						  IFNULL(ROUND((fabric1.fabric_price_group + fabric2.fabric_price_group)/2),fabric1.fabric_price_group) ASC',
 			));
 			
 			#Numery zamówień na potrzeby faktury
@@ -1083,8 +1102,57 @@ class OrderController extends Controller
 				'order'=>'order_number ASC',
 			));
 			
-			#Rozkład tygodniowy poszczególnych modeli
+			#Pozycje na potrzeby faktury (szczegóły)
 			$Orders3=Order::model()->findAllByPk($pks, array(
+				'select'=>array(
+					'articleArticle.article_number as articleArticle_article_number',
+					'articleArticle.model_name as articleArticle_model_name',
+					'articleArticle.model_type as articleArticle_model_type',
+					'textile1Textile.textile_number as textiles1_textile_number',
+					'textile2Textile.textile_number as textiles2_textile_number',
+					'fabric1.fabric_price_group as textiles1_textile_price_groupe',
+					'fabric2.fabric_price_group as textiles2_textile_price_groupe',
+					new CDbExpression('IFNULL(ROUND((fabric1.fabric_price_group + fabric2.fabric_price_group)/2),fabric1.fabric_price_group) as fabrics_fabric_price_group'),
+					'articleArticle.article_all_textile_amount as articleArticle_article_all_textile_amount',
+					 'SUM(t.article_amount) as article_amount',
+					 't.order_total_price as order_price',
+					 'articleArticle.price_in_pg1 as articleArticle_price_in_pg1',
+					 'articleArticle.price_in_pg2 as articleArticle_price_in_pg2',
+					 'articleArticle.price_in_pg3 as articleArticle_price_in_pg3',
+					 'articleArticle.price_in_pg4 as articleArticle_price_in_pg4',
+					 'articleArticle.price_in_pg5 as articleArticle_price_in_pg5',
+					 'articleArticle.price_in_pg6 as articleArticle_price_in_pg6',
+					 'articleArticle.price_in_pg7 as articleArticle_price_in_pg7',
+					
+				),
+				'with'=>array('articleArticle', 
+							  'textile1Textile'=>array('with'=>'fabric1', 'together'=>true), 
+							  'textile2Textile'=>array('with'=>'fabric2', 'together'=>true)
+				),
+				'together'=>true,
+				'group'=>'articleArticle.article_number,
+						  articleArticle.model_name, 
+						  articleArticle.model_type, 
+							textile1Textile.textile_number,
+							textile2Textile.textile_number,
+							fabric1.fabric_price_group,
+							fabric2.fabric_price_group,
+						  IFNULL(ROUND((fabric1.fabric_price_group + fabric2.fabric_price_group)/2),fabric1.fabric_price_group),
+						  articleArticle.article_all_textile_amount, 
+						  t.order_total_price, 
+						  articleArticle.price_in_pg1, 
+						  articleArticle.price_in_pg2, 
+						  articleArticle.price_in_pg3, 
+						  articleArticle.price_in_pg4, 
+						  articleArticle.price_in_pg5, 
+						  articleArticle.price_in_pg6, 
+						  articleArticle.price_in_pg7',
+				'order'=>'articleArticle.article_number ASC, 
+						  IFNULL(ROUND((fabric1.fabric_price_group + fabric2.fabric_price_group)/2),fabric1.fabric_price_group) ASC',
+			));
+			
+			#Rozkład tygodniowy poszczególnych modeli
+			$Orders4=Order::model()->findAllByPk($pks, array(
 				'select'=>array(
 					'articleArticle.model_name as articleArticle_model_name',
 					'articleArticle.model_type as articleArticle_model_type',
@@ -1097,11 +1165,30 @@ class OrderController extends Controller
 				'order'=>'t.order_term ASC, articleArticle.article_number ASC',
 			));
 			
+			#Rozkład poszczególnych modeli
+			$Orders5=Order::model()->findAllByPk($pks, array(
+				'select'=>array(
+					'articleArticle.article_number as articleArticle_article_number',
+					'articleArticle.model_name as articleArticle_model_name',
+					'articleArticle.model_type as articleArticle_model_type',
+					new CDbExpression('SUM(t.article_amount) as article_amount'),
+				),
+				'with'=>array('articleArticle'),
+				'together'=>true,
+				'group'=>'articleArticle.article_number,
+						  articleArticle.model_name, 
+						  articleArticle.model_type',
+				'order'=>'articleArticle.model_name ASC, articleArticle.article_number ASC',
+			));
+			
 			$this->render('summary',array(
 					'Orders1'=>$Orders1, 
 					'Orders2'=>$Orders2,
 					'Orders3'=>$Orders3,
+					'Orders4'=>$Orders4,
+					'Orders5'=>$Orders5,
 			));
+			
 		}
 	}
 	

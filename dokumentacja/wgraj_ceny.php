@@ -1,6 +1,6 @@
 <?php
 try {
-    $pdo = new PDO('mysql:host=127.0.0.1;dbname=wd15;encoding=utf8', 'root', 'q',array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+    $pdo = new PDO('mysql:host=localhost;dbname=mara_wd15;encoding=utf8', 'mara_wd15', '{password_for_database}',array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(PDOException $e){
     echo $e->getMessage() . "\n";
@@ -9,7 +9,7 @@ try {
 try {
     $pdo->beginTransaction();  
     
-    $handle = @fopen($argv[1], "r");
+    $handle = @fopen("Ceny_SO.csv", "r");
     if ($handle) {
         while (($buffer = fgets($handle, 4096)) !== false) {
             $line=explode("^",$buffer);
@@ -42,7 +42,7 @@ try {
             } else {
                 # insert
                 $stmt->closeCursor();
-                $stmt = $pdo -> prepare('INSERT INTO `wd15`.`article` (
+                $stmt = $pdo -> prepare('INSERT INTO `mara_wd15`.`article` (
                                             `article_number` ,
                                             `model_name` ,
                                             `model_type` ,
