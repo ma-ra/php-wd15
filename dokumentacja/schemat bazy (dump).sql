@@ -31,6 +31,13 @@ CREATE TABLE `article` (
   `article_all_textile_amount` decimal(9,2) DEFAULT NULL,
   `article_first_textile_amount` decimal(9,2) DEFAULT NULL,
   `article_second_textile_amount` decimal(9,2) DEFAULT NULL,
+  `price_in_pg1` decimal(9,2) DEFAULT NULL,
+  `price_in_pg2` decimal(9,2) DEFAULT NULL,
+  `price_in_pg3` decimal(9,2) DEFAULT NULL,
+  `price_in_pg4` decimal(9,2) DEFAULT NULL,
+  `price_in_pg5` decimal(9,2) DEFAULT NULL,
+  `price_in_pg6` decimal(9,2) DEFAULT NULL,
+  `price_in_pg7` decimal(9,2) DEFAULT NULL,
   PRIMARY KEY (`article_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -78,6 +85,27 @@ CREATE TABLE `configuration` (
   `value` varchar(45) COLLATE utf8_polish_ci NOT NULL,
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `fabric_collection`
+--
+
+DROP TABLE IF EXISTS `fabric_collection`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `fabric_collection` (
+  `fabric_id` int(11) NOT NULL AUTO_INCREMENT,
+  `fabric_number` varchar(50) COLLATE utf8_polish_ci NOT NULL,
+  `fabric_name` varchar(150) COLLATE utf8_polish_ci NOT NULL,
+  `fabric_price_group` int(11) NOT NULL,
+  `supplier_supplier_id` int(11) DEFAULT NULL,
+  `fabric_price` decimal(9,2) NOT NULL,
+  PRIMARY KEY (`fabric_id`),
+  UNIQUE KEY `fabric_number_UNIQUE` (`fabric_number`),
+  KEY `fk_fabric_collection_supplier1_idx` (`supplier_supplier_id`),
+  CONSTRAINT `fk_fabric_collection_supplier1` FOREIGN KEY (`supplier_supplier_id`) REFERENCES `supplier` (`supplier_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -507,4 +535,4 @@ CREATE TABLE `warehouse` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-10-05 19:40:10
+-- Dump completed on 2015-11-01 21:08:36
