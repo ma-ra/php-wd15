@@ -21,6 +21,10 @@
 	<?php echo CHtml::encode($data->supplier_email); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('bank_account')); ?>:</b>
+	<?php echo CHtml::encode($data->bank_account); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('supplier_lang')); ?>:</b>
 	<?php echo CHtml::encode($data->supplier_lang); ?>
 	<br />

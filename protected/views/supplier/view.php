@@ -25,6 +25,7 @@ $this->menu=array(
 		'supplier_name',
 		'supplier_tel',
 		'supplier_email',
+		'bank_account',
 		'supplier_lang',
 	),
 )); ?>

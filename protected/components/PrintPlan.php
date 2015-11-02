@@ -146,8 +146,8 @@ class PrintPlan {
 			$model_type=$order->articleArticle->model_type;
 			$article_amount=$order->buyer_order_number; 
 			$textil_pair=isset($order->textil_pair) ? $order->textil_pair : $order->textile1Textile->textile_number ;
-			$textile_name1=$order->textile1Textile->textile_name;
-			$textile_name2=isset($order->textile2Textile->textile_name) ? $order->textile2Textile->textile_name : "-";
+			$textile_name1=isset($order->textil_pair) ? $order->textile1Textile->textile_number . " " . $order->textile1Textile->fabric1->fabric_name : $order->textile1Textile->fabric1->fabric_name;
+			$textile_name2=isset($order->textile2Textile->fabric2->fabric_name) ? $order->textile2Textile->textile_number . " " . $order->textile2Textile->fabric2->fabric_name : "-";
 			$order_term=$order->order_term;
 			$order_price=isset($order->order_price)? $order->order_price : "-";
 			$order_total_price=isset($order->order_total_price)? $order->order_total_price : "-"; 
@@ -177,8 +177,13 @@ class PrintPlan {
 					}
 				}
 				
-				//$leg_type=$order->textile1Textile->supplier_supplier_id;
-				$leg_type=isset($order->textile1Textile->supplierSupplier->supplier_name) ? $order->textile1Textile->supplierSupplier->supplier_name : "-" ;
+				$supplier1=isset($order->textile1Textile->fabric1->supplierSupplier->supplier_name) ? $order->textile1Textile->fabric1->supplierSupplier->supplier_name : "-" ;
+				$supplier2=isset($order->textile2Textile->fabric2->supplierSupplier->supplier_name) ? $order->textile2Textile->fabric2->supplierSupplier->supplier_name : "-" ;
+				if ($supplier2 != "-" && $supplier2 != $supplier1) {
+					$leg_type=$supplier1 . "/" . $supplier2;
+				} else {
+					$leg_type=$supplier1;
+				}
 			} else {
 				$leg_type=$order->legLeg->leg_type;
 			}

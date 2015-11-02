@@ -8,10 +8,11 @@
  * @property string $supplier_name
  * @property string $supplier_tel
  * @property string $supplier_email
+ * @property string $bank_account
  * @property string $supplier_lang
  *
  * The followings are the available model relations:
- * @property Textile[] $textiles
+ * @property FabricCollection[] $fabricCollections
  */
 class Supplier extends CActiveRecord
 {
@@ -37,7 +38,7 @@ class Supplier extends CActiveRecord
 			array('supplier_tel, supplier_email', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('supplier_id, supplier_name, supplier_tel, supplier_email, supplier_lang', 'safe', 'on'=>'search'),
+			array('supplier_id, supplier_name, supplier_tel, supplier_email, bank_account, supplier_lang', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -49,7 +50,7 @@ class Supplier extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'textiles' => array(self::HAS_MANY, 'Textile', 'supplier_supplier_id'),
+			'fabricCollections' => array(self::HAS_MANY, 'FabricCollection', 'supplier_supplier_id'),
 		);
 	}
 
@@ -63,6 +64,7 @@ class Supplier extends CActiveRecord
 			'supplier_name' => 'nazwa dostawcy',
 			'supplier_tel' => 'tel dostawcy',
 			'supplier_email' => 'email dostawcy',
+			'bank_account' => 'nr konta bankowego',
 			'supplier_lang' => 'język',
 		);
 	}
@@ -89,6 +91,7 @@ class Supplier extends CActiveRecord
 		$criteria->compare('supplier_name',$this->supplier_name,true);
 		$criteria->compare('supplier_tel',$this->supplier_tel,true);
 		$criteria->compare('supplier_email',$this->supplier_email,true);
+		$criteria->compare('bank_account',$this->bank_account,true);
 		$criteria->compare('supplier_lang',$this->supplier_lang,true);
 
 		return new CActiveDataProvider($this, array(

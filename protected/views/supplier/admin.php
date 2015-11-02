@@ -49,6 +49,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'supplier_name',
 		'supplier_tel',
 		'supplier_email',
+		'bank_account',
 		'supplier_lang',
 		array(
 			'class'=>'CButtonColumn',

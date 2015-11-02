@@ -77,13 +77,13 @@ class Plan extends TCPDF {
 			} 
 			/* if ($this->emptyShopping == 1 && $index == 8) {
 				$fill=1;
-			}  */
+			}
 			if ($this->emptyShopping == 2 && $index == 9) {
 				$fill=1;
 			} 
 			if ($this->emptyShopping == 3 && ($index == 8 || $index == 9)) {
 				$fill=1;
-			} 
+			}  */
 			
 			# zmniejszenie czcionki dla notatek
 			$this->SetFont("FreeSans", "", 8);

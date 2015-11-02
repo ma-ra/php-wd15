@@ -38,6 +38,12 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->labelEx($model,'bank_account'); ?>
+		<?php echo $form->textField($model,'bank_account',array('size'=>60,'maxlength'=>100)); ?>
+		<?php echo $form->error($model,'bank_account'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->labelEx($model,'supplier_lang'); ?>
 		<?php echo $form->textField($model,'supplier_lang',array('size'=>45,'maxlength'=>45)); ?>
 		<?php echo $form->error($model,'supplier_lang'); ?>

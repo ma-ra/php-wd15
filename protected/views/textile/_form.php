@@ -37,18 +37,6 @@
 		<?php echo $form->error($model,'textile_price_group'); ?>
 	</div>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'supplier_supplier_id'); ?>
-		<?php echo $form->textField($model,'supplier_supplier_id'); ?>
-		<?php echo $form->error($model,'supplier_supplier_id'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'pattern'); ?>
-		<?php echo $form->textField($model,'pattern'); ?>
-		<?php echo $form->error($model,'pattern'); ?>
-	</div>
-
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>

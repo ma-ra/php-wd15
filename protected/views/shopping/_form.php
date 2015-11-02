@@ -32,9 +32,9 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'textile_textile_id'); ?>
-		<?php echo $form->textField($model,'textile_textile_id'); ?>
-		<?php echo $form->error($model,'textile_textile_id'); ?>
+		<?php echo $form->labelEx($model,'fabric_collection_fabric_id'); ?>
+		<?php echo $form->textField($model,'fabric_collection_fabric_id'); ?>
+		<?php echo $form->error($model,'fabric_collection_fabric_id'); ?>
 	</div>
 
 	<div class="row">
@@ -62,9 +62,39 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->labelEx($model,'shopping_delivery_date'); ?>
+		<?php echo $form->textField($model,'shopping_delivery_date'); ?>
+		<?php echo $form->error($model,'shopping_delivery_date'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->labelEx($model,'shopping_scheduled_delivery'); ?>
 		<?php echo $form->textField($model,'shopping_scheduled_delivery',array('size'=>50,'maxlength'=>50)); ?>
 		<?php echo $form->error($model,'shopping_scheduled_delivery'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'article_delivered_amount'); ?>
+		<?php echo $form->textField($model,'article_delivered_amount',array('size'=>9,'maxlength'=>9)); ?>
+		<?php echo $form->error($model,'article_delivered_amount'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'article_price'); ?>
+		<?php echo $form->textField($model,'article_price',array('size'=>9,'maxlength'=>9)); ?>
+		<?php echo $form->error($model,'article_price'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'document_name'); ?>
+		<?php echo $form->textField($model,'document_name',array('size'=>60,'maxlength'=>150)); ?>
+		<?php echo $form->error($model,'document_name'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'invoice_name'); ?>
+		<?php echo $form->textField($model,'invoice_name',array('size'=>60,'maxlength'=>150)); ?>
+		<?php echo $form->error($model,'invoice_name'); ?>
 	</div>
 
 	<div class="row">
@@ -77,6 +107,12 @@
 		<?php echo $form->labelEx($model,'shopping_status'); ?>
 		<?php echo $form->textField($model,'shopping_status',array('size'=>50,'maxlength'=>50)); ?>
 		<?php echo $form->error($model,'shopping_status'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'paid'); ?>
+		<?php echo $form->textField($model,'paid'); ?>
+		<?php echo $form->error($model,'paid'); ?>
 	</div>
 
 	<div class="row">

@@ -48,34 +48,40 @@ $dialog = $this->widget('ext.ecolumns.EColumnsDialog', array(
 						'name' => 'supplierSupplier.supplier_name',
 						'filter'=>CHtml::activeTextField($model,'textile_supplier_supplier_name'),
 						'type' => 'raw',
-						'value' => 'CHtml::encode(isset($data->textileTextile->supplierSupplier->supplier_name) ? $data->textileTextile->supplierSupplier->supplier_name : "-" )'
+						'value' => 'CHtml::encode(isset($data->fabricCollectionFabric->supplierSupplier->supplier_name) ? $data->fabricCollectionFabric->supplierSupplier->supplier_name : "-" )'
 				),
 				//'textile_textile_id',
 				array(
-						'name' => 'textileTextile.textile_number',
+						'name' => 'fabricCollectionFabric.fabric_number',
 						'filter'=>CHtml::activeTextField($model,'textile_textile_number'),
 						'type' => 'raw',
-						'value' => 'CHtml::encode($data->textileTextile->textile_number)'
+						'value' => 'CHtml::encode($data->fabricCollectionFabric->fabric_number)'
 				),
 				array(
-						'name' => 'textileTextile.textile_name',
+						'name' => 'fabricCollectionFabric.fabric_name',
 						'filter'=>CHtml::activeTextField($model,'textile_textile_name'),
 						'type' => 'raw',
-						'value' => 'CHtml::encode($data->textileTextile->textile_name)'
+						'value' => 'CHtml::encode($data->fabricCollectionFabric->fabric_name)'
 				),
-				'article_amount',
 				'article_calculated_amount',
-				'shopping_term',
-            	'shopping_date_of_shipment',
-				'shopping_scheduled_delivery',
+				'article_amount',
+            	'article_delivered_amount',
+            	'article_price',
+            	'document_name',
+            	'invoice_name',
 				'shopping_notes',
+				'shopping_term',
+				'shopping_printed',
+				'shopping_scheduled_delivery',
+            	'shopping_date_of_shipment',
+            	'shopping_delivery_date',
 				array(
 						'name' => 'shopping_status',
 						'filter'=>array('w trakcie'=>'w trakcie','nowy'=>'nowy', 'wydrukowane'=>'wydrukowane', 'dostarczono'=>'dostarczono', 'częściowo'=>'częściowo'),
 						'type' => 'raw',
 						'value' => 'CHtml::encode($data->shopping_status)'
 				),
-				'shopping_printed',
+            	'paid',
 				'creation_time',
 				array(
 					'class'=>'CButtonColumn',

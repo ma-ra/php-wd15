@@ -1,15 +1,15 @@
 <?php
-/* @var $this WarehouseController */
-/* @var $model Warehouse */
+/* @var $this FabricCollectionController */
+/* @var $model FabricCollection */
 
 $this->breadcrumbs=array(
-	'Warehouses'=>array('index'),
+	'Fabric Collections'=>array('index'),
 	'Manage',
 );
 
 $this->menu=array(
-	array('label'=>'List Warehouse', 'url'=>array('index')),
-	array('label'=>'Create Warehouse', 'url'=>array('create')),
+	array('label'=>'List FabricCollection', 'url'=>array('index')),
+	array('label'=>'Create FabricCollection', 'url'=>array('create')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -18,7 +18,7 @@ $('.search-button').click(function(){
 	return false;
 });
 $('.search-form form').submit(function(){
-	$('#warehouse-grid').yiiGridView('update', {
+	$('#fabric-collection-grid').yiiGridView('update', {
 		data: $(this).serialize()
 	});
 	return false;
@@ -26,19 +26,7 @@ $('.search-form form').submit(function(){
 ");
 ?>
 
-<h1>Manage Warehouses</h1>
-<?php $this->widget('zii.widgets.grid.CGridView', array(
-	'id'=>'warehouse-grid2',
-	'dataProvider'=>$model->summary(),
-	'enableSorting' => false,
-	'filter'=>$model,
-	'columns'=>array(
-		'article_number',
-		'article_name',
-		'article_count',
-		'article_price',
-	),
-)); ?>
+<h1>Manage Fabric Collections</h1>
 
 <p>
 You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
@@ -53,21 +41,16 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 </div><!-- search-form -->
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
-	'id'=>'warehouse-grid1',
+	'id'=>'fabric-collection-grid',
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'columns'=>array(
-		'warehouse_id',
-		'warehouse_type',
-		'article_number',
-		'article_name',
-		'article_count',
-		'article_price',
-		'document_name',
-		'warehouse_error',
-		'shopping_shopping_id',
-		'warehouse_delivery_date',
-		'creation_date',
+		'fabric_id',
+		'fabric_number',
+		'fabric_name',
+		'fabric_price_group',
+		'supplier_supplier_id',
+		'fabric_price',
 		array(
 			'class'=>'CButtonColumn',
 		),

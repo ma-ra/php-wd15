@@ -27,8 +27,8 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'textile_textile_id'); ?>
-		<?php echo $form->textField($model,'textile_textile_id'); ?>
+		<?php echo $form->label($model,'fabric_collection_fabric_id'); ?>
+		<?php echo $form->textField($model,'fabric_collection_fabric_id'); ?>
 	</div>
 
 	<div class="row">
@@ -52,8 +52,33 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->label($model,'shopping_delivery_date'); ?>
+		<?php echo $form->textField($model,'shopping_delivery_date'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->label($model,'shopping_scheduled_delivery'); ?>
 		<?php echo $form->textField($model,'shopping_scheduled_delivery',array('size'=>50,'maxlength'=>50)); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'article_delivered_amount'); ?>
+		<?php echo $form->textField($model,'article_delivered_amount',array('size'=>9,'maxlength'=>9)); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'article_price'); ?>
+		<?php echo $form->textField($model,'article_price',array('size'=>9,'maxlength'=>9)); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'document_name'); ?>
+		<?php echo $form->textField($model,'document_name',array('size'=>60,'maxlength'=>150)); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'invoice_name'); ?>
+		<?php echo $form->textField($model,'invoice_name',array('size'=>60,'maxlength'=>150)); ?>
 	</div>
 
 	<div class="row">
@@ -64,6 +89,11 @@
 	<div class="row">
 		<?php echo $form->label($model,'shopping_status'); ?>
 		<?php echo $form->textField($model,'shopping_status',array('size'=>50,'maxlength'=>50)); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'paid'); ?>
+		<?php echo $form->textField($model,'paid'); ?>
 	</div>
 
 	<div class="row">

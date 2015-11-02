@@ -7,22 +7,26 @@
  * @property integer $shopping_id
  * @property integer $shopping_number
  * @property string $shopping_type
- * @property integer $textile_textile_id
+ * @property integer $fabric_collection_fabric_id
  * @property string $article_amount
  * @property string $article_calculated_amount
  * @property string $shopping_term
  * @property string $shopping_date_of_shipment
+ * @property string $shopping_delivery_date
  * @property string $shopping_scheduled_delivery
+ * @property string $article_delivered_amount
+ * @property string $article_price
+ * @property string $document_name
+ * @property string $invoice_name
  * @property string $shopping_notes
  * @property string $shopping_status
+ * @property integer $paid
  * @property string $shopping_printed
  * @property string $creation_time
  *
  * The followings are the available model relations:
  * @property Order[] $orders1
  * @property Order[] $orders2
- * @property Textile $textileTextile
- * @property Warehouse[] $warehouses
  */
 class Shopping extends CActiveRecord
 {
@@ -49,15 +53,17 @@ class Shopping extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('shopping_number, shopping_type, textile_textile_id, article_calculated_amount, creation_time', 'required'),
-			array('shopping_number, textile_textile_id', 'numerical', 'integerOnly'=>true),
+			array('shopping_number, shopping_type, fabric_collection_fabric_id, article_amount, shopping_status, creation_time', 'required'),
+			array('shopping_number, fabric_collection_fabric_id, paid', 'numerical', 'integerOnly'=>true),
 			array('shopping_type, shopping_status, shopping_term, shopping_date_of_shipment, shopping_scheduled_delivery, shopping_notes', 'length', 'max'=>50),
-			array('article_amount, article_calculated_amount', 'length', 'max'=>9),
-			array('shopping_printed', 'safe'),
+			array('article_amount, article_calculated_amount, article_delivered_amount, article_price', 'length', 'max'=>9),
+			array('document_name, invoice_name', 'length', 'max'=>150),
+			array('shopping_delivery_date, shopping_printed', 'safe'),
 			array('article_amount, shopping_term, shopping_status, shopping_printed', 'default', 'setOnEmpty' => true, 'value' => null),
+			array('paid', 'default', 'setOnEmpty' => true, 'value' => 0),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('shopping_number, shopping_id, shopping_type, textile_textile_id, article_amount, article_calculated_amount, shopping_term, shopping_status, shopping_printed, creation_time, textile_supplier_supplier_name, textile_textile_number, textile_textile_name, shopping_date_of_shipment, shopping_scheduled_delivery, shopping_notes', 'safe', 'on'=>'search'),
+			array('shopping_number, shopping_id, shopping_type, fabric_collection_fabric_id, article_amount, article_calculated_amount, shopping_term, shopping_status, shopping_printed, creation_time, textile_supplier_supplier_name, textile_textile_number, textile_textile_name, shopping_date_of_shipment, shopping_delivery_date, shopping_scheduled_delivery, shopping_notes, article_delivered_amount, article_price, document_name, invoice_name, paid', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -71,8 +77,7 @@ class Shopping extends CActiveRecord
 		return array(
 			'orders1' => array(self::HAS_MANY, 'Order', 'shopping1_shopping_id'),
 			'orders2' => array(self::HAS_MANY, 'Order', 'shopping2_shopping_id'),
-			'textileTextile' => array(self::BELONGS_TO, 'Textile', 'textile_textile_id'),
-			'warehouses' => array(self::HAS_MANY, 'Warehouse', 'shopping_shopping_id'),
+			'fabricCollectionFabric' => array(self::BELONGS_TO, 'FabricCollection', 'fabric_collection_fabric_id'),
 		);
 	}
 
@@ -85,14 +90,20 @@ class Shopping extends CActiveRecord
 			'shopping_id' => 'id',
 			'shopping_number' => 'numer',
 			'shopping_type' => 'typ',
-			'textile_textile_id' => 'id materiału',
+			'fabric_collection_fabric_id' => 'id materiału',
 			'article_amount' => 'ilość',
 			'article_calculated_amount' => 'wyliczona ilość',
 			'shopping_term' => 'termin',
 			'shopping_date_of_shipment' => 'data wysyłki',
+			'shopping_delivery_date' => 'data dostarczenia',
 			'shopping_scheduled_delivery' => 'planowana dostawa',
+			'article_delivered_amount' => 'dostarczona ilość',
+			'article_price' => 'cena',
+			'document_name' => 'nazwa dokumentu',
+			'invoice_name' => 'nazwa faktury',
 			'shopping_notes' => 'notatki',
 			'shopping_status' => 'status zakupów',
+			'paid' => 'zapłacono',
 			'shopping_printed' => 'wydrukowane',
 			'creation_time' => 'data utworzenia',
 		);
@@ -119,12 +130,17 @@ class Shopping extends CActiveRecord
 		$criteria->compare('shopping_id',$this->shopping_id);
 		$criteria->compare('shopping_number',$this->shopping_number);
 		$criteria->compare('shopping_type',$this->shopping_type,true);
-		$criteria->compare('textile_textile_id',$this->textile_textile_id);
+		$criteria->compare('fabric_collection_fabric_id',$this->fabric_collection_fabric_id);
 		$criteria->compare('article_amount',$this->article_amount,true);
 		$criteria->compare('article_calculated_amount',$this->article_calculated_amount,true);
 		$criteria->compare('shopping_term',$this->shopping_term,true);
 		$criteria->compare('shopping_date_of_shipment',$this->shopping_date_of_shipment,true);
+		$criteria->compare('shopping_delivery_date',$this->shopping_delivery_date,true);
 		$criteria->compare('shopping_scheduled_delivery',$this->shopping_scheduled_delivery,true);
+		$criteria->compare('article_delivered_amount',$this->article_delivered_amount,true);
+		$criteria->compare('article_price',$this->article_price,true);
+		$criteria->compare('document_name',$this->document_name,true);
+		$criteria->compare('invoice_name',$this->invoice_name,true);
 		$criteria->compare('shopping_notes',$this->shopping_notes,true);
 		$criteria->compare('shopping_printed',$this->shopping_printed,true);
 		$criteria->compare('creation_time',$this->creation_time,true);
@@ -134,18 +150,19 @@ class Shopping extends CActiveRecord
 		} else {
 			$criteria->compare('shopping_status',$this->shopping_status,true);
 		}
+		$criteria->compare('paid',$this->paid);
 		
-		$criteria->with=array('textileTextile'=>array('with'=>'supplierSupplier', 'together'=>true));
+		$criteria->with=array('fabricCollectionFabric'=>array('with'=>'supplierSupplier', 'together'=>true));
 		$criteria->together=true;
-		$criteria->compare('textileTextile.textile_number',$this->textile_textile_number,true);
-		$criteria->compare('textileTextile.textile_name',$this->textile_textile_name,true);
+		$criteria->compare('fabricCollectionFabric.fabric_number',$this->textile_textile_number,true);
+		$criteria->compare('fabricCollectionFabric.fabric_name',$this->textile_textile_name,true);
 		$criteria->compare('supplierSupplier.supplier_name',$this->textile_supplier_supplier_name,true);
 		
 		//Create a new CSort
 		$sort = new CSort;
 		$sort->attributes = array(
-				'textileTextile.textile_number',
-				'textileTextile.textile_name',
+				'fabricCollectionFabric.fabric_number',
+				'fabricCollectionFabric.fabric_name',
 				'supplierSupplier.supplier_name',
 				'*',//Add the * to include all the rest of the fields from the main model
 		);

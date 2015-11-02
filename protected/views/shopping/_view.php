@@ -17,8 +17,8 @@
 	<?php echo CHtml::encode($data->shopping_type); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('textile_textile_id')); ?>:</b>
-	<?php echo CHtml::encode($data->textile_textile_id); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('fabric_collection_fabric_id')); ?>:</b>
+	<?php echo CHtml::encode($data->fabric_collection_fabric_id); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('article_amount')); ?>:</b>
@@ -38,8 +38,28 @@
 	<?php echo CHtml::encode($data->shopping_date_of_shipment); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping_delivery_date')); ?>:</b>
+	<?php echo CHtml::encode($data->shopping_delivery_date); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping_scheduled_delivery')); ?>:</b>
 	<?php echo CHtml::encode($data->shopping_scheduled_delivery); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('article_delivered_amount')); ?>:</b>
+	<?php echo CHtml::encode($data->article_delivered_amount); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('article_price')); ?>:</b>
+	<?php echo CHtml::encode($data->article_price); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('document_name')); ?>:</b>
+	<?php echo CHtml::encode($data->document_name); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('invoice_name')); ?>:</b>
+	<?php echo CHtml::encode($data->invoice_name); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping_notes')); ?>:</b>
@@ -48,6 +68,10 @@
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping_status')); ?>:</b>
 	<?php echo CHtml::encode($data->shopping_status); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('paid')); ?>:</b>
+	<?php echo CHtml::encode($data->paid); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping_printed')); ?>:</b>

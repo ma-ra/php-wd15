@@ -10,6 +10,11 @@
  * @property integer $fabric_price_group
  * @property integer $supplier_supplier_id
  * @property string $fabric_price
+ *
+ * The followings are the available model relations:
+ * @property Supplier $supplierSupplier
+ * @property Shopping[] $shoppings
+ * @property Textile[] $textiles
  */
 class FabricCollection extends CActiveRecord
 {
@@ -48,6 +53,9 @@ class FabricCollection extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'supplierSupplier' => array(self::BELONGS_TO, 'Supplier', 'supplier_supplier_id'),
+			'shoppings' => array(self::HAS_MANY, 'Shopping', 'fabric_collection_fabric_id'),
+			'textiles' => array(self::HAS_MANY, 'Textile', 'textile_number'),
 		);
 	}
 
@@ -57,12 +65,12 @@ class FabricCollection extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'fabric_id' => 'Fabric',
-			'fabric_number' => 'Fabric Number',
-			'fabric_name' => 'Fabric Name',
-			'fabric_price_group' => 'Fabric Price Group',
-			'supplier_supplier_id' => 'Supplier Supplier',
-			'fabric_price' => 'Fabric Price',
+			'fabric_id' => 'id materiału',
+			'fabric_number' => 'numer materiału',
+			'fabric_name' => 'nazwa materiału',
+			'fabric_price_group' => 'grupa cenowa',
+			'supplier_supplier_id' => 'id dostawcy',
+			'fabric_price' => 'cena katalogowa',
 		);
 	}
 
@@ -93,6 +101,7 @@ class FabricCollection extends CActiveRecord
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+			'pagination'=>array('pageSize'=>500),
 		));
 	}
 

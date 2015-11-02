@@ -1,6 +1,6 @@
 <?php
 
-class WarehouseController extends Controller
+class FabricCollectionController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -31,9 +31,9 @@ class WarehouseController extends Controller
 				'actions'=>array('index','view', 'admin'),
 				'users'=>array('@'),
 			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update', 'delete'),
-				'users'=>array('mara', 'asia','gosia'),
+			array('allow',  // allow all users to perform 'index' and 'view' actions
+					'actions'=>array('create', 'update', 'delete'),
+					'users'=>array('asia', 'mara'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -58,63 +58,20 @@ class WarehouseController extends Controller
 	 */
 	public function actionCreate()
 	{
+		$model=new FabricCollection;
+
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-		
-		# http://www.yiiframework.com/wiki/362/how-to-use-multiple-instances-of-the-same-model-in-the-same-form/
-		$models=array();
-		
-		if(isset($_POST['Warehouse']))
+
+		if(isset($_POST['FabricCollection']))
 		{
-			# pętla po otrzymanych wierszach, tworzenie modelu do każdego wiersza i przypisanie atrybutów
-			foreach ($_POST['Warehouse'] as $key => $model) {
-				$models[$key]=new Warehouse;
-				$models[$key]->attributes=$_POST['Warehouse'][$key];
-				# nie weryfikuj oraz nie usówaj całkowicie pustych wierszy
-				$attributes_count=0;
-				foreach ($models[$key] as $attr_key => $attribute) {
-					if (!empty($attribute)) {
-						$attributes_count+=1;
-					}
-				}
-				if ($attributes_count > 0) {
-					# wyszukujemy powiązane zakupy
-					$Shopping=Shopping::model()->findByPk($models[$key]->shopping_shopping_id);
-					# jeżeli nie znaleziono, to nie ustawiaj
-					if(empty($Shopping)) {
-						$models[$key]->shopping_shopping_id=null;
-					} 
-					
-					if($models[$key]->save()) {
-						# zmieniamy status zamówienia, jeżeli podano id
-						if ($models[$key]->article_count >= $Shopping->article_amount) {
-							$Shopping->shopping_status="dostarczono";
-						} else {
-							$Shopping->shopping_status="częściowo";
-						}
-						$Shopping->save();
-						
-						# po poprawnym zapisie wyczyść prezentowany wiersz lub usuń 
-						# wyczyść
-						$models[$key]->unsetAttributes();
-						# usuń
-						//unset($models[$key]);
-					}
-				}
-			}
-		} else {
-			# jak nie otrzymaliśmy wierszy, to sami je generujemy
-			for ($i = 1; $i <= 15; $i++) {
-				$models[$i]=new Warehouse;
-			}
+			$model->attributes=$_POST['FabricCollection'];
+			if($model->save())
+				$this->redirect(array('view','id'=>$model->fabric_id));
 		}
 
-		#jeżeli $models jest puste, to znaczy, że wszystko udało sie zapisać
-		if (empty($models)) {
-			$this->redirect(array('Warehouse/admin'));
-		}
 		$this->render('create',array(
-			'models'=>$models,
+			'model'=>$model,
 		));
 	}
 
@@ -130,11 +87,11 @@ class WarehouseController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Warehouse']))
+		if(isset($_POST['FabricCollection']))
 		{
-			$model->attributes=$_POST['Warehouse'];
+			$model->attributes=$_POST['FabricCollection'];
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->warehouse_id));
+				$this->redirect(array('view','id'=>$model->fabric_id));
 		}
 
 		$this->render('update',array(
@@ -161,7 +118,7 @@ class WarehouseController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Warehouse');
+		$dataProvider=new CActiveDataProvider('FabricCollection');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -172,10 +129,10 @@ class WarehouseController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Warehouse('search');
+		$model=new FabricCollection('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Warehouse']))
-			$model->attributes=$_GET['Warehouse'];
+		if(isset($_GET['FabricCollection']))
+			$model->attributes=$_GET['FabricCollection'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -186,12 +143,12 @@ class WarehouseController extends Controller
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
 	 * @param integer $id the ID of the model to be loaded
-	 * @return Warehouse the loaded model
+	 * @return FabricCollection the loaded model
 	 * @throws CHttpException
 	 */
 	public function loadModel($id)
 	{
-		$model=Warehouse::model()->findByPk($id);
+		$model=FabricCollection::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -199,11 +156,11 @@ class WarehouseController extends Controller
 
 	/**
 	 * Performs the AJAX validation.
-	 * @param Warehouse $model the model to be validated
+	 * @param FabricCollection $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='warehouse-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='fabric-collection-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
