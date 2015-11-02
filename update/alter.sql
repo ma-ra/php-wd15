@@ -29,3 +29,32 @@ ALTER TABLE shopping DROP INDEX fk_shopping_textile1_idx ;
 ALTER TABLE `wd15`.`shopping` ADD INDEX `fk_shopping_fabric_collection1_idx` ( `fabric_collection_fabric_id` ) COMMENT '';
 
 ALTER TABLE `wd15`.`textile` ADD INDEX `fk_textile_fabric_collection1_idx` ( `textile_number` ) COMMENT '';
+
+
+--- FK dla Shopping
+INSERT INTO `wd15`.`fabric_collection` (`fabric_id`, `fabric_number`, `fabric_name`, `fabric_price_group`, `supplier_supplier_id`, `fabric_price`) VALUES (NULL, '63', 'Corona 63 Mocca', '999', '1', '999'), (NULL, '14', 'Largo 14 Elefant', '999', '1', '999');
+UPDATE `wd15`.`textile` SET `textile_number` = '63' WHERE `textile`.`textile_id` = 229;
+
+CREATE TEMPORARY TABLE IF NOT EXISTS textile_fabric_mapping AS (
+SELECT 
+   shopping_id, 
+   fabric_collection_fabric_id, 
+   textile_number,
+   (SELECT fabric_id FROM `textile` 
+      JOIN fabric_collection
+          ON textile.textile_number = fabric_collection.fabric_number
+      WHERE textile.textile_id=shopping.fabric_collection_fabric_id) as fabric_id,
+   (SELECT fabric_number FROM `textile` 
+      JOIN fabric_collection
+          ON textile.textile_number = fabric_collection.fabric_number
+      WHERE textile.textile_id=shopping.fabric_collection_fabric_id) as fabric_number
+      
+   FROM shopping
+   JOIN textile
+      ON shopping.fabric_collection_fabric_id = textile.textile_id);
+
+UPDATE shopping SET fabric_collection_fabric_id = (SELECT fabric_id FROM textile_fabric_mapping WHERE textile_fabric_mapping.shopping_id=shopping.shopping_id);
+
+ALTER TABLE `shopping` ADD CONSTRAINT `fk_shopping_fabric_collection1` FOREIGN KEY (`fabric_collection_fabric_id`) REFERENCES `wd15`.`fabric_collection`(`fabric_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE `textile` ADD CONSTRAINT `fk_textile_fabric_collection1` FOREIGN KEY (`textile_number`) REFERENCES `wd15`.`fabric_collection`(`fabric_number`) ON DELETE NO ACTION ON UPDATE NO ACTION;
