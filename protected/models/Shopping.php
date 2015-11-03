@@ -183,6 +183,7 @@ class Shopping extends CActiveRecord
 				'*',//Add the * to include all the rest of the fields from the main model
 		);
 		$sort->defaultOrder='shopping_number ASC';
+		//$sort->multiSort=true;
 		
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

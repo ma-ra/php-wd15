@@ -32,7 +32,7 @@ class ShoppingController extends Controller
 				'users'=>array('@'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create', 'createMany', 'update', 'delete', 'print', 'html'),
+				'actions'=>array('create', 'createMany', 'update', 'delete', 'print', 'html', 'delivered', 'partial', 'canceled'),
 				'users'=>array('asia', 'mara'),
 			),
 			array('deny',  // deny all users
@@ -228,6 +228,7 @@ class ShoppingController extends Controller
 	 */
 	public function actionAdmin()
 	{
+		$this->layout='//layouts/orderAdmin';
 		$model=new Shopping('search');
 		$model->unsetAttributes();  // clear any default values
 		$model->shopping_status='w trakcie';
@@ -257,7 +258,7 @@ class ShoppingController extends Controller
 		if (isset($_POST["check"]) && isset($_GET["act"])) {
 			if ($_GET["act"] == "print_order") {
 				$shopping=Shopping::model()->findAllByPk($_POST["check"],array(
-					'with'=>'textileTextile',
+					'with'=>'fabricCollectionFabric',
 					'together'=>true,
 				));
 				
@@ -285,10 +286,10 @@ class ShoppingController extends Controller
 								echo $lp;
 							echo "</td>";
 							echo "<td>";
-								echo $shopping_position->textileTextile->textile_number;
+								echo $shopping_position->fabricCollectionFabric->fabric_number;
 							echo "</td>";
 							echo "<td>";
-								echo "&nbsp&nbsp" . $shopping_position->textileTextile->textile_name . "&nbsp&nbsp";
+								echo "&nbsp&nbsp" . $shopping_position->fabricCollectionFabric->fabric_name . "&nbsp&nbsp";
 							echo "</td>";
 							echo "<td>";
 								if (!empty($shopping_position->article_amount)) {
@@ -312,7 +313,7 @@ class ShoppingController extends Controller
 		if (isset($_POST["check"]) && isset($_GET["act"])) {
 			if ($_GET["act"] == "print_order") {
 				$shopping=Shopping::model()->findAllByPk($_POST["check"],array(
-						'with'=>'textileTextile',
+						'with'=>'fabricCollectionFabric',
 						'together'=>true,
 				));
 	
@@ -323,8 +324,8 @@ class ShoppingController extends Controller
 				}
 				if ($sum/count($shopping) == $shopping[0]->shopping_number) {
 					$shopping_number=$shopping[0]->shopping_number;
-					$supplier_name=$shopping[0]->textileTextile->supplierSupplier->supplier_name;
-					$shopping_lang=$shopping[0]->textileTextile->supplierSupplier->supplier_lang;
+					$supplier_name=$shopping[0]->fabricCollectionFabric->supplierSupplier->supplier_name;
+					$shopping_lang=$shopping[0]->fabricCollectionFabric->supplierSupplier->supplier_lang;
 					
 					# parametry PDF
 					$pdf = new ShoppingList('P', 'mm', 'A4', true, 'UTF-8');
@@ -451,8 +452,8 @@ EOT;
 						# teksty
 						$texts=array(
 								$lp,
-								$shopping_position->textileTextile->textile_number,
-								$shopping_position->textileTextile->textile_name,
+								$shopping_position->fabricCollectionFabric->fabric_number,
+								$shopping_position->fabricCollectionFabric->fabric_name,
 								$count
 						);
 							
@@ -487,6 +488,48 @@ EOT;
 					echo "Zaznaczono pozycje o różnych numerach zamówień";
 				}
 			}
+		}
+	}
+	
+	public function actionDelivered()
+	{
+		if (isset($_POST["check"])) {
+			foreach ($_POST["check"] as $id => $checked) {
+				$Shopping=$this->loadModel($checked);
+				$Shopping->article_delivered_amount=$Shopping->article_amount;
+				$Shopping->shopping_delivery_date=date('Y-m-d H:i:s');
+				$Shopping->shopping_status="dostarczono";
+				$Shopping->save();
+			}
+		} else {
+			print_r($_REQUEST);
+		}
+	}
+	
+	public function actionPartial()
+	{
+		if (isset($_POST["check"])) {
+			foreach ($_POST["check"] as $id => $checked) {
+				$Shopping=$this->loadModel($checked);
+				$Shopping->shopping_delivery_date=date('Y-m-d H:i:s');
+				$Shopping->shopping_status="częściowo";
+				$Shopping->save();
+			}
+		} else {
+			print_r($_REQUEST);
+		}
+	}
+	
+	public function actionCanceled()
+	{
+		if (isset($_POST["check"])) {
+			foreach ($_POST["check"] as $id => $checked) {
+				$Shopping=$this->loadModel($checked);
+				$Shopping->shopping_status="anulowano";
+				$Shopping->save();
+			}
+		} else {
+			print_r($_REQUEST);
 		}
 	}
 	

@@ -15,6 +15,9 @@ $this->menu=array(
 	array('label'=>'* - w tle'),
 	array('label'=>'brak - normalne przejście do nowej strony'),
 	array('label'=>'--------------------------------------------------'),
+	array('label'=>'Filtr [materiały] *', 'url'=>'#', 'itemOptions'=>array('id' => 'textile')),
+	array('label'=>'Filtr [plan] *', 'url'=>'#', 'itemOptions'=>array('id' => 'plan')),
+	array('label'=>'--------------------------------------------------'),
 	array('label'=>'Zapisz zaznaczenie *', 'url'=>'#', 'itemOptions'=>array('id' => 'set_check')),
 	array('label'=>'Usuń zaznaczenie *', 'url'=>'#', 'itemOptions'=>array('id' => 'unset_check')),
 	array('label'=>'Reset zaznaczenia *', 'url'=>'#', 'itemOptions'=>array('id' => 'reset_check')),			
@@ -591,6 +594,16 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 					console.log(data);
 				}
 			});
+			event.preventDefault();
+		});
+
+		$("li#textile a").click(function(event) {
+			$('#order-grid').yiiGridView('update', {data: 'Order[textile_prepared]=0'});
+			event.preventDefault();
+		});
+
+		$("li#plan a").click(function(event) {
+			$('#order-grid').yiiGridView('update', {data: 'Order[article_planed]=%3E0'});
 			event.preventDefault();
 		});
 		

@@ -30,8 +30,14 @@ ALTER TABLE `wd15`.`shopping` ADD INDEX `fk_shopping_fabric_collection1_idx` ( `
 
 ALTER TABLE `wd15`.`textile` ADD INDEX `fk_textile_fabric_collection1_idx` ( `textile_number` ) COMMENT '';
 
+-- DROP VIEWS
+DROP VIEW rap_shopping;
+DROP VIEW rap_textile;
+DROP VIEW rap_textile2;
+DROP VIEW `rap_textile2-1`;
+DROP VIEW rap_warehouse;
 
---- FK dla Shopping
+-- FK dla Shopping
 INSERT INTO `wd15`.`fabric_collection` (`fabric_id`, `fabric_number`, `fabric_name`, `fabric_price_group`, `supplier_supplier_id`, `fabric_price`) VALUES (NULL, '63', 'Corona 63 Mocca', '999', '1', '999'), (NULL, '14', 'Largo 14 Elefant', '999', '1', '999');
 UPDATE `wd15`.`textile` SET `textile_number` = '63' WHERE `textile`.`textile_id` = 229;
 
@@ -58,3 +64,5 @@ UPDATE shopping SET fabric_collection_fabric_id = (SELECT fabric_id FROM textile
 ALTER TABLE `shopping` ADD CONSTRAINT `fk_shopping_fabric_collection1` FOREIGN KEY (`fabric_collection_fabric_id`) REFERENCES `wd15`.`fabric_collection`(`fabric_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 ALTER TABLE `textile` ADD CONSTRAINT `fk_textile_fabric_collection1` FOREIGN KEY (`textile_number`) REFERENCES `wd15`.`fabric_collection`(`fabric_number`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
