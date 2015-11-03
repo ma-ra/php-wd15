@@ -17,7 +17,8 @@
 	// There is a call to performAjaxValidation() commented in generated controller code.
 	// See class documentation of CActiveForm for details on this.
 	'enableAjaxValidation'=>false,
-	'action'=>array('Shopping/create'),
+	'action'=>array('Shopping/createMany'),
+	'htmlOptions'=>array('target'=>'_blank')
 )); ?>
 
 <table>
@@ -25,55 +26,35 @@
 		<td>Dostawca:</td>
 		<td>Nr. Mat.:</td>
 		<td>Nazwa Mat.:</td>
-		<td>Materiały - zaznaczone:</td>
-		<td>Materiał - jeszcze potrzeba</td>
+		<td>Wyliczona ilość:</td>
 		<td>Zamawiana ilość</td>
-		<td>Termin</td>
-		<td>Materiały - na magazynie</td>
+		<td>Notki</td>
 		<td>Materiał - zamówione</td>
-		<td>Materiał - pozostało</td>
 	</tr>
 	<?php 
 		foreach ($rapTextile as $key => $Order) {
 			#wyświetlenie podsumowania materiałów, które zarazem jest formularzem zamówienia
-			echo "<tr>";
-				echo "<td>$Order->supplier_name</td>";
-				echo "<td>$Order->textile_number</td>";
-				echo "<td>$Order->textile_name</td>";
-				echo "<td>$Order->textiles_selected</td>";
-				echo "<td>$Order->textile_yet_need</td>";
+			echo "\n<tr>\n";
+				echo "<td>$Order->supplier_name</td>\n";
+				echo "<td>$Order->textile_number</td>\n";
+				echo "<td>$Order->fabric_name</td>\n";
+				echo "<td>$Order->textiles_selected</td>\n";
 				#pozycje które trzeba uzupełnić (formularz)
-				echo "<td>\n";
-					echo $form->textField($shopping[$key],"[$key]" . 'article_amount',array('size'=>9,'maxlength'=>9));
+				echo "<td>";
+					# np. <input size="9" maxlength="9" name="Shopping[0][article_amount]" id="Shopping_0_article_amount" type="text" />
+					echo $form->textField($shoppings[$key],"[$key]" . 'article_amount',array('size'=>9,'maxlength'=>9));
 				echo "</td>\n";
-				echo "<td>\n";
-					//echo $form->textField($models[$key],"[$key]" . 'shopping_term');
-					$this->widget('zii.widgets.jui.CJuiDatePicker', array(
-							'model' => $shopping[$key],
-							'attribute' => "[$key]" . 'shopping_term',
-							'language' => 'pl',
-							'options' => array(
-									'showOn' => 'button',
-									'dateFormat' => 'yy-mm-dd',
-									'showButtonPanel' => true,
-							),
-							'htmlOptions' => array(
-									'size' => '10',         // textField size
-									'maxlength' => '10',    // textField maxlength
-							),
-					));
+				echo "<td>";
+					echo $form->textField($shoppings[$key],"[$key]" . 'shopping_notes',array('size'=>9,'maxlength'=>50));
 				echo "</td>\n";
-				echo "<td>$Order->textile1_warehouse</td>";
-				echo "<td>$Order->textiles_ordered</td>";
-				echo "<td>$Order->order1_id</td>";
+				echo "<td>$Order->textiles_ordered</td>\n";
 			echo "</tr>";
 			
 			#ukryte pola służące do przeniesienia informacji z OrderControler do ShoppingContlorer
-			echo "\n" . $form->hiddenField($shopping[$key],"[$key]" . 'shopping_number');
-			echo "\n" . $form->hiddenField($shopping[$key],"[$key]" . 'textile_textile_id');
-			echo "\n" . $form->hiddenField($shopping[$key],"[$key]" . 'article_calculated_amount');
-			echo "\n" . $form->hiddenField($shopping[$key],"[$key]" . 'order1_ids');
-			echo "\n" . $form->hiddenField($shopping[$key],"[$key]" . 'order2_ids');
+			echo "\n" . $form->hiddenField($shoppings[$key],"[$key]" . 'fabric_collection_fabric_id');
+			echo "\n" . $form->hiddenField($shoppings[$key],"[$key]" . 'article_calculated_amount');
+			echo "\n" . $form->hiddenField($shoppings[$key],"[$key]" . 'order1_ids');
+			echo "\n" . $form->hiddenField($shoppings[$key],"[$key]" . 'order2_ids') . "\n";
 		}
 	?>
 </table>

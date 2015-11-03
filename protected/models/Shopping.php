@@ -59,7 +59,23 @@ class Shopping extends CActiveRecord
 			array('article_amount, article_calculated_amount, article_delivered_amount, article_price', 'length', 'max'=>9),
 			array('document_name, invoice_name', 'length', 'max'=>150),
 			array('shopping_delivery_date, shopping_printed', 'safe'),
-			array('article_amount, shopping_term, shopping_status, shopping_printed', 'default', 'setOnEmpty' => true, 'value' => null),
+				
+				
+			array('article_calculated_amount, 
+				      shopping_term, 
+					  shopping_status, 
+					  shopping_printed, 
+					  shopping_date_of_shipment, 
+					  shopping_delivery_date, 
+					  shopping_scheduled_delivery, 
+					  article_delivered_amount, 
+					  article_price, 
+					  document_name, 
+					  invoice_name, 
+					  shopping_notes', 
+				  'default', 'setOnEmpty' => true, 'value' => null),
+				
+				
 			array('paid', 'default', 'setOnEmpty' => true, 'value' => 0),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.

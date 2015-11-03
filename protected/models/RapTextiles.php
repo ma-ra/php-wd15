@@ -1,12 +1,12 @@
 <?php
 
 /**
- * This is the model class for table "rap_textile2".
+ * This is the model class for table "rap_textiles".
  *
- * The followings are the available columns in table 'rap_textile2':
+ * The followings are the available columns in table 'rap_textiles':
  * @property string $supplier_name
  * @property string $textile_number
- * @property string $textile_name
+ * @property string $fabric_name
  * @property integer $order1_id
  * @property string $order1_number
  * @property integer $order1_checked
@@ -16,18 +16,16 @@
  * @property string $textile1_selected
  * @property string $textile2_selected
  * @property string $textiles_selected
- * @property string $textile1_warehouse
  * @property string $textiles_ordered
- * @property string $textile_yet_need
  */
-class RapTextile2 extends CActiveRecord
+class RapTextiles extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'rap_textile2';
+		return 'rap_textiles';
 	}
 
 	/**
@@ -38,17 +36,16 @@ class RapTextile2 extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('textile_number, textile_name', 'required'),
+			array('textile_number', 'required'),
 			array('order1_id, order1_checked, order2_id, order2_checked', 'numerical', 'integerOnly'=>true),
-			array('supplier_name, textile_name', 'length', 'max'=>150),
+			array('supplier_name, fabric_name', 'length', 'max'=>150),
 			array('textile_number, order1_number, order2_number', 'length', 'max'=>50),
 			array('textile1_selected, textile2_selected', 'length', 'max'=>19),
 			array('textiles_selected', 'length', 'max'=>20),
-			array('textile1_warehouse, textiles_ordered', 'length', 'max'=>31),
-			array('textile_yet_need', 'length', 'max'=>33),
+			array('textiles_ordered', 'length', 'max'=>32),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('supplier_name, textile_number, textile_name, order1_id, order1_number, order1_checked, order2_id, order2_number, order2_checked, textile1_selected, textile2_selected, textiles_selected, textile1_warehouse, textiles_ordered, textile_yet_need', 'safe', 'on'=>'search'),
+			array('supplier_name, textile_number, fabric_name, order1_id, order1_number, order1_checked, order2_id, order2_number, order2_checked, textile1_selected, textile2_selected, textiles_selected, textiles_ordered', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -69,21 +66,19 @@ class RapTextile2 extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'supplier_name' => 'dostawca',
-			'textile_number' => 'nr mat.',
-			'textile_name' => 'nazwa mat.',
-			'order1_id' => 'id zam. 1',
-			'order1_number' => 'nr zam. 1',
-			'order1_checked' => 'zazn. na zam. 1',
-			'order2_id' => 'id zam. 2',
-			'order2_number' => 'nr zam. 2',
-			'order2_checked' => 'zazn. na zam. 2',
-			'textile1_selected' => 'mat. 1 dla zazn.',
-			'textile2_selected' => 'mat. 2 dla zazn.',
-			'textiles_selected' => 'mat. dla zazn',
-			'textile1_warehouse' => 'na magazynie',
-			'textiles_ordered' => 'zamówione',
-			'textile_yet_need' => 'jeszcze potrzeba',
+			'supplier_name' => 'Supplier Name',
+			'textile_number' => 'Textile Number',
+			'fabric_name' => 'Fabric Name',
+			'order1_id' => 'Order1',
+			'order1_number' => 'Order1 Number',
+			'order1_checked' => 'Order1 Checked',
+			'order2_id' => 'Order2',
+			'order2_number' => 'Order2 Number',
+			'order2_checked' => 'Order2 Checked',
+			'textile1_selected' => 'Textile1 Selected',
+			'textile2_selected' => 'Textile2 Selected',
+			'textiles_selected' => 'Textiles Selected',
+			'textiles_ordered' => 'Textiles Ordered',
 		);
 	}
 
@@ -107,7 +102,7 @@ class RapTextile2 extends CActiveRecord
 
 		$criteria->compare('supplier_name',$this->supplier_name,true);
 		$criteria->compare('textile_number',$this->textile_number,true);
-		$criteria->compare('textile_name',$this->textile_name,true);
+		$criteria->compare('fabric_name',$this->fabric_name,true);
 		$criteria->compare('order1_id',$this->order1_id);
 		$criteria->compare('order1_number',$this->order1_number,true);
 		$criteria->compare('order1_checked',$this->order1_checked);
@@ -117,9 +112,7 @@ class RapTextile2 extends CActiveRecord
 		$criteria->compare('textile1_selected',$this->textile1_selected,true);
 		$criteria->compare('textile2_selected',$this->textile2_selected,true);
 		$criteria->compare('textiles_selected',$this->textiles_selected,true);
-		$criteria->compare('textile1_warehouse',$this->textile1_warehouse,true);
 		$criteria->compare('textiles_ordered',$this->textiles_ordered,true);
-		$criteria->compare('textile_yet_need',$this->textile_yet_need,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -130,7 +123,7 @@ class RapTextile2 extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return RapTextile2 the static model class
+	 * @return RapTextiles the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

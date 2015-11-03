@@ -32,7 +32,7 @@ class ShoppingController extends Controller
 				'users'=>array('@'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update', 'delete', 'print', 'html'),
+				'actions'=>array('create', 'createMany', 'update', 'delete', 'print', 'html'),
 				'users'=>array('asia', 'mara'),
 			),
 			array('deny',  // deny all users
@@ -51,12 +51,33 @@ class ShoppingController extends Controller
 			'model'=>$this->loadModel($id),
 		));
 	}
-
+	
 	/**
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
 	public function actionCreate()
+	{
+		$model=new Shopping;
+		
+		// Uncomment the following line if AJAX validation is needed
+		// $this->performAjaxValidation($model);
+		
+		if(isset($_POST['Shopping']))
+		{
+			$model->attributes=$_POST['Shopping'];
+			$model->shopping_status="nowy";
+			$model->creation_time=date('Y-m-d H:i:s');
+			if($model->save())
+				$this->redirect(array('view','id'=>$model->shopping_id));
+		}
+		
+		$this->render('create',array(
+				'model'=>$model,
+		));
+	}
+
+	public function actionCreateMany()
 	{
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -66,8 +87,11 @@ class ShoppingController extends Controller
 		
 		if(isset($_POST['Shopping']))
 		{
+			echo "<pre>";
+			var_dump($_POST);
+			echo "</pre>";
+			
 			# na początek ustalamy max numer zamówienia materiałów (zakupów)
-			# TO DO - przy niepoprawnej walidacji mamy dużo czasu do zapisu, co może sprzyjać dublą
 			$maxShoppingNumber = Shopping::model()->find(array(
 				'order'=>'shopping_number DESC',
 				'limit'=>1
@@ -89,22 +113,9 @@ class ShoppingController extends Controller
 				$models[$key]->order2_ids=isset($_POST['Shopping'][$key]['order2_ids']) ? $_POST['Shopping'][$key]['order2_ids'] : null;
 				
 				#jeżeli podano 0, to znaczy, że nie zamawiamy
-				if ($models[$key]->article_amount != null and $models[$key]->article_amount == 0) {
+				if ($models[$key]->article_amount == null || $models[$key]->article_amount == 0) {
 					$models[$key]->unsetAttributes();
 				}
-				
-				#jeżeli nie zadeklarowano ilości oraz wyliczona ilość wynosi 0, to nie zamawiaj
-				if ($models[$key]->article_amount == null and $models[$key]->article_calculated_amount == 0) {
-					$models[$key]->unsetAttributes();
-				}
-				
-				#jeżeli nie podano article amount, to z wyliczonej wartości
-				if (empty($models[$key]->article_amount)) {
-					$models[$key]->article_amount=$models[$key]->article_calculated_amount;
-				}
-				
-				#taki przytrzymywacz
-				//$models[$key]->article_calculated_amount=null;
 				
 				# nie weryfikuj oraz nie usówaj całkowicie pustych wierszy
 				$attributes_count=0;
@@ -116,7 +127,7 @@ class ShoppingController extends Controller
 				
 				if ($attributes_count > 0) {
 					#nadajemy numer
-					$supplierId=isset(Textile::model()->findByPk($models[$key]->textile_textile_id)->supplierSupplier->supplier_id) ? Textile::model()->findByPk($models[$key]->textile_textile_id)->supplierSupplier->supplier_id : "-" ;
+					$supplierId=isset(FabricCollection::model()->findByPk($models[$key]->fabric_collection_fabric_id)->supplierSupplier->supplier_id) ? FabricCollection::model()->findByPk($models[$key]->fabric_collection_fabric_id)->supplierSupplier->supplier_id : "-" ;
 					if (!isset($shoppingNumber[$supplierId])) {
 						$maxShoppingNumber+=1;
 						$shoppingNumber[$supplierId]=$maxShoppingNumber;
@@ -147,9 +158,6 @@ class ShoppingController extends Controller
 								$Order->save();
 							}
 						}
-						# po poprawnym zapisie wyczyść prezentowany wiersz lub usuń 
-						# wyczyść
-						//$models[$key]->unsetAttributes();
 						# usuń z listy kontrolnej
 						unset($check[$key]);
 					}
@@ -158,21 +166,12 @@ class ShoppingController extends Controller
 					unset($check[$key]);
 				}
 			}
-		} else {
-			# jak nie otrzymaliśmy wierszy, to sami je generujemy
-			for ($i = 1; $i <= 15; $i++) {
-				$models[$i]=new Shopping;
-				$check[$i]=true;
-			}
-		}
+		} 
 
 		#jeżeli lista kontrolna jest pusta, to znaczy, że wszystko udało sie zapisać
 		if (empty($check)) {
-			$this->redirect(array('Shopping/admin'));
+			$this->redirect(array('Shopping/admin', 'Shopping[shopping_status]'=>'nowy', 'sort'=>'shopping_id.desc'));
 		}
-		$this->render('create',array(
-			'models'=>$models,
-		));
 	}
 
 	/**

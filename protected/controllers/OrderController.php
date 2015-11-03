@@ -1205,47 +1205,38 @@ class OrderController extends Controller
 			$criteria->select=array(
 				'supplier_name',
 				'textile_number',
-				//new CDbExpression('GROUP_CONCAT(CONCAT(" * ", textile_name) SEPARATOR "<BR>\n") as textile_name'),
-				new CDbExpression('MAX(textile_name) as textile_name'),
+				'fabric_name',
 				new CDbExpression('SUM(textiles_selected) as textiles_selected'),
-				'textile1_warehouse',
 				'textiles_ordered',
-				new CDbExpression('IF((SUM(textiles_selected) - textile1_warehouse -  textiles_ordered)>0, SUM(textiles_selected) - textile1_warehouse -  textiles_ordered, NULL) as textile_yet_need'),
-				new CDbExpression('IF((SUM(textiles_selected) - textile1_warehouse -  textiles_ordered)<0, (SUM(textiles_selected) - textile1_warehouse -  textiles_ordered) * -1, NULL) as order1_id'),
 				new CDBExpression('CONCAT(IFNULL(GROUP_CONCAT(order1_id),""),IF(GROUP_CONCAT(order1_id),",","")) as order1_number'),
 				new CDBExpression('CONCAT(IFNULL(GROUP_CONCAT(order2_id),""),IF(GROUP_CONCAT(order2_id),",","")) as order2_number')
 			);
 			$criteria->addInCondition('order1_id',$pks, 'AND');
 			$criteria->addInCondition('order2_id',$pks, 'OR');
-			$criteria->group='supplier_name, textile_number, textile1_warehouse, textiles_ordered';
+			$criteria->group='supplier_name, textile_number, fabric_name, textiles_ordered';
 			$criteria->order='supplier_name ASC, textile_number ASC';
 			#wyszukiwanie
-			$rapTextile=RapTextile2::model()->findAll($criteria);
+			$rapTextile=RapTextiles::model()->findAll($criteria);
 			
 			#Budujemy model na potrzeby formularza dodającego zakup (zamówienie materiałów)
 			foreach ($rapTextile as $key => $textile) {
 				#tworzymy tablice modeli typu Shopping - tutaj będziemy zbierać dane, które zostaną zpaisane
-				$shopping[$key]=new Shopping;
-				$shopping[$key]->textile_textile_id=Textile::model()->find(array(
-					'condition'=>'textile_number = :textile_number',
+				$shoppings[$key]=new Shopping;
+				$shoppings[$key]->fabric_collection_fabric_id=FabricCollection::model()->find(array(
+					'condition'=>'fabric_number = :textile_number',
 					'params'=>array(':textile_number'=>$textile->textile_number),
-					'order'=>'pattern DESC, textile_name ASC',
+					'order'=>'fabric_id ASC',
 					'limit'=>1
-						
-				))->textile_id;
-				if($textile->textile_yet_need == null) {
-					$shopping[$key]->article_calculated_amount=0;
-				} else {
-					$shopping[$key]->article_calculated_amount=$textile->textile_yet_need;
-				}
-				$shopping[$key]->order1_ids=$textile->order1_number;
-				$shopping[$key]->order2_ids=$textile->order2_number;
+				))->fabric_id;
+				$shoppings[$key]->article_calculated_amount=$textile->textiles_selected;
+				$shoppings[$key]->order1_ids=$textile->order1_number;
+				$shoppings[$key]->order2_ids=$textile->order2_number;
 			}
 			
 			
 			$this->render('textile_summary',array(
 					'rapTextile'=>$rapTextile,
-					'shopping'=>$shopping
+					'shoppings'=>$shoppings
 			));
 			}
 		}

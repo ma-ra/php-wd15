@@ -4,20 +4,9 @@
 /* @var $form CActiveForm */
 ?>
 
-<style>
-	table {
-   		border-collapse: collapse;
-	}
-	
-	table, th, td {
-	    border: 1px solid black;
-    	vertical-align: text-top;
-	}
-</style>
-
 <div class="form">
 
-<?php  $form=$this->beginWidget('CActiveForm', array(
+<?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'shopping-form',
 	// Please note: When you enable ajax validation, make sure the corresponding
 	// controller action is handling ajax validation correctly.
@@ -28,61 +17,46 @@
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
 
-	<?php echo $form->errorSummary($models); ?>
-	
-	<table>
-		<tr>
-			<td>
-					<?php echo $form->labelEx($models[key($models)],'shopping_number'); ?>
-			</td>
-			<td>
-					<?php echo $form->labelEx($models[key($models)],'textile_textile_id'); ?>
-			</td>
-			<td>
-					<?php echo $form->labelEx($models[key($models)],'article_amount'); ?>
-			</td>
-			<td>
-					<?php echo $form->labelEx($models[key($models)],'article_calculated_amount'); ?>
-			</td>
-			<td>							
-					<?php echo $form->labelEx($models[key($models)],'shopping_term'); ?>
-			</td>		
-		</tr>
-		
-		<?php
-		#http://www.yiiframework.com/wiki/362/how-to-use-multiple-instances-of-the-same-model-in-the-same-form/
-		foreach ($models as $key => $model) {
-			echo "<tr>\n";
-				echo "<td>\n";				
-					echo $form->textField($model,"[$key]" . 'shopping_number');
-					echo $form->error($model,"[$key]" . 'shopping_number');
-				echo "</td>\n";
-				echo "<td>\n";		
-					echo $form->textField($model,"[$key]" . 'textile_textile_id');
-					echo $form->error($model,"[$key]" . 'textile_textile_id');
-				echo "</td>\n";
-				echo "<td>\n";		
-					echo $form->textField($model,"[$key]" . 'article_amount',array('size'=>9,'maxlength'=>9));
-					echo $form->error($model,"[$key]" . 'article_amount');
-				echo "</td>\n";
-				echo "<td>\n";		
-					echo $form->textField($model,"[$key]" . 'article_calculated_amount',array('size'=>9,'maxlength'=>9));
-					echo $form->error($model,"[$key]" . 'article_calculated_amount');
-				echo "</td>\n";
-				echo "<td>\n";		
-					echo $form->textField($model,"[$key]" . 'shopping_term');
-					echo $form->error($model,"[$key]" . 'shopping_term');
-				echo "</td>\n";
-			echo "</tr>\n";
-		echo "\n" . $form->hiddenField($model,"[$key]" . 'order1_ids');
-		echo "\n" . $form->hiddenField($model,"[$key]" . 'order1_ids');
-		}
-		?>
-	</table>
-	
+	<?php echo $form->errorSummary($model); ?>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'shopping_number'); ?>
+		<?php echo $form->textField($model,'shopping_number'); ?>
+		<?php echo $form->error($model,'shopping_number'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'fabric_collection_fabric_id'); ?>
+		<?php echo $form->textField($model,'fabric_collection_fabric_id'); ?>
+		<?php echo $form->error($model,'fabric_collection_fabric_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'article_amount'); ?>
+		<?php echo $form->textField($model,'article_amount',array('size'=>9,'maxlength'=>9)); ?>
+		<?php echo $form->error($model,'article_amount'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'article_calculated_amount'); ?>
+		<?php echo $form->textField($model,'article_calculated_amount',array('size'=>9,'maxlength'=>9)); ?>
+		<?php echo $form->error($model,'article_calculated_amount'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'shopping_term'); ?>
+		<?php echo $form->textField($model,'shopping_term',array('size'=>50,'maxlength'=>50)); ?>
+		<?php echo $form->error($model,'shopping_term'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'shopping_notes'); ?>
+		<?php echo $form->textField($model,'shopping_notes',array('size'=>50,'maxlength'=>50)); ?>
+		<?php echo $form->error($model,'shopping_notes'); ?>
+	</div>
 
 	<div class="row buttons">
-		<?php  echo CHtml::submitButton('Zapisz'); ?>
+		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>
 
 <?php $this->endWidget(); ?>
