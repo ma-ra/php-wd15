@@ -793,9 +793,9 @@ class OrderController extends Controller
 							$year=max($matches[1], $matches[2]);
 							
 							$order->order_term="$year/$week";
-							if (!empty(trim($line[4]))) {
+							/* if (!empty(trim($line[4]))) {
 								$order->article_planed=trim($line[4]);
-							}
+							} */
 							
 							###
 							# Wiązanie Order z innymi tabelami
@@ -1181,12 +1181,23 @@ class OrderController extends Controller
 				'order'=>'articleArticle.model_name ASC, articleArticle.article_number ASC',
 			));
 			
+			#Lista na potrzeby przeniesienia planu
+			$Orders6=Order::model()->findAll(array(
+				'select'=>array(
+					new CDbExpression('CONCAT_WS("_", order_number, buyer_order_number) as order_number'),
+					new CDbExpression('SUBSTRING(article_planed,1,2) as article_planed')
+				),
+				'order'=>'article_planed ASC, order_number ASC, buyer_order_number ASC',
+				'condition'=>'article_planed IS NOT NULL and article_exported IS NULL AND article_canceled=0'
+			));
+			
 			$this->render('summary',array(
 					'Orders1'=>$Orders1, 
 					'Orders2'=>$Orders2,
 					'Orders3'=>$Orders3,
 					'Orders4'=>$Orders4,
 					'Orders5'=>$Orders5,
+					'Orders6'=>$Orders6,
 			));
 			
 		}

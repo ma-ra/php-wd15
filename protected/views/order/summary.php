@@ -273,6 +273,28 @@ echo "</pre>"; */
 	echo "</tr>";
 ?>
 	</table>
+	
+	<b><a id="plan" href="#">Na potrzeby przeniesienia planu do Excella</a></b><br>
+	<table id="plan" style="border-collapse: collapse; border: 1px solid black;">
+		<tr>
+			<td colspan=2 style="border: 1px solid black;"><B>Funkcja:</B> =JEŻELI.BŁĄD(WYSZUKAJ.PIONOWO(A2&"_"&U2;$Tabelle2.$A$1:$B$999;2;FAŁSZ());"")</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="border: 1px solid black;">&nbsp;</td>
+		</tr>
+		<tr>
+			<td style="border: 1px solid black;"><B>Nr. do planu</B></td>
+			<td style="border: 1px solid black;"><B>Nr. tyg.</B></td>
+		</tr>
+<?php 
+	foreach ($Orders6 as $key => $Order) {
+		echo "<tr>";
+			echo "<td style=\"border: 1px solid black;\">$Order->order_number</td>";
+			echo "<td style=\"border: 1px solid black;\">$Order->article_planed</td>";
+		echo "</tr>";
+	}
+?>
+	</table>
 </div>
 
 <script type="text/javascript">
@@ -296,6 +318,10 @@ echo "</pre>"; */
 		});
 		$("a#rozklad").click(function(event) {
 			$("table#rozklad").toggle();
+			event.preventDefault();
+		});
+		$("a#plan").click(function(event) {
+			$("table#plan").toggle();
 			event.preventDefault();
 		});
 
