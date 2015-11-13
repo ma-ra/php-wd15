@@ -274,6 +274,24 @@ echo "</pre>"; */
 ?>
 	</table>
 	
+	<b><a id="plan_sieroty" href="#">Plan - sieroty</a></b><br>
+	<table id="plan_sieroty" style="border-collapse: collapse; border: 1px solid black;">
+		<tr>
+			<td style="border: 1px solid black;">nr zam.</td>
+			<td style="border: 1px solid black;">pozycja</td> 
+			<td style="border: 1px solid black;">plan</td> 
+		</tr>
+<?php 
+	foreach ($Orders6 as $key => $Order) {
+		echo "<tr>";
+			echo "<td style=\"border: 1px solid black;\">$Order->order_number</td>";
+			echo "<td style=\"border: 1px solid black;\">$Order->buyer_order_number</td>";
+			echo "<td style=\"border: 1px solid black;\">$Order->article_planed</td>";
+		echo "</tr>";
+	}
+?>
+	</table>
+	
 	<b><a id="plan" href="#">Na potrzeby przeniesienia planu do Excella</a></b><br>
 	<table id="plan" style="border-collapse: collapse; border: 1px solid black;">
 		<tr>
@@ -287,7 +305,7 @@ echo "</pre>"; */
 			<td style="border: 1px solid black;"><B>Nr. tyg.</B></td>
 		</tr>
 <?php 
-	foreach ($Orders6 as $key => $Order) {
+	foreach ($Orders7 as $key => $Order) {
 		echo "<tr>";
 			echo "<td style=\"border: 1px solid black;\">$Order->order_number</td>";
 			echo "<td style=\"border: 1px solid black;\">$Order->article_planed</td>";
@@ -318,6 +336,10 @@ echo "</pre>"; */
 		});
 		$("a#rozklad").click(function(event) {
 			$("table#rozklad").toggle();
+			event.preventDefault();
+		});
+		$("a#plan_sieroty").click(function(event) {
+			$("table#plan_sieroty").toggle();
 			event.preventDefault();
 		});
 		$("a#plan").click(function(event) {

@@ -1181,8 +1181,20 @@ class OrderController extends Controller
 				'order'=>'articleArticle.model_name ASC, articleArticle.article_number ASC',
 			));
 			
-			#Lista na potrzeby przeniesienia planu
+			#Plan - sieroty
 			$Orders6=Order::model()->findAll(array(
+				'select'=>array(
+					'order_number',
+					'buyer_order_number',
+					'article_planed'
+				),
+				'order'=>'article_planed ASC, order_number ASC, buyer_order_number ASC',
+				'condition'=>'article_exported IS NULL AND article_canceled=0 AND article_planed IS NULL AND
+							  order_number IN (SELECT order_number FROM `order` WHERE article_planed IS NOT NULL and article_exported IS NULL AND article_canceled=0)'
+			));
+			
+			#Lista na potrzeby przeniesienia planu
+			$Orders7=Order::model()->findAll(array(
 				'select'=>array(
 					new CDbExpression('CONCAT_WS("_", order_number, buyer_order_number) as order_number'),
 					new CDbExpression('SUBSTRING(article_planed,1,2) as article_planed')
@@ -1198,6 +1210,7 @@ class OrderController extends Controller
 					'Orders4'=>$Orders4,
 					'Orders5'=>$Orders5,
 					'Orders6'=>$Orders6,
+					'Orders7'=>$Orders7,
 			));
 			
 		}
