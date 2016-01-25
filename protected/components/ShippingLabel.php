@@ -78,13 +78,13 @@ class ShippingLabel extends FPDF {
 		$this->Cell(143.5, 5, "", 0, 2, "L");
 		
 		$this->Cell(143.5, 5, "Empfanger: ", 0, 2, "L");
-		$this->GetStringWidth($this->empfanger) > 71 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',12);
-		$this->Cell(71.75, 5, iconv('utf-8', 'windows-1250',$this->empfanger), 0, 2, "L");
+		$this->GetStringWidth($this->empfanger) > 140 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',12);
+		$this->MultiCell(71.75, 5, iconv('utf-8', 'windows-1250',$this->empfanger), 0, "L");
 		$this->SetFont('arial_ce','',12);
-		$this->Cell(143.5, 5, "", 0, 2, "L");
 		
 		$this->Rect(5+$x, 53+$y, 71.75, 39);
 		$this->Rect(76.75+$x, 53+$y, 71.75, 39);
+		$this->SetXY(5+$x,53+$y);
 		$this->Cell(71.75, 5, "Auftrag - nr: " . iconv('utf-8', 'windows-1250',$this->auftragNr), 0, 2, "L");
 		
 		$position=$this->GetX();
@@ -96,8 +96,8 @@ class ShippingLabel extends FPDF {
 		
 		$this->Cell(71.75, 5, "Lieferanschrift: ", 0, 2, "L");
 		$this->Cell(71.75, 5, "", 0, 2, "L");
-		$this->GetStringWidth($this->empfanger) > 71 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',12);
-		$this->Cell(71.75, 5, iconv('utf-8', 'windows-1250',$this->empfanger), 0, 2, "L");
+		$this->GetStringWidth($this->lieferanschrift) > 71 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',12);
+		$this->Cell(71.75, 5, iconv('utf-8', 'windows-1250',$this->lieferanschrift), 0, 2, "L");
 		$this->GetStringWidth($this->strasse) > 71 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',12);
 		$this->Cell(71.75, 5, iconv('utf-8', 'windows-1250',$this->strasse), 0, 2, "L");
 		$this->GetStringWidth($this->plz) > 71 ? $this->SetFont('arial_ce','',10): $this->SetFont('arial_ce','',12);
@@ -115,6 +115,8 @@ class ShippingLabel extends FPDF {
 		$this->SetXY(76.75+$x, 38+$y);
 		$this->Cell(71.75, 5, "Lieferant:", 0, 2, "L");
 		$this->Cell(71.75, 5, iconv('utf-8', 'windows-1250',$this->lieferant), 0, 2, "L");
+		#TO DO: adres z bazy zamiast zakodowany
+		$this->Cell(71.75, 5, iconv('utf-8', 'windows-1250','Hafervöhde 7, DE-59457 Werl'), 0, 2, "L");
 		
 		$this->SetXY(76.75+$x, 53+$y);
 		$this->Cell(71.75, 5, "Artikel - nr: " . iconv('utf-8', 'windows-1250',$this->artikelNr), 0, 2, "L");
@@ -122,8 +124,8 @@ class ShippingLabel extends FPDF {
 		$this->Cell(14, 5, "Model: ",0, 0, "L");
 		$this->GetStringWidth($this->model) > 57 ? $this->SetFont('arial_ce','',11) : $this->SetFont('arial_ce','',12);
 		$this->MultiCell(57.75, 5, iconv('utf-8', 'windows-1250',$this->model), 0, "L");
-		$this->SetX(76.75+$x);
-		$this->Cell(71.75, 5, "", 0, 2, "L");
+		$this->SetXY(76.75+$x, 78+$y);
+		//$this->Cell(71.75, 5, "", 0, 2, "L");
 		$this->GetStringWidth($this->eanNummer) > 71 ? $this->SetFont('arial_ce','',10) : $this->SetFont('arial_ce','',12);
 		$this->Cell(71.75, 5, "EAN Nummer: " . iconv('utf-8', 'windows-1250',$this->eanNummer), 0, 2, "L");
 		

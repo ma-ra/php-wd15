@@ -56,6 +56,7 @@ class Order extends CActiveRecord
 	public $manufacturerManufacturer_manufacturer_name;
 	public $brokerBroker_broker_name;
 	public $buyerBuyer_buyer_name_1;
+	public $buyerBuyer_buyer_name_2;
 	public $articleArticle_article_number;
 	public $articleArticle_model_name;
 	public $articleArticle_model_type;
@@ -104,7 +105,7 @@ class Order extends CActiveRecord
 			array('order_date, buyer_order_number, buyer_comments, order_reference, textil_pair, textilpair_price_group, textile2_textile_id, printed_minilabel, printed_shipping_label, article_exported, article_planed', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, printed_minilabel, printed_shipping_label, article_manufactured, article_exported, manufacturerManufacturer_manufacturer_name, brokerBroker_broker_name, buyerBuyer_buyer_name_1, articleArticle_article_number, articleArticle_model_name, articleArticle_model_type, articleArticle_article_colli, legLeg_leg_type, textiles1_textile_number, textiles1_textile_name, textiles1_textile_price_groupe, textiles2_textile_number, textiles2_textile_name, textiles2_textile_price_group, textile1_textile_id, textile2_textile_id, checked, shopping1_shopping_id, shopping2_shopping_id, article_planed, article_prepared_to_export, shopping1Shopping_shopping_status, shopping2Shopping_shopping_status, order_price, order_total_price, order_storno_date, article_planed, order_notes', 'safe', 'on'=>'search'),
+			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, printed_minilabel, printed_shipping_label, article_manufactured, article_exported, manufacturerManufacturer_manufacturer_name, brokerBroker_broker_name, buyerBuyer_buyer_name_1, buyerBuyer_buyer_name_2, articleArticle_article_number, articleArticle_model_name, articleArticle_model_type, articleArticle_article_colli, legLeg_leg_type, textiles1_textile_number, textiles1_textile_name, textiles1_textile_price_groupe, textiles2_textile_number, textiles2_textile_name, textiles2_textile_price_group, textile1_textile_id, textile2_textile_id, checked, shopping1_shopping_id, shopping2_shopping_id, article_planed, article_prepared_to_export, shopping1Shopping_shopping_status, shopping2Shopping_shopping_status, order_price, order_total_price, order_storno_date, article_planed, order_notes', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -248,6 +249,7 @@ class Order extends CActiveRecord
 		$criteria->compare('manufacturerManufacturer.manufacturer_name',$this->manufacturerManufacturer_manufacturer_name,true);
 		$criteria->compare('brokerBroker.broker_name',$this->brokerBroker_broker_name,true);
 		$criteria->compare('buyerBuyer.buyer_name_1',$this->buyerBuyer_buyer_name_1,true);
+		$criteria->compare('buyerBuyer.buyer_name_2',$this->buyerBuyer_buyer_name_2,true);
 		$criteria->compare('articleArticle.article_number',$this->articleArticle_article_number,true);
 		$criteria->compare('articleArticle.model_name',$this->articleArticle_model_name,true);
 		$criteria->compare('articleArticle.model_type',$this->articleArticle_model_type,true);
@@ -299,11 +301,11 @@ class Order extends CActiveRecord
 				'shopping2Shopping.shopping_status',
 				'*',//Add the * to include all the rest of the fields from the main model
 		);
-		//$sort->multiSort=true;
+		$sort->multiSort=true;
 		
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
-			'pagination'=>array('pageSize'=>800),
+			'pagination'=>array('pageSize'=>900),
 			'sort'=>$sort,
 		));
 	}

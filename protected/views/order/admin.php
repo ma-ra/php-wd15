@@ -174,6 +174,12 @@ $columns=array(
 		'value' => 'CHtml::encode($data->buyerBuyer->buyer_name_1)'
 	),
 	array(
+		'name' => 'buyerBuyer.buyer_name_2',
+		'filter'=>CHtml::activeTextField($model,'buyerBuyer_buyer_name_2'),
+		'type' => 'raw',
+		'value' => 'CHtml::encode($data->buyerBuyer->buyer_name_2)'
+	),
+	array(
 		'name' => 'legLeg.leg_type',
 		'filter'=>CHtml::activeTextField($model,'legLeg_leg_type'),
 		'type' => 'raw',

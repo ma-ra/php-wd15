@@ -582,9 +582,9 @@ class OrderController extends Controller
 							# Buyer - update or insert
 							####
 							$buyer=Buyer::model()->find(array(
-								'condition'=>'buyer_name_1=:name1 AND buyer_name_2 is :name2 AND buyer_street=:street AND buyer_zip_code=:zip_code',
+								'condition'=>'buyer_name_1=:name1 AND buyer_name_2=:name2 AND buyer_street=:street AND buyer_zip_code=:zip_code',
 								'params'=>array(':name1'=>$line[15], 
-									':name2'=>null,
+									':name2'=>$line[7],
 					 				':street'=>$line[16],
 									':zip_code'=>$line[17] . " " . $line[18],
 								),
@@ -596,7 +596,7 @@ class OrderController extends Controller
 								$buyer=new Buyer('upload');
 							}
 							$buyer->buyer_name_1=$line[15];
-							$buyer->buyer_name_2=null;
+							$buyer->buyer_name_2=$line[7];
 							$buyer->buyer_street=$line[16];
 							$buyer->buyer_zip_code=$line[17] . " " . $line[18];
 							$buyer->save();
@@ -796,6 +796,16 @@ class OrderController extends Controller
 							/* if (!empty(trim($line[4]))) {
 								$order->article_planed=trim($line[4]);
 							} */
+							
+							# jeżeli zamówienie dla Otto (szukaj w drugiej nazwie), to dodaj znacznik w notkach
+							if (preg_match('/OTTO GmbH/i',$buyer->buyer_name_2,$matches)) {
+								$orderNotes=explode("|", $order->order_notes);
+								if (!in_array($matches[0], $orderNotes)) {
+									array_push ( $orderNotes , $matches[0]);
+								}
+								$orderNotes=implode("|", $orderNotes);
+								$order->order_notes=$orderNotes;
+							}
 							
 							###
 							# Wiązanie Order z innymi tabelami
@@ -1614,25 +1624,35 @@ class OrderController extends Controller
 							}
 							$old_order_term=$order_term;
 							
-							
-							#Zebranie danych
-							
+							# tablica z dodatkowymi nazwami dla Otto
+							$ottoStoffNumber=array(
+								4081 => 'Otto-Stoffnummer: 110',
+								4085 => 'Otto-Stoffnummer: 111',
+								4092 => 'Otto-Stoffnummer: 112',
+								4020 => 'Otto-Stoffnummer: 120',
+								4021 => 'Otto-Stoffnummer: 121',
+								4022 => 'Otto-Stoffnummer: 122',
+								4023 => 'Otto-Stoffnummer: 123',
+								4024 => 'Otto-Stoffnummer: 124',
+								4058 => 'Otto-Stoffnummer: 125',
+								4093 => 'Otto-Stoffnummer: 130',
+								4094 => 'Otto-Stoffnummer: 131',
+								4095 => 'Otto-Stoffnummer: 132',
+								4096 => 'Otto-Stoffnummer: 133',
+								4097 => 'Otto-Stoffnummer: 134',
+								4098 => 'Otto-Stoffnummer: 135',
+							);
+							 
+							# zebranie danych
 							$pdf->order_term=$order_term;
 							$pdf->model=$Order->articleArticle->model_name . " " . $Order->articleArticle->model_type;
-							if(isset($Order->textil_pair)) {
-								$dess1=$Order->textil_pair . "; " . $Order->textile1Textile->textile_name;
-							} else {
-								$dess1=$Order->textile1Textile->textile_number . "; " . $Order->textile1Textile->textile_name;
-							}
-							$dess2=isset($Order->textile2Textile->textile_name)? "; " . $Order->textile2Textile->textile_name : " ";
-							$pdf->dessin=$dess1 . " " . $dess2;
 							$pdf->variant="";
 							$pdf->fusse=$Order->legLeg->leg_type;
-							$pdf->empfanger=$Order->buyerBuyer->buyer_name_1;
+							$pdf->empfanger=$Order->buyerBuyer->buyer_name_2;
 							$pdf->lieferant=$Order->brokerBroker->broker_name;
 							$pdf->auftragNr=$Order->order_number;
 							$pdf->bestellnummer=$Order->buyer_order_number;
-							$pdf->lieferanschrift="";
+							$pdf->lieferanschrift=$Order->buyerBuyer->buyer_name_1;;
 							$pdf->strasse=$Order->buyerBuyer->buyer_street;
 							$pdf->plz=$Order->buyerBuyer->buyer_zip_code;
 							$pdf->artikelNr=$Order->articleArticle->article_number;
@@ -1640,6 +1660,21 @@ class OrderController extends Controller
 							$pdf->number=$j;
 							$pdf->totalNumber=$Order->articleArticle->article_colli;
 				
+							if(isset($Order->textil_pair)) {
+								$dess1=$Order->textil_pair . "; " . $Order->textile1Textile->textile_name;
+							} else {
+								$dess1=$Order->textile1Textile->textile_number . "; " . $Order->textile1Textile->textile_name;
+							}
+							$dess2=isset($Order->textile2Textile->textile_name)? "; " . $Order->textile2Textile->textile_name : " ";
+							# dla Otto dodajemy na wydruku specjalną nazwę materiału
+							if (preg_match('/OTTO GmbH/i',$Order->buyerBuyer->buyer_name_2,$matches) && array_key_exists($Order->textile1Textile->textile_number, $ottoStoffNumber)) {
+								$dess1=$Order->textile1Textile->textile_number . ' - ' . $ottoStoffNumber[$Order->textile1Textile->textile_number];
+							}
+							if (preg_match('/OTTO GmbH/i',$Order->buyerBuyer->buyer_name_2,$matches) && array_key_exists($Order->textile1Textile->textile_number, $ottoStoffNumber)) {
+								$dess2=isset($Order->textile2Textile->textile_number)? '; ' . $Order->textile2Textile->textile_number . ' - ' . $ottoStoffNumber[$Order->textile2Textile->textile_number] : "";
+							}  
+							$pdf->dessin=$dess1 . " " . $dess2;
+							
 							//odred_id + (3) sztuka + (1) no coli + (1) ilość coli
 							$pdf->id=$Order->order_id . sprintf('%03d', $i) . $j . $Order->articleArticle->article_colli;
 							

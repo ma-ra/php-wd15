@@ -33,7 +33,7 @@ class FabricCollectionController extends Controller
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
 					'actions'=>array('create', 'update', 'delete'),
-					'users'=>array('asia', 'mara'),
+					'users'=>array('asia', 'mara', 'michalina'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
