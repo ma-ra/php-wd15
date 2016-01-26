@@ -18,7 +18,7 @@
 	// See class documentation of CActiveForm for details on this.
 	'enableAjaxValidation'=>false,
 	'action'=>array('Shopping/createMany'),
-	'htmlOptions'=>array('target'=>'_blank')
+	//'htmlOptions'=>array('target'=>'_blank')
 )); ?>
 
 <table>

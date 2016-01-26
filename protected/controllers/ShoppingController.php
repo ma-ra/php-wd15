@@ -87,9 +87,9 @@ class ShoppingController extends Controller
 		
 		if(isset($_POST['Shopping']))
 		{
-			echo "<pre>";
+			/* echo "<pre>";
 			var_dump($_POST);
-			echo "</pre>";
+			echo "</pre>"; */
 			
 			# na początek ustalamy max numer zamówienia materiałów (zakupów)
 			$maxShoppingNumber = Shopping::model()->find(array(
