@@ -112,6 +112,7 @@ class OrderController extends Controller
 		$model=new UploadForm;
 		$linia=array();
 		# tablica z poprawnymi nazwami, np dla modelu SO7100 - w wczytywanym pliku nazwy często są ucięte
+		//TO DO: uzupełnic listę bo doszły nowe modele
 		$correctTypeList=array(
 			70160010 => '10 LC – 3EL – Ottomane',
 			70160015 => '15 LC – 3EL – Ottomane',
@@ -684,7 +685,7 @@ class OrderController extends Controller
 							###
 							
 							# zebranie informacji o pierwszym deseniu
-							if ($line[25]>999) { #Jeden deseń na zamówieniu
+							if ($line[25]>1100) { #Jeden deseń na zamówieniu
 								$textile_number=$line[25];
 							} else { # dwa desenie na zamówieniu
 								preg_match('/([0-9]{4})/i',$line[26],$matches);
@@ -717,7 +718,7 @@ class OrderController extends Controller
 							# Drugi deseń
 							###
 							$secTextileError=null;
-							if ($line[25]<=999) {
+							if ($line[25]<=1100) {
 								# grupa cenowa
 								//D.4105:Microf. mittelbraun(PG9
 								preg_match('/\(? *PG *([0-9]{1})/',$line[27],$matches);
@@ -743,7 +744,7 @@ class OrderController extends Controller
 								$textile2->textile_price_group=isset($textile_price_group) ? $textile_price_group : 99 ;
 								$textile2->save();
 							} else {
-								# zgłoś błąd, jeżeli numer pary jest 4-cyfrowy, a pojawi sie drugi deseń
+								# zgłoś błąd, jeżeli numer pary jest >1100, a pojawi sie drugi deseń
 								$test=rtrim(preg_match('/([0-9]{4})/i',$line[27],$matches));
 								if (!empty($test)) {
 									$secTextileError="sec-textile";
@@ -828,7 +829,7 @@ class OrderController extends Controller
 							###
 							
 							#Jeżeli mamy dwa desenie							
-							if ($line[25]<=999) {
+							if ($line[25]<=1100) {
 								$order->textil_pair=$line[25];
 								$order->textile2_textile_id=$textile2->textile_id;
 								# Uśredniamy grupę cenową
@@ -901,6 +902,7 @@ class OrderController extends Controller
 				}
 				
 				# wyszukaj potencjalne storna
+				//TO DO - w sytuacji nie wgrania żadnego z zamówień program wszystko potraktuje jako strono - do poprawy
 				$stornos=Order::model()->findAll(array(
 				'condition'=>'article_exported is NULL AND article_canceled = 0 AND order_storno_date != :currentDate',
 				'params'=>array(':currentDate'=>$currentDate),

@@ -301,7 +301,7 @@ class Order extends CActiveRecord
 				'shopping2Shopping.shopping_status',
 				'*',//Add the * to include all the rest of the fields from the main model
 		);
-		$sort->multiSort=true;
+		//$sort->multiSort=true;
 		
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
