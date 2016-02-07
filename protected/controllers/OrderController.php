@@ -473,6 +473,33 @@ class OrderController extends Controller
 					Yii::app()->user->setFlash('1error','Nie udało się skasować błędów typu: "exported".');
 				}
 				
+			# usuń dotychczasowe błędy typu: storno
+				$storned=Order::model()->findAll(array(
+					'condition'=>'order_error like :storno',
+					'params'=>array(':storno'=>'%storno%'),
+				));
+				
+				$transaction = Yii::app()->db->beginTransaction();
+				try {
+					foreach ($storned as $key => $order) {
+						$error=explode("|", $order->order_error);
+						if (in_array("storno", $error)) {
+							$error = array_diff($error, array("storno"));
+							$error=implode("|", $error);
+							$order->order_error=$error;
+							$order->save();
+						}
+					}
+					
+					$transaction->commit();
+					# komunikaty sa zapisywane do tablicy, gdzie 1success jest kluczem - stąd jedynka, aby kilka succes nie nałożyło się;
+					# 1success po obcięciu pierwszej cyfry, jest również nazwą klasy css wpływającej na kolor powiadomienia
+					Yii::app()->user->setFlash('2success','Poprawnie skasowane stare błędy typu: "storno".');
+				} catch(Exception $e) {
+					$transaction->rollBack();
+					Yii::app()->user->setFlash('2error','Nie udało się skasować błędów typu: "storno".');
+				}
+				
 				
 				$file=$model->file->tempName;
 				#####
@@ -894,10 +921,10 @@ class OrderController extends Controller
 						unlink($file);
 					}
 					$transaction->commit();
-					Yii::app()->user->setFlash('2success','Zamówienia wgrane bez błędów.');
+					Yii::app()->user->setFlash('3success','Zamówienia wgrane bez błędów.');
 				} catch(Exception $e) {
 					$transaction->rollBack();
-					Yii::app()->user->setFlash('2error','Nie udało się wgrać zamówień.');
+					Yii::app()->user->setFlash('3error','Nie udało się wgrać zamówień.');
 					echo "<pre>"; var_dump($e); echo "</pre>";
 				}
 				
@@ -923,10 +950,10 @@ class OrderController extends Controller
 					}
 						
 					$transaction->commit();
-					Yii::app()->user->setFlash('3success','Wyszukiwanie potencjalnych "storn" zakońcone powodzeniem.');
+					Yii::app()->user->setFlash('4success','Wyszukiwanie potencjalnych "storn" zakońcone powodzeniem.');
 				} catch(Exception $e) {
 					$transaction->rollBack();
-					Yii::app()->user->setFlash('3error','Nie udało się wyszukiwanie potencjalnych "storn"');
+					Yii::app()->user->setFlash('4error','Nie udało się wyszukiwanie potencjalnych "storn"');
 				}
 			}
 			# przeładowanie strony wgrywania (strona wykryje potencjalne błędy (setFlash) i wyświetli je

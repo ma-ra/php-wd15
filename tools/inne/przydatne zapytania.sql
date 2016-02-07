@@ -163,3 +163,12 @@ WHERE
    article_canceled = 0 AND
    article_exported is NULL AND
    order_number IN (SELECT * FROM temporary_order);
+
+-- usówanie części notatek
+ELECT `order_number` , `order_error` , `order_notes` , replace( order_notes, 'czy storno?', '' )
+FROM `order`
+WHERE order_notes LIKE '%czy storno?%'
+
+update `order`
+SET `order_notes`=replace(`order_notes`,'czy storno?','')
+where order_notes like '%czy storno?%';
