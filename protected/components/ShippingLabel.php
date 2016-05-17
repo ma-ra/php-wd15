@@ -58,7 +58,7 @@ class ShippingLabel extends FPDF {
 		#Nagłowek
 		$this->SetFont('arial_ce','B',18);
 		$this->SetXY(5+$x,5+$y);
-		$this->Cell(143.5, 8, "REALITY IMPORT GMBH", 0, 2, "C");
+		$this->Cell(143.5, 8, $this->lieferant, 0, 2, "C");
 		
 		#Lewa strona
 		$this->SetFont('arial_ce','',12);

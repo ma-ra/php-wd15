@@ -603,7 +603,9 @@ class OrderController extends Controller
 							####
 							
 							if ($line[5] != 75007) {
-								continue;
+								if ($line[5] != 70007) {
+									continue;
+								}
 							}
 							
 							####
@@ -632,18 +634,33 @@ class OrderController extends Controller
 							####
 							# Broker - update or insert
 							####
-							$broker=Broker::model()->find(array(
-								'condition'=>'broker_name=:name',
-								'params'=>array(':name'=>'Reality Import GmbH'),
-								# ostatni element
-								'order' => "broker_id DESC",
-								'limit' => 1
-							));
-							if (empty($broker)) {
-								$broker=new Broker('upload');
+							if ($line[5] == 75007) {
+								$broker=Broker::model()->find(array(
+									'condition'=>'broker_name=:name',
+									'params'=>array(':name'=>'Reality Import GmbH'),
+									# ostatni element
+									'order' => "broker_id DESC",
+									'limit' => 1
+								));
+								if (empty($broker)) {
+									$broker=new Broker('upload');
+								}
+								$broker->broker_name="Reality Import GmbH";
+								$broker->save();
+							} else if ($line[5] == 70007) {
+								$broker=Broker::model()->find(array(
+									'condition'=>'broker_name=:name',
+									'params'=>array(':name'=>'ReDi GmbH'),
+									# ostatni element
+									'order' => "broker_id DESC",
+									'limit' => 1
+								));
+								if (empty($broker)) {
+									$broker=new Broker('upload');
+								}
+								$broker->broker_name="ReDi GmbH";
+								$broker->save();
 							}
-							$broker->broker_name="Reality Import GmbH";
-							$broker->save();
 							
 							####
 							# Manufacturer - update or insert
