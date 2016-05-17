@@ -50,7 +50,8 @@
 	<div id="footer">
 		Copyright &copy; <?php echo date('Y'); ?> by Marek Ramotowski for Wyrwał Daniel.<br/>
 		All Rights Reserved.<br/>
-		<?php echo Yii::powered(); ?>
+		<?php echo Yii::powered(); ?></br>
+		changeset:   131:70ed38f8e24f
 	</div><!-- footer -->
 
 </div><!-- page -->

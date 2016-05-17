@@ -203,7 +203,7 @@ $columns=array(
 );
 
 # wybranym osobą włączamy dodatkowe kolumny
-if (in_array(Yii::app()->user->name, array('asia', 'gosia', 'mara', 'mariola'))) {
+if (in_array(Yii::app()->user->name, array('asia', 'gosia', 'mara', 'mariola', 'michalina'))) {
 	array_push($columns, 'order_price', 'order_total_price');
 }
 

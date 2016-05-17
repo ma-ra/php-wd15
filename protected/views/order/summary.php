@@ -29,7 +29,7 @@
 		echo "<td style=\"border: 1px solid black;\">$Order->fabrics_fabric_price_group</td>";
 		echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_article_all_textile_amount</td>";
 		# wybranym osobą pokazujemy ceny
-		if (in_array(Yii::app()->user->name, array('asia', 'gosia', 'mara', 'mariola'))) {
+		if (in_array(Yii::app()->user->name, array('asia', 'gosia', 'mara', 'mariola', 'michalina'))) {
 			$our_prices=array(
 				1 =>$Order->articleArticle_price_in_pg1,
 				2 =>$Order->articleArticle_price_in_pg2,
@@ -131,7 +131,7 @@ echo "</pre>"; */
 		echo "<td style=\"border: 1px solid black;\">$Order->fabrics_fabric_price_group</td>";
 		echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_article_all_textile_amount</td>";
 		# wybranym osobą pokazujemy ceny
-		if (in_array(Yii::app()->user->name, array('asia', 'gosia', 'mara', 'mariola'))) {
+		if (in_array(Yii::app()->user->name, array('asia', 'gosia', 'mara', 'mariola', 'michalina'))) {
 			$our_prices=array(
 				1 =>$Order->articleArticle_price_in_pg1,
 				2 =>$Order->articleArticle_price_in_pg2,
