@@ -729,7 +729,7 @@ class OrderController extends Controller
 							###
 							
 							# zebranie informacji o pierwszym deseniu
-							if ($line[25]>1200) { #Jeden deseń na zamówieniu
+							if ($line[25]>1300) { #Jeden deseń na zamówieniu
 								$textile_number=$line[25];
 							} else { # dwa desenie na zamówieniu
 								preg_match('/([0-9]{4})/i',$line[26],$matches);
@@ -762,7 +762,7 @@ class OrderController extends Controller
 							# Drugi deseń
 							###
 							$secTextileError=null;
-							if ($line[25]<=1200) {
+							if ($line[25]<=1300) {
 								# grupa cenowa
 								//D.4105:Microf. mittelbraun(PG9
 								preg_match('/\(? *PG *([0-9]{1})/',$line[27],$matches);
@@ -788,7 +788,7 @@ class OrderController extends Controller
 								$textile2->textile_price_group=isset($textile_price_group) ? $textile_price_group : 99 ;
 								$textile2->save();
 							} else {
-								# zgłoś błąd, jeżeli numer pary jest >1200, a pojawi sie drugi deseń
+								# zgłoś błąd, jeżeli numer pary jest >1300, a pojawi sie drugi deseń
 								$test=rtrim(preg_match('/([0-9]{4})/i',$line[27],$matches));
 								if (!empty($test)) {
 									$secTextileError="sec-textile";
@@ -873,7 +873,7 @@ class OrderController extends Controller
 							###
 							
 							#Jeżeli mamy dwa desenie							
-							if ($line[25]<=1200) {
+							if ($line[25]<=1300) {
 								$order->textil_pair=$line[25];
 								$order->textile2_textile_id=$textile2->textile_id;
 								# Uśredniamy grupę cenową
