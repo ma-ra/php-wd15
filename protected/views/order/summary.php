@@ -11,11 +11,11 @@
 			<td style="border: 1px solid black;">Typ:</td> 
 			<td style="border: 1px solid black;">Średnia grupa cenowa:</td>
 			<td style="border: 1px solid black;">Ilość mat:</td>
-			<td style="border: 1px solid black;">Cena jednostkowa (Nasza):</td>
+			<td style="border: 1px solid black;"><b>Cena jednostkowa (Nasza):</b></td>
 			<td style="border: 1px solid black;">Cena jednostkowa (Reality):</td>
 			<td style="border: 1px solid black;">Nazwa na FV:</td>
 			<td style="border: 1px solid black;">Liczba:</td>
-			<td style="border: 1px solid black;">Cena całkowita:</td>
+			<td style="border: 1px solid black;"><b>Cena całkowita:</b></td>
 		</tr>
 <?php 
 	$suma=0;
@@ -46,17 +46,17 @@
 			$order_price=null;
 		}
 		$our_price=isset($our_prices[$Order->fabrics_fabric_price_group]) ? $our_prices[$Order->fabrics_fabric_price_group] : null ;
-		echo "<td style=\"border: 1px solid black;\">" . $our_price . "</td>";
+		echo "<td style=\"border: 1px solid black;\"><b>" . $our_price . "</b></td>";
 		echo "<td style=\"border: 1px solid black;\">$order_price</td>";
 		echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_model_name - $Order->articleArticle_model_type (PG $Order->fabrics_fabric_price_group)</td>";
 		echo "<td style=\"border: 1px solid black;\">$Order->article_amount</td>";
 		if (isset($our_price)) {
 			$our_price_sum=$our_price * $Order->article_amount;
 		} else {
-			$our_price_sum="<b><font color=\"red\">uzgodnić z Michaliną</font></b>";
+			$our_price_sum="<font color=\"red\">uzgodnić z Michaliną</font>";
 			$suma_check=false;
 		}
-		echo "<td style=\"border: 1px solid black;\">" . $our_price_sum . "</td>";
+		echo "<td style=\"border: 1px solid black;\"><b>" . $our_price_sum . "</b></td>";
 		
 		// echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_price_in_pg1</td>";
 		// echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_price_in_pg2</td>";
@@ -82,9 +82,9 @@
 	echo "<td style=\"border: 1px solid black;\"></td>";
 	echo "<td style=\"border: 1px solid black;\">$liczba</td>";
 	if ($suma_check == false) {
-		$suma="<b><font color=\"red\">brak kilku cen aby policzyć</font></b>";
+		$suma="<font color=\"red\">brak kilku cen aby policzyć</font>";
 	}
-	echo "<td style=\"border: 1px solid black;\">$suma</td>";
+	echo "<td style=\"border: 1px solid black;\"><b>$suma</b></td>";
 	echo "</tr>";
 ?>
 	</table>
@@ -119,11 +119,11 @@ echo "</pre>"; */
 				<td style="border: 1px solid black;">deseń 2 - grupa cenowa:</td>
 			<td style="border: 1px solid black;">Średnia grupa cenowa:</td>
 			<td style="border: 1px solid black;">Ilość mat:</td>
-			<td style="border: 1px solid black;">Cena jednostkowa (Nasza):</td>
+			<td style="border: 1px solid black;"><b>Cena jednostkowa (Nasza):</b></td>
 			<td style="border: 1px solid black;">Cena jednostkowa (Reality):</td>
 			<td style="border: 1px solid black;">Nazwa na FV:</td>
 			<td style="border: 1px solid black;">Liczba:</td>
-			<td style="border: 1px solid black;">Cena całkowita:</td>
+			<td style="border: 1px solid black;"><b>Cena całkowita:</b></td>
 		</tr>
 <?php 
 	$suma=0;
@@ -158,17 +158,17 @@ echo "</pre>"; */
 			$order_price=null;
 		}
 		$our_price=isset($our_prices[$Order->fabrics_fabric_price_group]) ? $our_prices[$Order->fabrics_fabric_price_group] : null ;
-		echo "<td style=\"border: 1px solid black;\">" . $our_price . "</td>";
+		echo "<td style=\"border: 1px solid black;\"><b>" . $our_price . "</b></td>";
 		echo "<td style=\"border: 1px solid black;\">$order_price</td>";
 		echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_model_name - $Order->articleArticle_model_type (PG $Order->fabrics_fabric_price_group)</td>";
 		echo "<td style=\"border: 1px solid black;\">$Order->article_amount</td>";
 		if (isset($our_price)) {
 			$our_price_sum=$our_price * $Order->article_amount;
 		} else {
-			$our_price_sum="<b><font color=\"red\">uzgodnić z Michaliną</font></b>";
+			$our_price_sum="<font color=\"red\">uzgodnić z Michaliną</font>";
 			$suma_check=false;
 		}
-		echo "<td style=\"border: 1px solid black;\">" . $our_price_sum . "</td>";
+		echo "<td style=\"border: 1px solid black;\"><b>" . $our_price_sum . "</b></td>";
 		
 		// echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_price_in_pg1</td>";
 		// echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_price_in_pg2</td>";
@@ -198,9 +198,9 @@ echo "</pre>"; */
 	echo "<td style=\"border: 1px solid black;\"></td>";
 	echo "<td style=\"border: 1px solid black;\">$liczba</td>";
 	if ($suma_check == false) {
-		$suma="<b><font color=\"red\">brak kilku cen aby policzyć</font></b>";
+		$suma="<font color=\"red\">brak kilku cen aby policzyć</font>";
 	}
-	echo "<td style=\"border: 1px solid black;\">$suma</td>";
+	echo "<td style=\"border: 1px solid black;\"><b>$suma</b></td>";
 	echo "</tr>";
 ?>
 	</table>
