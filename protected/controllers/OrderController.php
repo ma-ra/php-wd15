@@ -943,14 +943,16 @@ class OrderController extends Controller
 								        		$toComapreFunctionList[3]["Box"]=true; 
 								        }
 									}
-									
-							        if (!empty(array_diff_assoc($patternFunctionList[1],$toComapreFunctionList[1]))) {
+									$array1_diff=array_diff_assoc($patternFunctionList[1],$toComapreFunctionList[1]);	
+							        if (!empty($array1_diff)) {
 						        		$badArticle1Error=str_replace("–","-",$line[24]);
 					       			}	
-						        	if (!empty(array_diff_assoc($patternFunctionList[2],$toComapreFunctionList[2]))) {
+									$array2_diff=array_diff_assoc($patternFunctionList[2],$toComapreFunctionList[2]);	
+						        	if (!empty($array2_diff)) {
 						        		$badArticle2Error=str_replace("–","-",$line[24]);
 						        	} 
-					        		if (!empty(array_diff_assoc($patternFunctionList[3],$toComapreFunctionList[3]))) {
+									$array3_diff=array_diff_assoc($patternFunctionList[3],$toComapreFunctionList[3]);	
+					        		if (!empty($array3_diff)) {
 					        			$badArticle3Error=str_replace("–","-",$line[24]);
 							        } 
 								        
