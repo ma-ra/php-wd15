@@ -114,11 +114,6 @@ class OrderController extends Controller
 		# tablica z poprawnymi nazwami, np dla modelu SO7100 - w wczytywanym pliku nazwy często są ucięte
 		//TO DO: uzupełnic listę bo doszły nowe modele
 		$correctTypeList=array(
-			70160010 => '10 LC - 3EL - Ottomane',
-			70160015 => '15 LC - 3EL - Ottomane',
-			70163015 => '15 LCALFu - 3EL - Ottomane',
-			70165010 => '10 LC - 3QEL - Ottomane',
-			70165015 => '15 LC - 3QEL - Ottomane',
 			71040110 => '10 Hockerbank',
 			71040115 => '15 Hockerbank',
 			71055010 => '10 LC - 3 inkl. BK',
@@ -184,7 +179,9 @@ class OrderController extends Controller
 			71058010 => '10 3ALFuRFu / SV - LCALFuRFu inkl. BK',
 			71058015 => '15 3ALFuRFu / SV - LCALFuRFu inkl. BK',
 			71058110 => '10 3QALFuRFu / SV - LCALFuRFu inkl. BK',
-			71058115 => '15 3QALFuRFu / SV - LCALFuRFu inkl. BK',
+			71058115 => '15 3QALFuRFu / SV - LCALFuRFu inkl. BK im Longchair',
+			71060010 => '10 LC - 3EL - Ottomane',
+			71060015 => '15 LC - 3EL - Ottomane',
 			71060110 => '10 Ottomane - 3EL - LC',
 			71060115 => '15 Ottomane - 3EL - LC',
 			71060210 => '10 LC - 3EL / SV - Ottomane / SV',
@@ -212,6 +209,7 @@ class OrderController extends Controller
 			71062910 => '10 LCALFuRFu - 3QELRFu / SV - OttomaneRFu / SV',
 			71062915 => '15 LCALFuRFu - 3QELRFu / SV - OttomaneRFu / SV',
 			71063010 => '10 LCALFu - 3EL - Ottomane',
+			71063015 => '15 LCALFU - 3EL - Ottomane',
 			71063110 => '10 Ottomane - 3EL - LCALFu',
 			71063115 => '15 Ottomane - 3EL - LCALFu',
 			71063210 => '10 Ottomane / SV - 3EL / SV - LC',
@@ -250,6 +248,8 @@ class OrderController extends Controller
 			71064815 => '15 LC - 3QEL - Ottomane inkl. Box',
 			71064910 => '10 Ottomane - 3QEL - LC inkl. Box',
 			71064915 => '15 Ottomane - 3QEL - LC inkl. Box',
+			71065010 => '10 LC - 3QEL - Ottomane',
+			71065015 => '15 LC - 3QEL - Ottomane',
 			71065110 => '10 Ottomane - 3QEL - LC',
 			71065115 => '15 Ottomane - 3QEL - LC',
 			71065210 => '10 LCALFu - 3EL - Ottomane inkl. Box',
@@ -349,13 +349,15 @@ class OrderController extends Controller
 			71072310 => '10 OttomaneRFu - 3QALFuRFu',
 			71072315 => '15 OttomaneRFu - 3QALFuRFu',
 			71073210 => '10 LCALFu - 3ALFu',
-			71073210 => '10 3ALFu - LCALFu',
 			71073215 => '15 LCALFu - 3ALFu',
-			71073215 => '15 3ALFu - LCALFu',
 			71073310 => '10 LCALFu - 3QALFu',
 			71073315 => '15 LCALFu - 3QALFu',
+			71073410 => '10 3ALFu - LCALFu',
+			71073415 => '15 3ALFu - LCALFu',
+			71074610 => '10 OttomaneRFu / SV - 3ELRFu / SV - LCALFuRFu / SV',
 			71074815 => '15 Ottomane / SV - 3 / SV',
 			71074915 => '15 Ottomane / SV - 3Q / SV',
+			71075010 => '10 Ottomane / SV - 3ALFu / SV',
 			71075015 => '15 Ottomane / SV - 3ALFu / SV',
 			71075115 => '15 Ottomane / SV - 3QALFu / SV',
 			71075510 => '10 3 / SV - Ottomane / SV',
@@ -378,6 +380,7 @@ class OrderController extends Controller
 			71076410 => '10 Ottomane / SV - 3Q / SV',
 			71076510 => '10 Ottomane / SV - 3ALFu / SV',
 			71076610 => '10 Ottomane / SV - 3QALFu / SV',
+			71076615 => '15 Ottomane / SV - 3QALFu / SV',
 			71076710 => '10 OttomaneRFu / SV - 3RFu / SV',
 			71076715 => '15 OttomaneRFu / SV - 3RFu / SV',
 			71076810 => '10 OttomaneRFu / SV - 3QRFu / SV',
@@ -436,6 +439,9 @@ class OrderController extends Controller
 			71079515 => '15 3ALFuRFu / SV - LCALFuRFu',
 			71079610 => '10 3QALFuRFu / SV - LCALFuRFu',
 			71079615 => '15 3QALFuRFu / SV - LCALFuRFu',
+			71097099 => 'Kissensatz 3-Otto / Otto-3',
+			71098099 => 'Kissensatz 3-LC / LC-3',
+			71099099 => 'Kissensatz LC-3-Ott / Ott-3-LC',
 		);
 		
 		if(isset($_POST['UploadForm']))
@@ -1204,7 +1210,7 @@ class OrderController extends Controller
 								$order->order_error=$error;
 							}
 							
-							if (isset($badArticle2Error)) {
+							/* if (isset($badArticle2Error)) {
 								$error=explode("|", $order->order_error);
 								if (!in_array("bad_article2", $error)) {
 									array_push ( $error , "bad_article2");
@@ -1220,7 +1226,7 @@ class OrderController extends Controller
 								}
 								$error=implode("|", $error);
 								$order->order_error=$error;
-							}
+							} */
 							
 							# jak bad_article, to dodaj nazwę z zamówienia do notatek
 							if (isset($badArticle1Error) || isset($badArticle2Error) || isset($badArticle3Error)) {
