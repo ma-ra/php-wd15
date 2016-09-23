@@ -357,7 +357,7 @@ class ShoppingController extends Controller
 					$pdf->ImageSVG(Yii::app()->basePath."/../images/Logo WD.svg", $x='', $y='', $w=0, $h=32, $link='', $align='T', $palign='', $border=0, $fitonpage=false);
 					$txt = <<<EOT
 Daniel Wyrwał
-Silna 27
+Silna 1B
 66-330 Pszczew
 NIP PL 595-10-36-394
 tel. +48 781 494 785
