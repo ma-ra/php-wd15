@@ -38,7 +38,18 @@
 				echo "<td>$Order->supplier_name</td>\n";
 				echo "<td>$Order->textile_number</td>\n";
 				echo "<td>$Order->fabric_name</td>\n";
-				echo "<td>$Order->textiles_selected</td>\n";
+				
+				#trik matematyczny pozwalający wyliczyć ile modeli nie ma zadeklarowanych metrów
+				#trik polega na założeniu, że jak model nie ma podanych metrów, to jego zużycie wynisi 1mln
+				
+				$omitted=floor($Order->textiles_selected/1000000);
+				$result=$Order->textiles_selected-($omitted*1000000);
+				if ($Order->textiles_selected < 1000000) {
+					echo "<td>$Order->textiles_selected</td>\n";
+				} else {
+					echo "<td>$result<br>\n(Pominięto $omitted modeli.)</td>\n";
+					$shoppings[$key]->article_calculated_amount=$result;
+				}
 				#pozycje które trzeba uzupełnić (formularz)
 				echo "<td>";
 					# np. <input size="9" maxlength="9" name="Shopping[0][article_amount]" id="Shopping_0_article_amount" type="text" />
