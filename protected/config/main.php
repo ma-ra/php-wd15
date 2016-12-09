@@ -23,7 +23,7 @@ return array(
 		// uncomment the following to enable the Gii tool
 		'gii'=>array(
 			'class'=>'system.gii.GiiModule',
-			'password' => '{password_for_database}'
+			'password'=>'{password_for_gii}',
 			// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
 		),
@@ -56,7 +56,7 @@ return array(
 			'connectionString' => 'mysql:host=localhost;dbname=wd15',
 			'emulatePrepare' => true,
 			'username' => 'root',
-			'password' => '{password_for_database}'
+			'password' => '{password_for_database}',
 			'charset' => 'utf8',
 			'enableParamLogging'=>true,
 		),

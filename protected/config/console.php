@@ -20,7 +20,7 @@ return array(
 			'connectionString' => 'mysql:host=localhost;dbname=testdrive',
 			'emulatePrepare' => true,
 			'username' => 'root',
-			'password' => '{password_for_database}'
+			'password' => '',
 			'charset' => 'utf8',
 		),
 		*/
