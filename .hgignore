@@ -1,9 +1,0 @@
-syntax: glob
-.settings
-.buildpath
-.project
-php_errors.log
-
-syntax: regexp
-^assets
-^protected/runtime

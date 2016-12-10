@@ -53,10 +53,10 @@ return array(
 		*/
 		// uncomment the following to use a MySQL database
 		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=wd15',
+			'connectionString' => 'mysql:host={database_host};dbname={database_name}',
 			'emulatePrepare' => true,
-			'username' => 'root',
-			'password' => '{password_for_database}',
+			'username' => '{database_user}',
+			'password' => '{database_password}',
 			'charset' => 'utf8',
 			'enableParamLogging'=>true,
 		),

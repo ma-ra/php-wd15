@@ -1,0 +1,7 @@
+.settings
+.buildpath
+.project
+php_errors.log
+
+assets/
+protected/runtime/
