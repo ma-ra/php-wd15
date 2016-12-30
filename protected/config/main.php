@@ -69,8 +69,8 @@ return array(
 			'routes'=>array(
 				array(
 					'class'=>'CFileLogRoute',
-					#'levels'=>'error, warning',
-					'levels'=>'error, warning, trace, info',
+					'levels'=>'error, warning',
+					#'levels'=>'error, warning, trace, info',
 					#'categories' => 'system.db.CDbCommand',
 				),
 				// uncomment the following to show log messages on web pages

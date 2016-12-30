@@ -640,10 +640,71 @@ class OrderController extends Controller
 							# $line[42] - Kommentar
 							####
 							
-							if ($line[5] != 75007) {
-								if ($line[5] != 70007) {
-									continue;
-								}
+							####
+							# Rozpiska kolumn z zaczytywanego pliku (wersja z systemu Reality)
+							# $line[0] - Bestellnr.
+							# $line[1] - Kunde Name
+							# $line[2] - Kunde - Straße
+							# $line[3] - Kunde - PLZ
+							# $line[4] - Kunde - Stadt
+							# $line[5] - Kundenauftragsnr.
+							# $line[6] - Kunde - Email
+							# $line[7] - Kunde - Telefonnummer
+							# $line[8] - Kunde - Faxnummer
+							# $line[9] - Lieferanschrift - Name
+							# $line[10] - Lieferanschrift - Straße
+							# $line[11] - Lieferanschrift - PLZ
+							# $line[12] - Lieferanschrift - Stadt
+							# $line[13] - Position
+							# $line[14] - EAN-Nr.
+							# $line[15] - Art. Nr
+							# $line[16] - Modelltext
+							# $line[17] - Ausführung
+							# $line[18] - Stoff Nr.
+							# $line[19] - Stoff Text 1
+							# $line[20] - Stoff Text 2
+							# $line[21] - EK Material Text 1
+							# $line[22] - EK Material Text 2
+							# $line[23] - Fuße
+							# $line[24] - EK Termin KW
+							# $line[25] - Produktionswoche
+							# $line[26] - Colli
+							# $line[27] - Einheitspreis (€)
+							# $line[28] - Werbung
+							# $line[29] - Tour Nummer
+							# $line[30] - Reality Veränderungen
+							# $line[31] - Status
+							####
+							
+							#####
+							# Mapowanie danych wczytanych z pliku
+							#####
+							$line["order_number"]=$line[0];
+							$line["buyer_name2"]=$line[1];
+							$line["buyer_comments"]=$line[5];
+							$line["buyer_name1"]=$line[9];
+							$line["buyer_street"]=$line[10];
+							$line["buyer_zip_code"]=$line[11] . " " . $line[12];
+							$line["position"]=$line[13];
+							$line["article_number"]=substr($line[15],0,-1);
+							$line["model_name"]=$line[16];
+							$line["model_type"]=str_replace("–","-",$line[17]);
+							$line["textil_pair"]=$line[18];
+							$line["textile1_name"]=$line[19];
+							$line["textile2_name"]=$line[20];
+							$line["leg_type"]=$line[23];
+							$line["order_term"]=$line[24];
+							$line["article_coli"]=$line[26];
+							$line["order_price"]=str_replace(",", ".", $line[27]);
+							$line["order_reference"]=$line[28];
+							$line["status"]=strtolower(trim($line[31]));
+							$line["manufacturer_number"]=null;
+							$line["manufacturer_name"]=null;
+								
+							if ($line["status"] != "offen" && $line["status"] != "produktion") {
+								continue;
+							} else if ($line["model_name"] == "Ersatzteile") {
+								continue;
 							}
 							
 							####
@@ -651,10 +712,10 @@ class OrderController extends Controller
 							####
 							$buyer=Buyer::model()->find(array(
 								'condition'=>'buyer_name_1=:name1 AND buyer_name_2=:name2 AND buyer_street=:street AND buyer_zip_code=:zip_code',
-								'params'=>array(':name1'=>$line[15], 
-									':name2'=>$line[7],
-					 				':street'=>$line[16],
-									':zip_code'=>$line[17] . " " . $line[18],
+								'params'=>array(':name1'=>$line["buyer_name1"], 
+									':name2'=>$line["buyer_name2"],
+					 				':street'=>$line["buyer_street"],
+									':zip_code'=>$line["buyer_zip_code"],
 								),
 								# ostatni element
 								'order' => "buyer_id DESC",
@@ -663,16 +724,18 @@ class OrderController extends Controller
 							if (empty($buyer)) {
 								$buyer=new Buyer('upload');
 							}
-							$buyer->buyer_name_1=$line[15];
-							$buyer->buyer_name_2=$line[7];
-							$buyer->buyer_street=$line[16];
-							$buyer->buyer_zip_code=$line[17] . " " . $line[18];
+							$buyer->buyer_name_1=$line["buyer_name1"];
+							$buyer->buyer_name_2=$line["buyer_name2"];
+							$buyer->buyer_street=$line["buyer_street"];
+							$buyer->buyer_zip_code=$line["buyer_zip_code"];
 							$buyer->save();
 							
 							####
 							# Broker - update or insert
 							####
-							if ($line[5] == 75007) {
+							if (substr($line["order_number"], 0, 1) == "3") {
+								$line["manufacturer_number"]=75007;
+								$line["manufacturer_name"]="Daniel Wyrwal";
 								$broker=Broker::model()->find(array(
 									'condition'=>'broker_name=:name',
 									'params'=>array(':name'=>'Reality Import GmbH'),
@@ -685,7 +748,9 @@ class OrderController extends Controller
 								}
 								$broker->broker_name="Reality Import GmbH";
 								$broker->save();
-							} else if ($line[5] == 70007) {
+							} else if (substr($line["order_number"], 0, 1) == "4") {
+								$line["manufacturer_number"]=70007;
+								$line["manufacturer_name"]="Daniel Wyrwal";
 								$broker=Broker::model()->find(array(
 									'condition'=>'broker_name=:name',
 									'params'=>array(':name'=>'ReDi GmbH'),
@@ -705,8 +770,8 @@ class OrderController extends Controller
 							####
 							$manufacturer=Manufacturer::model()->find(array(
 								'condition'=>'manufacturer_name=:name AND manufacturer_number=:number',
-								'params'=>array(':name'=>$line[6],
-												':number'=>$line[5],
+								'params'=>array(':name'=>$line["manufacturer_name"],
+												':number'=>$line["manufacturer_number"],
 								),
 								# ostatni element
 								'order' => "manufacturer_id DESC",
@@ -715,8 +780,8 @@ class OrderController extends Controller
 							if (empty($manufacturer)) {
 								$manufacturer=new Manufacturer('upload');
 							}
-							$manufacturer->manufacturer_number=$line[5];
-							$manufacturer->manufacturer_name=$line[6];
+							$manufacturer->manufacturer_number=$line["manufacturer_number"];
+							$manufacturer->manufacturer_name=$line["manufacturer_name"];
 							$manufacturer->save();
 							
 							####
@@ -724,7 +789,7 @@ class OrderController extends Controller
 							####
 							$leg=Leg::model()->find(array(
 								'condition'=>'leg_type=:leg',
-								'params'=>array(':leg'=>$line[28]),
+								'params'=>array(':leg'=>$line["leg_type"]),
 								#ostatni element
 								'order' => "leg_id DESC",
 								'limit' => 1
@@ -732,26 +797,27 @@ class OrderController extends Controller
 							if (empty($leg)) {
 								$leg=new Leg('upload');
 							}
-							$leg->leg_type=$line[28];
+							$leg->leg_type=$line["leg_type"];
 							$leg->save();
 							
 							####
 							# Article - update or insert
 							####
+							
 							$article=Article::model()->find(array(
 								'condition'=>'article_number=:number',
-								'params'=>array(':number'=>substr($line[22],0,-1)),
+								'params'=>array(':number'=>$line["article_number"]),
 								#ostatni element
 								'order' => "article_id DESC",
 								'limit' => 1
 							));
 							if (empty($article)) {
 								$article=new Article('upload');
-								$article->article_colli=$line[34];
-								$article->model_name=$line[23];
-								$article->model_type=str_replace("–","-",$line[24]);
+								$article->article_colli=$line["article_coli"];
+								$article->model_name=$line["model_name"];
+								$article->model_type=$line["model_type"];
 							}
-							$article->article_number=substr($line[22],0,-1);
+							$article->article_number=$line["article_number"];
 							# poprawiamy nazwę/typ modelu na podstawie wzorca - często nazwy w pliku są ucięte
 							if (array_key_exists($article->article_number, $correctTypeList)) {
 								$article->model_type=$correctTypeList[$article->article_number];
@@ -760,11 +826,11 @@ class OrderController extends Controller
 							# weryfikujemy poprawność nazwy w zamówieniu z nazwą wynikającą z numeru artykułu (dla SO)
 							
 							# ignorujemy weryfikację dla wyjątkowych nazw
-							$badArticleError=str_replace("–","-",$line[24]);
+							$badArticleError=$line["model_type"];
 							$badArticle1Error=null;
 							$badArticle2Error=null;
 							$badArticle3Error=null;
-							if (preg_match('/(kissensatz)/i',$line[24])) { 
+							if (preg_match('/(kissensatz)/i',$line["model_type"])) { 
 								#ignorujemy
 								true;
 							} else {
@@ -855,7 +921,7 @@ class OrderController extends Controller
 								        }
 									}
 						        } else {
-						        	echo "Niemożliwa liczba części/coli\n dla $line[0] $line[20] $line[24]";
+						        	echo "Niemożliwa liczba części/coli\n dla" . " " . $line["order_number"] . " " . $line["position"] . " " . $line["model_type"];
 						        	echo "<pre>";
 						        	var_dump($pieces);
 						        	echo "</pre>";
@@ -867,7 +933,7 @@ class OrderController extends Controller
 	        		 									 	   2 => array("Ottomane"=>false, "RFu"=>false, "SV"=>false, "3"=>false, "Q"=>false, "LC"=>false, "ALFu"=>false, "Box"=>false),
 					 			 					 		   3 => array("Ottomane"=>false, "RFu"=>false, "SV"=>false, "3"=>false, "Q"=>false, "LC"=>false, "ALFu"=>false, "Box"=>false));
 								   
-								$pieces = explode("-",str_replace("–","-",$line[24]));
+								$pieces = explode("-",$line["model_type"]);
 								$pieces2 = $pieces;
 						        if (count($pieces) >=1 && count($pieces) <=3) {
 							        if (count($pieces) >= 1 ) {
@@ -951,15 +1017,15 @@ class OrderController extends Controller
 									}
 									$array1_diff=array_diff_assoc($patternFunctionList[1],$toComapreFunctionList[1]);	
 							        if (!empty($array1_diff)) {
-						        		$badArticle1Error=str_replace("–","-",$line[24]);
+						        		$badArticle1Error=$line["model_type"];
 					       			}	
 									$array2_diff=array_diff_assoc($patternFunctionList[2],$toComapreFunctionList[2]);	
 						        	if (!empty($array2_diff)) {
-						        		$badArticle2Error=str_replace("–","-",$line[24]);
+						        		$badArticle2Error=$line["model_type"];
 						        	} 
 									$array3_diff=array_diff_assoc($patternFunctionList[3],$toComapreFunctionList[3]);	
 					        		if (!empty($array3_diff)) {
-					        			$badArticle3Error=str_replace("–","-",$line[24]);
+					        			$badArticle3Error=$line["model_type"];
 							        } 
 								        
 									/* # test
@@ -967,7 +1033,7 @@ class OrderController extends Controller
 						        	var_dump($badArticle1Error);
 						        	echo "############\n";
 						        	echo $article->model_type . "\n";
-						        	echo $line[24] . "\n";
+						        	echo $line["model_type"] . "\n";
 						        	echo "###################\n";
 						        	var_dump($pieces1);
 						        	echo "###################\n";
@@ -1001,21 +1067,21 @@ class OrderController extends Controller
 							###
 							
 							# zebranie informacji o pierwszym deseniu
-							if ($line[25]>1800 && $line[25]<6003) { #Jeden deseń na zamówieniu
-								$textile_number=$line[25];
+							if ($line["textil_pair"]>1800 && $line["textil_pair"]<6003) { #Jeden deseń na zamówieniu
+								$textile_number=$line["textil_pair"];
 							} else { # dwa desenie na zamówieniu
-								preg_match('/([0-9]{4})/i',$line[26],$matches);
+								preg_match('/([0-9]{4})/i',$line["textile1_name"],$matches);
 								$textile_number=$matches[1];
 							}
 							# grupa cenowa
-							preg_match('/\(? *PG *([0-9]{1})/',$line[26],$matches);
+							preg_match('/\(? *PG *([0-9]{1})/',$line["textile1_name"],$matches);
 							$textile_price_group=isset($matches[1]) ? $matches[1] : 99 ;
 							
 							# textile1 - update or insert
 							$textile=Textile::model()->find(array(
 								'condition'=>'textile_number=:number AND textile_name=:name AND textile_price_group=:group',
 								'params'=>array(':number'=>$textile_number,
-												':name'=>$line[26],
+												':name'=>$line["textile1_name"],
 												':group'=>$textile_price_group,
 								),
 								#ostatni element
@@ -1027,25 +1093,25 @@ class OrderController extends Controller
 							}
 							$textile->textile_number=isset($textile_number) ? $textile_number : "-" ;
 							$textile->textile_price_group=isset($textile_price_group) ? $textile_price_group : 99 ;
-							$textile->textile_name=$line[26];
+							$textile->textile_name=$line["textile1_name"];
 							$textile->save();
 							
 							###
 							# Drugi deseń
 							###
 							$secTextileError=null;
-							if ($line[25]<=1800 || $line[25]>=6003) {
+							if ($line["textil_pair"]<=1800 || $line["textil_pair"]>=6003) {
 								# grupa cenowa
 								//D.4105:Microf. mittelbraun(PG9
-								preg_match('/\(? *PG *([0-9]{1})/',$line[27],$matches);
+								preg_match('/\(? *PG *([0-9]{1})/',$line["textile2_name"],$matches);
 								$textile_price_group=isset($matches[1]) ? $matches[1] : 99 ;
 								# numer mat
-								preg_match('/([0-9]{4})/i',$line[27],$matches);
+								preg_match('/([0-9]{4})/i',$line["textile2_name"],$matches);
 								# textile2 - update or insert
 								$textile2=Textile::model()->find(array(
 									'condition'=>'textile_number=:number AND textile_name=:name AND textile_price_group=:group',
 									'params'=>array(':number'=>$matches[1],
-									':name'=>$line[27],
+									':name'=>$line["textile2_name"],
 									':group'=>$textile_price_group,
 									),
 									# ostatni element
@@ -1056,12 +1122,12 @@ class OrderController extends Controller
 									$textile2=new Textile('upload');
 								}
 								$textile2->textile_number=isset($matches[1]) ? $matches[1] : "-" ;
-								$textile2->textile_name=$line[27];
+								$textile2->textile_name=$line["textile2_name"];
 								$textile2->textile_price_group=isset($textile_price_group) ? $textile_price_group : 99 ;
 								$textile2->save();
 							} else {
 								# zgłoś błąd, jeżeli numer pary jest >1800 || < 6003, a pojawi sie drugi deseń
-								$test=rtrim(preg_match('/([0-9]{4})/i',$line[27],$matches));
+								$test=rtrim(preg_match('/([0-9]{4})/i',$line["textile2_name"],$matches));
 								if (!empty($test)) {
 									$secTextileError="sec-textile";
 								}
@@ -1075,7 +1141,7 @@ class OrderController extends Controller
 							# na podstawie e-maila wysłanego/odebranego od Bartka Rabsha z dnia: 2015-08-03
 							$order=Order::model()->find(array(
 								'condition'=>'order_number=:order_number AND article_article_id=:article_id  AND buyer_order_number=:buyer_order_number',
-								'params'=>array(':order_number'=>$line[0], ':article_id'=>$article->article_id, ':buyer_order_number'=>$line[20]),
+								'params'=>array(':order_number'=>$line["order_number"], ':article_id'=>$article->article_id, ':buyer_order_number'=>$line["position"]),
 								#ostatni element
 								'order' => "order_id DESC",
 								'limit' => 1
@@ -1096,20 +1162,22 @@ class OrderController extends Controller
 							} */
 							
 							# dalsze przetwarzanie wczytywania zamówienia
-							$order->order_price=$line[30];
+							$order->order_price=$line["order_price"];
 							$order->article_amount=1;
-							$order->order_total_price=$line[30];
-							$order->buyer_comments=$line[11];
-							$order->buyer_order_number=$line[20];
-							$order->order_date=$line[1];
-							$order->order_number=$line[0];
-							$order->order_reference=$line[31];
+							$order->order_total_price=$line["order_price"];
+							$order->buyer_comments=$line["buyer_comments"];
+							$order->buyer_order_number=$line["position"];
+							$order->order_date=$order->order_add_date;
+							$order->order_number=$line["order_number"];
+							$order->order_reference=$line["order_reference"];
 							
-							preg_match('/([0-9]+)\/([0-9]+)/',$line[29],$matches);
+							preg_match('/([0-9]+)\/([0-9]+)/',$line["order_term"],$matches);
 							$week=min($matches[1], $matches[2]);
 							$year=max($matches[1], $matches[2]);
 							
 							$order->order_term="$year/$week";
+							
+							# umożliwioało wgrywanie planów - już tego nie robimy, plany przenosimy z programu do Excella
 							/* if (!empty(trim($line[4]))) {
 								$order->article_planed=trim($line[4]);
 							} */
@@ -1145,8 +1213,8 @@ class OrderController extends Controller
 							###
 							
 							#Jeżeli mamy dwa desenie							
-							if ($line[25]<=1800 || $line[25]>=6003) {
-								$order->textil_pair=$line[25];
+							if ($line["textil_pair"]<=1800 || $line["textil_pair"]>=6003) {
+								$order->textil_pair=$line["textil_pair"];
 								$order->textile2_textile_id=$textile2->textile_id;
 								# Uśredniamy grupę cenową
 								$order->textilpair_price_group=round(($textile->textile_price_group+$textile2->textile_price_group)/2);
