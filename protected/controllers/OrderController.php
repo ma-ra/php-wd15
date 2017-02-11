@@ -1,5 +1,8 @@
 <?php
 
+Yii::import('application.vendor.*');
+require_once('qrcode/qrcode.class.php');
+
 class OrderController extends Controller
 {
 	/**
@@ -29,7 +32,7 @@ class OrderController extends Controller
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
 				'actions'=>array('index','view', 'update', 'admin', 'checked', 'manufactured', 
-						         'prepared', 'canceled', 'summary', 'textileSummary', 'print', 'printPlan'),
+						         'prepared', 'canceled', 'summary', 'textileSummary', 'print', 'printPlan', 'PrintGuaranteeSeal'),
 				'users'=>array('asia', 'gosia', 'mara', 'mariola', 'michalina', 'pawel'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
@@ -2313,6 +2316,80 @@ class OrderController extends Controller
 		$plan->TcpdfInitiate();
 		$plan->DataInitiate();
 		$plan->DrawPages();
+	}
+	
+	public function actionPrintGuaranteeSeal()
+	{
+		# parametry PDF
+		$pdf = new ZebraShippingLabel('L', 'mm', array(150,100), true, 'UTF-8');
+		$pdf->getAliasNbPages();
+		$pdf->SetAuthor("Firma Wyrwał Daniel");
+		$pdf->SetCreator("WD15");
+		$pdf->SetSubject("Guarantee Seal");
+		$pdf->SetTitle("Guarantee Seal");
+		$pdf->SetKeywords("WD15, Guarantee Seal");
+			
+		$pdf->SetDisplayMode("fullpage","OneColumn");
+		$pdf->setPrintHeader(false);
+		$pdf->setPrintFooter(false);
+		$left_margin=2;
+		$right_margin=2;
+		$top_margin=2;
+		$pdf->SetMargins($left_margin,$top_margin,$right_margin,true);
+		$pdf->SetAutoPageBreak(true,0);
+		
+		$pdf->SetFont("FreeSans", "", 11);
+		$pdf->setCellMargins(0, 0, 0, 0);
+		$pdf->setCellPaddings(0.5, 0.5, 0.5, 0.5);
+		
+		$pdf->AddPage();
+		
+		#podział na 4
+		$pdf->Line($left_margin, $pdf->getPageHeight()/2, $pdf->getPageWidth()-$right_margin, $pdf->getPageHeight()/2, array('width' => 0.1, 'cap' => 'butt', 'join' => 'miter', 'dash' => 2, 'color' => array(0, 0, 0)));
+		$pdf->Line($pdf->getPageWidth()/2, $top_margin, $pdf->getPageWidth()/2, $pdf->getPageHeight()-$top_margin, array('width' => 0.1, 'cap' => 'butt', 'join' => 'miter', 'dash' => 2, 'color' => array(0, 0, 0)));
+		$pdf->SetLineStyle(array('width' => 0.1, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
+		
+		
+		#QRCode
+		$message="PL: Plomba gwarancyjna\nEN: Warranty seal\nDE: Garantiesiegel\n\n" . date('Y-m-d');
+		//$ Qrcode = new QRCode ("Twoja wiadomość tutaj", "H");  // Poziom błędu: L, M, P, H
+		$qrcode = new QRcode(base64_encode("Wyrwał Daniel"), "H"); //The string you want to encode
+		
+		#pierwsza ćwiartka
+		$shiftX=0;
+		$shiftY=0;
+		$qrcode->displayFPDF($pdf, 5+$shiftX, 10+$shiftY, 25); //PDF object, X pos, Y pos, Size of the QR code
+		// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
+		$pdf->MultiCell(40, 25, $message, 1, 'L', 0, 0, 30+$shiftX, 10+$shiftY, true, 0, false, true, 25, 'M', true);
+		
+		#druga ćwiartka
+		$shiftX=$pdf->getPageWidth()/2;
+		$shiftY=0;
+		$qrcode->displayFPDF($pdf, 5+$shiftX, 10+$shiftY, 25); //PDF object, X pos, Y pos, Size of the QR code
+		// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
+		$pdf->MultiCell(40, 25, $message, 1, 'L', 0, 0, 30+$shiftX, 10+$shiftY, true, 0, false, true, 25, 'M', true);
+		
+		#trzecia ćwiartka
+		$shiftX=0;
+		$shiftY=$pdf->getPageHeight()/2;
+		$qrcode->displayFPDF($pdf, 5+$shiftX, 10+$shiftY, 25); //PDF object, X pos, Y pos, Size of the QR code
+		// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
+		$pdf->MultiCell(40, 25, $message, 1, 'L', 0, 0, 30+$shiftX, 10+$shiftY, true, 0, false, true, 25, 'M', true);
+		
+		#czwarta ćwiartka
+		$shiftX=$pdf->getPageWidth()/2;
+		$shiftY=$pdf->getPageHeight()/2;
+		$qrcode->displayFPDF($pdf, 5+$shiftX, 10+$shiftY, 25); //PDF object, X pos, Y pos, Size of the QR code
+		// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
+		$pdf->MultiCell(40, 25, $message, 1, 'L', 0, 0, 30+$shiftX, 10+$shiftY, true, 0, false, true, 25, 'M', true);
+		
+		
+		
+		$pdf->Close();
+		
+		#Drukujemy - w sensie tworzymy plik PDF
+		#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
+		$pdf->Output("Plomba gwarancyjna" . date('Y-m-d') . ".pdf", "I");
 	}
 	
 	public function actionSearchTextiles()

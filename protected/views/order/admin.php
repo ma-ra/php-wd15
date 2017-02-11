@@ -29,6 +29,7 @@ $this->menu=array(
 	array('label'=>'Drukuj etykiety na wykroje #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_minilabel')),
 	array('label'=>'Drukuj etykiety transportowe #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_label')),
 	array('label'=>'Drukuj etykiety transportowe (Zebra) #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_zebra_label')),
+	array('label'=>'Drukuj plombę gwarnacyjną #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_guarantee_seal')),
 	array('label'=>'Drukuj ladeliste #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_transport_list')),
 	array('label'=>'--------------------------------------------------'),
 	array('label'=>'Twórz plan *', 'url'=>'#', 'itemOptions'=>array('id' => 'create_plan')),
@@ -472,6 +473,17 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 			//zmieniamy cel wysłania danych
 			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/searchTextiles")?>");
 			console.log($("form#check_form").attr("action"));
+			//zatwierdzenie formularza
+			$("form#check_form").attr("target","_blank")
+			$("form#check_form").submit();
+			$("form#check_form").attr("target","_self")
+			//przywracamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/print")?>");
+			event.preventDefault();
+		});
+		$("li#print_guarantee_seal a").click(function(event) {
+			//zmieniamy cel wysłania danych
+			$("form#check_form").attr("action","<?php echo Yii::app()->createUrl("Order/PrintGuaranteeSeal")?>");
 			//zatwierdzenie formularza
 			$("form#check_form").attr("target","_blank")
 			$("form#check_form").submit();
