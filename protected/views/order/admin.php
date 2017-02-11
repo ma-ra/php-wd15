@@ -28,6 +28,7 @@ $this->menu=array(
 	array('label'=>'--------------------------------------------------'),
 	array('label'=>'Drukuj etykiety na wykroje #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_minilabel')),
 	array('label'=>'Drukuj etykiety transportowe #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_label')),
+	array('label'=>'Drukuj etykiety transportowe (Zebra) #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_zebra_label')),
 	array('label'=>'Drukuj ladeliste #', 'url'=>'#', 'itemOptions'=>array('id' => 'print_transport_list')),
 	array('label'=>'--------------------------------------------------'),
 	array('label'=>'Twórz plan *', 'url'=>'#', 'itemOptions'=>array('id' => 'create_plan')),
@@ -279,6 +280,20 @@ Yii::app()->clientScript->registerScript('gridFilter',"
 	            .attr("type", "hidden")
 	            .attr("name", "shipping_label")
 	            .val("shipping_label");
+			$("form#check_form").append($(input));
+			//zatwierdzenie formularza
+			$("form#check_form").attr("target","_blank");
+			$("form#check_form").submit();
+			$("form#check_form").attr("target","_self");
+			input.remove();
+			event.preventDefault();
+		});
+		$("li#print_zebra_label a").click(function(event) {
+			//dodajemy informację do POST po przez ukryte pole
+			var input = $("<input>")
+	            .attr("type", "hidden")
+	            .attr("name", "shipping_zebra_label")
+	            .val("shipping_zebra_label");
 			$("form#check_form").append($(input));
 			//zatwierdzenie formularza
 			$("form#check_form").attr("target","_blank");

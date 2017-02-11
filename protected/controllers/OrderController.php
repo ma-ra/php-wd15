@@ -2120,6 +2120,101 @@ class OrderController extends Controller
 				echo "Nic nie zaznaczono";
 			}
 		}
+		
+		#Etykiety transportowe dla drukarki Zebra
+		if (isset($_POST) && isset($_POST["shipping_zebra_label"])) {
+			if (isset($_POST["select"])) {
+				
+				#Budujemy tablicę pod zapytanie wyszukujące chciane krotki
+				$pks=array();
+				foreach ($_POST["select"] as $id => $checked) {
+					array_push($pks, $checked);
+				}
+				#Kryteria wyszukiwania
+				$criteria=new CDbCriteria;
+				$criteria->with=array('articleArticle');
+				$criteria->order='t.order_term ASC, articleArticle.article_number ASC';
+				$Orders=Order::model()->findAllByPk($pks, $criteria);
+				
+				$label=new PrintZebraShippingLabel();
+				$label->TcpdfInitiate();
+				
+				#Pętla po posortowanych zamówieniach i dodawanie etykiet na wydruk
+				foreach ($Orders as $id => $Order) {
+					#Pętla po ilości
+					for ($i = 1; $i <= $Order->article_amount; $i++) {
+						#Pętla po colli
+						for ($j = 1; $j <= $Order->articleArticle->article_colli; $j++) {
+							# tablica z dodatkowymi nazwami dla Otto
+							$ottoStoffNumber=array(
+									4081 => 'Otto-Stoffnummer: 110',
+									4085 => 'Otto-Stoffnummer: 111',
+									4092 => 'Otto-Stoffnummer: 112',
+									4020 => 'Otto-Stoffnummer: 120',
+									4021 => 'Otto-Stoffnummer: 121',
+									4022 => 'Otto-Stoffnummer: 122',
+									4023 => 'Otto-Stoffnummer: 123',
+									4024 => 'Otto-Stoffnummer: 124',
+									4058 => 'Otto-Stoffnummer: 125',
+									4093 => 'Otto-Stoffnummer: 130',
+									4094 => 'Otto-Stoffnummer: 131',
+									4095 => 'Otto-Stoffnummer: 132',
+									4096 => 'Otto-Stoffnummer: 133',
+									4097 => 'Otto-Stoffnummer: 134',
+									4098 => 'Otto-Stoffnummer: 135',
+							);
+				
+							# zebranie danych
+							$order_term=str_replace("/","",$Order->order_term);
+							$order_term=str_replace(date('Y'),"",$order_term);
+							$label->order_term=$order_term;
+							$label->model=$Order->articleArticle->model_name . " " . $Order->articleArticle->model_type;
+							$label->variant="";
+							$label->fusse=$Order->legLeg->leg_type;
+							$label->empfanger=$Order->buyerBuyer->buyer_name_2;
+							$label->lieferant=$Order->brokerBroker->broker_name;
+							$label->auftragNr=$Order->order_number;
+							$label->bestellnummer=$Order->buyer_order_number;
+							$label->lieferanschrift=$Order->buyerBuyer->buyer_name_1;;
+							$label->strasse=$Order->buyerBuyer->buyer_street;
+							$label->plz=$Order->buyerBuyer->buyer_zip_code;
+							$label->artikelNr=$Order->articleArticle->article_number;
+							$label->eanNummer="";
+							$label->number=$j;
+							$label->totalNumber=$Order->articleArticle->article_colli;
+							
+							#Domyślna numeracja etykiet
+							isset($label->number)? true : $label->number=1;
+							isset($label->totalNumber)? true : $label->totalNumber=1;
+				
+							if(isset($Order->textil_pair)) {
+								$dess1=$Order->textil_pair . "; " . $Order->textile1Textile->textile_name;
+							} else {
+								$dess1=$Order->textile1Textile->textile_number . "; " . $Order->textile1Textile->textile_name;
+							}
+							$dess2=isset($Order->textile2Textile->textile_name)? "; " . $Order->textile2Textile->textile_name : " ";
+							# dla Otto dodajemy na wydruku specjalną nazwę materiału
+							if (preg_match('/OTTO GmbH/i',$Order->buyerBuyer->buyer_name_2,$matches) && array_key_exists($Order->textile1Textile->textile_number, $ottoStoffNumber)) {
+								$dess1=$Order->textile1Textile->textile_number . ' - ' . $ottoStoffNumber[$Order->textile1Textile->textile_number];
+							}
+							if (preg_match('/OTTO GmbH/i',$Order->buyerBuyer->buyer_name_2,$matches) && array_key_exists($Order->textile1Textile->textile_number, $ottoStoffNumber)) {
+								$dess2=isset($Order->textile2Textile->textile_number)? '; ' . $Order->textile2Textile->textile_number . ' - ' . $ottoStoffNumber[$Order->textile2Textile->textile_number] : "";
+							}
+							$label->dessin=$dess1 . " " . $dess2;
+								
+							//odred_id + (3) sztuka + (1) no coli + (1) ilość coli
+							$label->id=$Order->order_id . sprintf('%03d', $i) . $j . $Order->articleArticle->article_colli;
+								
+							#Rysujemy etykietę
+							$label->DrawPages();
+						}
+					}
+				}
+				$label->PrintPages();
+			} else {
+				echo "Nic nie zaznaczono";
+			}
+		}
 	}
 	
 	public function actionPrintPlan()
