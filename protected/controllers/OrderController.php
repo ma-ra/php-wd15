@@ -1,5 +1,8 @@
 <?php
 
+Yii::import('application.vendor.*');
+require_once('qrcode/qrcode.class.php');
+
 class OrderController extends Controller
 {
 	/**
@@ -29,7 +32,7 @@ class OrderController extends Controller
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
 				'actions'=>array('index','view', 'update', 'admin', 'checked', 'manufactured', 
-						         'prepared', 'canceled', 'summary', 'textileSummary', 'print', 'printPlan'),
+						         'prepared', 'canceled', 'summary', 'textileSummary', 'print', 'printPlan', 'PrintGuaranteeSeal'),
 				'users'=>array('asia', 'gosia', 'mara', 'mariola', 'michalina', 'pawel'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
@@ -2075,7 +2078,7 @@ class OrderController extends Controller
 							$pdf->empfanger=$Order->buyerBuyer->buyer_name_2;
 							$pdf->lieferant=$Order->brokerBroker->broker_name;
 							$pdf->auftragNr=$Order->order_number;
-							$pdf->bestellnummer=$Order->buyer_order_number;
+							$pdf->bestellnummer=$Order->buyer_comments;
 							$pdf->lieferanschrift=$Order->buyerBuyer->buyer_name_1;;
 							$pdf->strasse=$Order->buyerBuyer->buyer_street;
 							$pdf->plz=$Order->buyerBuyer->buyer_zip_code;
@@ -2116,6 +2119,105 @@ class OrderController extends Controller
 				#Drukujemy - w sensie tworzymy plik PDF
 				#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
 				$pdf->Output("Etykiety transportowe " . date('Y-m-d') .  ".pdf", "I");
+			} else {
+				echo "Nic nie zaznaczono";
+			}
+		}
+		
+		#Etykiety transportowe dla drukarki Zebra
+		if (isset($_POST) && isset($_POST["shipping_zebra_label"])) {
+			if (isset($_POST["select"])) {
+				
+				#Budujemy tablicę pod zapytanie wyszukujące chciane krotki
+				$pks=array();
+				foreach ($_POST["select"] as $id => $checked) {
+					array_push($pks, $checked);
+				}
+				#Kryteria wyszukiwania
+				$criteria=new CDbCriteria;
+				$criteria->with=array('articleArticle');
+				$criteria->order='t.order_term ASC, articleArticle.article_number ASC';
+				$Orders=Order::model()->findAllByPk($pks, $criteria);
+				
+				$currentDate=date('Y-m-d H:i:s');
+				$label=new PrintZebraShippingLabel();
+				$label->TcpdfInitiate();
+				
+				#Pętla po posortowanych zamówieniach i dodawanie etykiet na wydruk
+				foreach ($Orders as $id => $Order) {
+					#Pętla po ilości
+					for ($i = 1; $i <= $Order->article_amount; $i++) {
+						#Pętla po colli
+						for ($j = 1; $j <= $Order->articleArticle->article_colli; $j++) {
+							# tablica z dodatkowymi nazwami dla Otto
+							$ottoStoffNumber=array(
+									4081 => 'Otto-Stoffnummer: 110',
+									4085 => 'Otto-Stoffnummer: 111',
+									4092 => 'Otto-Stoffnummer: 112',
+									4020 => 'Otto-Stoffnummer: 120',
+									4021 => 'Otto-Stoffnummer: 121',
+									4022 => 'Otto-Stoffnummer: 122',
+									4023 => 'Otto-Stoffnummer: 123',
+									4024 => 'Otto-Stoffnummer: 124',
+									4058 => 'Otto-Stoffnummer: 125',
+									4093 => 'Otto-Stoffnummer: 130',
+									4094 => 'Otto-Stoffnummer: 131',
+									4095 => 'Otto-Stoffnummer: 132',
+									4096 => 'Otto-Stoffnummer: 133',
+									4097 => 'Otto-Stoffnummer: 134',
+									4098 => 'Otto-Stoffnummer: 135',
+							);
+				
+							# zebranie danych
+							$order_term=str_replace("/","",$Order->order_term);
+							$order_term=str_replace(date('Y'),"",$order_term);
+							$label->order_term=$order_term;
+							$label->model=$Order->articleArticle->model_name . " " . $Order->articleArticle->model_type;
+							$label->variant="";
+							$label->fusse=$Order->legLeg->leg_type;
+							$label->empfanger=$Order->buyerBuyer->buyer_name_2;
+							$label->lieferant=$Order->brokerBroker->broker_name;
+							$label->auftragNr=$Order->order_number;
+							$label->bestellnummer=$Order->buyer_comments;
+							$label->lieferanschrift=$Order->buyerBuyer->buyer_name_1;;
+							$label->strasse=$Order->buyerBuyer->buyer_street;
+							$label->plz=$Order->buyerBuyer->buyer_zip_code;
+							$label->artikelNr=$Order->articleArticle->article_number;
+							$label->eanNummer="";
+							$label->number=$j;
+							$label->totalNumber=$Order->articleArticle->article_colli;
+							
+							#Domyślna numeracja etykiet
+							isset($label->number)? true : $label->number=1;
+							isset($label->totalNumber)? true : $label->totalNumber=1;
+				
+							if(isset($Order->textil_pair)) {
+								$dess1=$Order->textil_pair . "; " . $Order->textile1Textile->textile_name;
+							} else {
+								$dess1=$Order->textile1Textile->textile_number . "; " . $Order->textile1Textile->textile_name;
+							}
+							$dess2=isset($Order->textile2Textile->textile_name)? "; " . $Order->textile2Textile->textile_name : " ";
+							# dla Otto dodajemy na wydruku specjalną nazwę materiału
+							if (preg_match('/OTTO GmbH/i',$Order->buyerBuyer->buyer_name_2,$matches) && array_key_exists($Order->textile1Textile->textile_number, $ottoStoffNumber)) {
+								$dess1=$Order->textile1Textile->textile_number . ' - ' . $ottoStoffNumber[$Order->textile1Textile->textile_number];
+							}
+							if (preg_match('/OTTO GmbH/i',$Order->buyerBuyer->buyer_name_2,$matches) && array_key_exists($Order->textile1Textile->textile_number, $ottoStoffNumber)) {
+								$dess2=isset($Order->textile2Textile->textile_number)? '; ' . $Order->textile2Textile->textile_number . ' - ' . $ottoStoffNumber[$Order->textile2Textile->textile_number] : "";
+							}
+							$label->dessin=$dess1 . " " . $dess2;
+								
+							//odred_id + (3) sztuka + (1) no coli + (1) ilość coli
+							$label->id=$Order->order_id . sprintf('%03d', $i) . $j . $Order->articleArticle->article_colli;
+								
+							#Rysujemy etykietę
+							$label->DrawPages();
+						}
+					}
+					#Oznacz jako wydrukowane
+					$Order->printed_shipping_label=$currentDate;
+					$Order->save();
+				}
+				$label->PrintPages();
 			} else {
 				echo "Nic nie zaznaczono";
 			}
@@ -2218,6 +2320,80 @@ class OrderController extends Controller
 		$plan->TcpdfInitiate();
 		$plan->DataInitiate();
 		$plan->DrawPages();
+	}
+	
+	public function actionPrintGuaranteeSeal()
+	{
+		# parametry PDF
+		$pdf = new ZebraShippingLabel('L', 'mm', array(150,100), true, 'UTF-8');
+		$pdf->getAliasNbPages();
+		$pdf->SetAuthor("Firma Wyrwał Daniel");
+		$pdf->SetCreator("WD15");
+		$pdf->SetSubject("Guarantee Seal");
+		$pdf->SetTitle("Guarantee Seal");
+		$pdf->SetKeywords("WD15, Guarantee Seal");
+			
+		$pdf->SetDisplayMode("fullpage","OneColumn");
+		$pdf->setPrintHeader(false);
+		$pdf->setPrintFooter(false);
+		$left_margin=2;
+		$right_margin=2;
+		$top_margin=2;
+		$pdf->SetMargins($left_margin,$top_margin,$right_margin,true);
+		$pdf->SetAutoPageBreak(true,0);
+		
+		$pdf->SetFont("FreeSans", "", 11);
+		$pdf->setCellMargins(0, 0, 0, 0);
+		$pdf->setCellPaddings(0.5, 0.5, 0.5, 0.5);
+		
+		$pdf->AddPage();
+		
+		#podział na 4
+		$pdf->Line($left_margin, $pdf->getPageHeight()/2, $pdf->getPageWidth()-$right_margin, $pdf->getPageHeight()/2, array('width' => 0.1, 'cap' => 'butt', 'join' => 'miter', 'dash' => 2, 'color' => array(0, 0, 0)));
+		$pdf->Line($pdf->getPageWidth()/2, $top_margin, $pdf->getPageWidth()/2, $pdf->getPageHeight()-$top_margin, array('width' => 0.1, 'cap' => 'butt', 'join' => 'miter', 'dash' => 2, 'color' => array(0, 0, 0)));
+		$pdf->SetLineStyle(array('width' => 0.1, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
+		
+		
+		#QRCode
+		$message="PL: Plomba gwarancyjna\nEN: Warranty seal\nDE: Garantiesiegel\n\n" . date('Y-m-d');
+		//$ Qrcode = new QRCode ("Twoja wiadomość tutaj", "H");  // Poziom błędu: L, M, P, H
+		$qrcode = new QRcode(base64_encode("Wyrwał Daniel"), "H"); //The string you want to encode
+		
+		#pierwsza ćwiartka
+		$shiftX=0;
+		$shiftY=0;
+		$qrcode->displayFPDF($pdf, 5+$shiftX, 10+$shiftY, 25); //PDF object, X pos, Y pos, Size of the QR code
+		// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
+		$pdf->MultiCell(40, 25, $message, 1, 'L', 0, 0, 30+$shiftX, 10+$shiftY, true, 0, false, true, 25, 'M', true);
+		
+		#druga ćwiartka
+		$shiftX=$pdf->getPageWidth()/2;
+		$shiftY=0;
+		$qrcode->displayFPDF($pdf, 5+$shiftX, 10+$shiftY, 25); //PDF object, X pos, Y pos, Size of the QR code
+		// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
+		$pdf->MultiCell(40, 25, $message, 1, 'L', 0, 0, 30+$shiftX, 10+$shiftY, true, 0, false, true, 25, 'M', true);
+		
+		#trzecia ćwiartka
+		$shiftX=0;
+		$shiftY=$pdf->getPageHeight()/2;
+		$qrcode->displayFPDF($pdf, 5+$shiftX, 10+$shiftY, 25); //PDF object, X pos, Y pos, Size of the QR code
+		// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
+		$pdf->MultiCell(40, 25, $message, 1, 'L', 0, 0, 30+$shiftX, 10+$shiftY, true, 0, false, true, 25, 'M', true);
+		
+		#czwarta ćwiartka
+		$shiftX=$pdf->getPageWidth()/2;
+		$shiftY=$pdf->getPageHeight()/2;
+		$qrcode->displayFPDF($pdf, 5+$shiftX, 10+$shiftY, 25); //PDF object, X pos, Y pos, Size of the QR code
+		// MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
+		$pdf->MultiCell(40, 25, $message, 1, 'L', 0, 0, 30+$shiftX, 10+$shiftY, true, 0, false, true, 25, 'M', true);
+		
+		
+		
+		$pdf->Close();
+		
+		#Drukujemy - w sensie tworzymy plik PDF
+		#I - w przeglądarce, D - download, I - zapis na serwerze, S - ?
+		$pdf->Output("Plomba gwarancyjna" . date('Y-m-d') . ".pdf", "I");
 	}
 	
 	public function actionSearchTextiles()
