@@ -2078,7 +2078,7 @@ class OrderController extends Controller
 							$pdf->empfanger=$Order->buyerBuyer->buyer_name_2;
 							$pdf->lieferant=$Order->brokerBroker->broker_name;
 							$pdf->auftragNr=$Order->order_number;
-							$pdf->bestellnummer=$Order->buyer_order_number;
+							$pdf->bestellnummer=$Order->buyer_comments;
 							$pdf->lieferanschrift=$Order->buyerBuyer->buyer_name_1;;
 							$pdf->strasse=$Order->buyerBuyer->buyer_street;
 							$pdf->plz=$Order->buyerBuyer->buyer_zip_code;
@@ -2139,6 +2139,7 @@ class OrderController extends Controller
 				$criteria->order='t.order_term ASC, articleArticle.article_number ASC';
 				$Orders=Order::model()->findAllByPk($pks, $criteria);
 				
+				$currentDate=date('Y-m-d H:i:s');
 				$label=new PrintZebraShippingLabel();
 				$label->TcpdfInitiate();
 				
@@ -2177,7 +2178,7 @@ class OrderController extends Controller
 							$label->empfanger=$Order->buyerBuyer->buyer_name_2;
 							$label->lieferant=$Order->brokerBroker->broker_name;
 							$label->auftragNr=$Order->order_number;
-							$label->bestellnummer=$Order->buyer_order_number;
+							$label->bestellnummer=$Order->buyer_comments;
 							$label->lieferanschrift=$Order->buyerBuyer->buyer_name_1;;
 							$label->strasse=$Order->buyerBuyer->buyer_street;
 							$label->plz=$Order->buyerBuyer->buyer_zip_code;
@@ -2212,6 +2213,9 @@ class OrderController extends Controller
 							$label->DrawPages();
 						}
 					}
+					#Oznacz jako wydrukowane
+					$Order->printed_shipping_label=$currentDate;
+					$Order->save();
 				}
 				$label->PrintPages();
 			} else {
