@@ -146,8 +146,8 @@ class PrintPlan {
 			$model_type=$order->articleArticle->model_type;
 			$article_amount=$order->buyer_order_number; 
 			$textil_pair=isset($order->textil_pair) ? $order->textil_pair : $order->textile1Textile->textile_number ;
-			$textile_name1=isset($order->textil_pair) ? $order->textile1Textile->textile_number . " " . $order->textile1Textile->fabric1->fabric_name : $order->textile1Textile->fabric1->fabric_name;
-			$textile_name2=isset($order->textile2Textile->fabric2->fabric_name) ? $order->textile2Textile->textile_number . " " . $order->textile2Textile->fabric2->fabric_name : "-";
+			$textile_name1=isset($order->textil_pair) ? $order->textile1Textile->textile_number . " " . $order->textile1Textile->textile_name : $order->textile1Textile->textile_name;
+			$textile_name2=isset($order->textile2Textile->textile_name) ? $order->textile2Textile->textile_number . " " . $order->textile2Textile->textile_name : "-";
 			$order_term=$order->order_term;
 			$order_price=isset($order->order_price)? $order->order_price : "-";
 			$order_total_price=isset($order->order_total_price)? $order->order_total_price : "-"; 
