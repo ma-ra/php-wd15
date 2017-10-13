@@ -42,8 +42,8 @@
 				#trik matematyczny pozwalający wyliczyć ile modeli nie ma zadeklarowanych metrów
 				#trik polega na założeniu, że jak model nie ma podanych metrów, to jego zużycie wynisi 1mln
 				
-				$omitted=floor($Order->textiles_selected/1000000);
-				$result=$Order->textiles_selected-($omitted*1000000);
+				$omitted=round(floor($Order->textiles_selected/1000000),2);
+				$result=round($Order->textiles_selected-($omitted*1000000),2);
 				if ($Order->textiles_selected < 1000000) {
 					echo "<td>$Order->textiles_selected</td>\n";
 				} else {

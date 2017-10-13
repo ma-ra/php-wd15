@@ -1070,7 +1070,7 @@ class OrderController extends Controller
 							###
 							
 							# zebranie informacji o pierwszym deseniu
-							if ($line["textil_pair"]>1800 && $line["textil_pair"]<5500) { #Jeden deseń na zamówieniu
+							if ($line["textil_pair"]>1990 && $line["textil_pair"]<5500) { #Jeden deseń na zamówieniu
 								$textile_number=$line["textil_pair"];
 							} else { # dwa desenie na zamówieniu
 								preg_match('/([0-9]{4})/i',$line["textile1_name"],$matches);
@@ -1103,7 +1103,7 @@ class OrderController extends Controller
 							# Drugi deseń
 							###
 							$secTextileError=null;
-							if ($line["textil_pair"]<=1800 || $line["textil_pair"]>=5500) {
+							if ($line["textil_pair"]<=1990 || $line["textil_pair"]>=5500) {
 								# grupa cenowa
 								//D.4105:Microf. mittelbraun(PG9
 								preg_match('/\(? *PG *([0-9]{1})/',$line["textile2_name"],$matches);
@@ -1129,7 +1129,7 @@ class OrderController extends Controller
 								$textile2->textile_price_group=isset($textile_price_group) ? $textile_price_group : 99 ;
 								$textile2->save();
 							} else {
-								# zgłoś błąd, jeżeli numer pary jest >1800 || < 5500, a pojawi sie drugi deseń
+								# zgłoś błąd, jeżeli numer pary jest >1990 || < 5500, a pojawi sie drugi deseń
 								$test=rtrim(preg_match('/([0-9]{4})/i',$line["textile2_name"],$matches));
 								if (!empty($test)) {
 									$secTextileError="sec-textile";
@@ -1216,7 +1216,7 @@ class OrderController extends Controller
 							###
 							
 							#Jeżeli mamy dwa desenie							
-							if ($line["textil_pair"]<=1800 || $line["textil_pair"]>=5500) {
+							if ($line["textil_pair"]<=1990 || $line["textil_pair"]>=5500) {
 								$order->textil_pair=$line["textil_pair"];
 								$order->textile2_textile_id=$textile2->textile_id;
 								# Uśredniamy grupę cenową
@@ -1689,7 +1689,7 @@ class OrderController extends Controller
 					'order'=>'fabric_id ASC',
 					'limit'=>1
 				))->fabric_id;
-				$shoppings[$key]->article_calculated_amount=$textile->textiles_selected;
+				$shoppings[$key]->article_calculated_amount=round($textile->textiles_selected, 2);
 				$shoppings[$key]->order1_ids=$textile->order1_number;
 				$shoppings[$key]->order2_ids=$textile->order2_number;
 			}
