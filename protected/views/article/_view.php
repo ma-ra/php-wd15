@@ -20,6 +20,10 @@
 	<b><?php echo CHtml::encode($data->getAttributeLabel('model_type')); ?>:</b>
 	<?php echo CHtml::encode($data->model_type); ?>
 	<br />
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('model_description')); ?>:</b>
+	<?php echo CHtml::encode($data->model_description); ?>
+	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('article_colli')); ?>:</b>
 	<?php echo CHtml::encode($data->article_colli); ?>

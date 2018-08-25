@@ -26,5 +26,7 @@ $this->menu=array(
 		'buyer_name_2',
 		'buyer_street',
 		'buyer_zip_code',
+	    'buyer_city',
+	    'buyer_contact',
 	),
 )); ?>

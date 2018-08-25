@@ -9,6 +9,8 @@
  * @property string $buyer_name_2
  * @property string $buyer_street
  * @property string $buyer_zip_code
+ * @property string $buyer_city
+ * @property string $buyer_contact
  *
  * The followings are the available model relations:
  * @property Order[] $orders
@@ -31,11 +33,11 @@ class Buyer extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('buyer_name_1, buyer_street, buyer_zip_code', 'required'),
-			array('buyer_name_1, buyer_name_2, buyer_street, buyer_zip_code', 'length', 'max'=>150),
+			array('buyer_name_1, buyer_street, buyer_zip_code, buyer_city', 'required'),
+			array('buyer_name_1, buyer_name_2, buyer_street, buyer_zip_code, buyer_city, buyer_contact', 'length', 'max'=>150),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('buyer_id, buyer_name_1, buyer_name_2, buyer_street, buyer_zip_code', 'safe', 'on'=>'search'),
+			array('buyer_id, buyer_name_1, buyer_name_2, buyer_street, buyer_zip_code, buyer_city, buyer_contact', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -58,10 +60,12 @@ class Buyer extends CActiveRecord
 	{
 		return array(
 			'buyer_id' => 'id klienta',
-			'buyer_name_1' => 'nazwa dostawcy',
+			'buyer_name_1' => 'nazwa adresu dostawy',
 			'buyer_name_2' => 'nazwa kupującego',
 			'buyer_street' => 'ulica',
 			'buyer_zip_code' => 'kod pocztowy',
+		    'buyer_city' => 'miasto',
+		    'buyer_contact' => 'dane kontaktowe',
 		);
 	}
 
@@ -88,6 +92,8 @@ class Buyer extends CActiveRecord
 		$criteria->compare('buyer_name_2',$this->buyer_name_2,true);
 		$criteria->compare('buyer_street',$this->buyer_street,true);
 		$criteria->compare('buyer_zip_code',$this->buyer_zip_code,true);
+		$criteria->compare('buyer_city',$this->buyer_city,true);
+		$criteria->compare('buyer_contact',$this->buyer_contact,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

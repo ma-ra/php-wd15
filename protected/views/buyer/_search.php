@@ -35,6 +35,16 @@
 		<?php echo $form->label($model,'buyer_zip_code'); ?>
 		<?php echo $form->textField($model,'buyer_zip_code',array('size'=>60,'maxlength'=>150)); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->label($model,'buyer_city'); ?>
+		<?php echo $form->textField($model,'buyer_city',array('size'=>60,'maxlength'=>150)); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'buyer_contact'); ?>
+		<?php echo $form->textField($model,'buyer_contact',array('size'=>60,'maxlength'=>150)); ?>
+	</div>
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Search'); ?>

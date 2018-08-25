@@ -30,6 +30,12 @@
 		<?php echo $form->textField($model,'textile_name',array('size'=>60,'maxlength'=>150)); ?>
 		<?php echo $form->error($model,'textile_name'); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'textile_description'); ?>
+		<?php echo $form->textField($model,'textile_description',array('size'=>60,'maxlength'=>150)); ?>
+		<?php echo $form->error($model,'textile_description'); ?>
+	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'textile_price_group'); ?>

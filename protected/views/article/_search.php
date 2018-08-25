@@ -30,6 +30,11 @@
 		<?php echo $form->label($model,'model_type'); ?>
 		<?php echo $form->textField($model,'model_type',array('size'=>60,'maxlength'=>100)); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->label($model,'model_description'); ?>
+		<?php echo $form->textField($model,'model_description',array('size'=>60,'maxlength'=>450)); ?>
+	</div>
 
 	<div class="row">
 		<?php echo $form->label($model,'article_colli'); ?>

@@ -24,6 +24,14 @@
 	<b><?php echo CHtml::encode($data->getAttributeLabel('buyer_zip_code')); ?>:</b>
 	<?php echo CHtml::encode($data->buyer_zip_code); ?>
 	<br />
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('buyer_city')); ?>:</b>
+	<?php echo CHtml::encode($data->buyer_city); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('buyer_contact')); ?>:</b>
+	<?php echo CHtml::encode($data->buyer_contact); ?>
+	<br />
 
 
 </div>

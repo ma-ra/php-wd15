@@ -7,11 +7,15 @@
  * @property integer $textile_id
  * @property string $textile_number
  * @property string $textile_name
+ * @property string $textile_description
  * @property integer $textile_price_group
  *
  * The followings are the available model relations:
  * @property Order[] $orders1
  * @property Order[] $orders2
+ * @property Order[] $orders3
+ * @property Order[] $orders4
+ * @property Order[] $orders5
  * @property FabricCollection $textileNumber
  * 
  */
@@ -36,10 +40,10 @@ class Textile extends CActiveRecord
 			array('textile_number, textile_name, textile_price_group', 'required'),
 			array('textile_price_group', 'numerical', 'integerOnly'=>true),
 			array('textile_number', 'length', 'max'=>50),
-			array('textile_name', 'length', 'max'=>150),
+			array('textile_name, textile_description', 'length', 'max'=>150),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('textile_id, textile_number, textile_name, textile_price_group', 'safe', 'on'=>'search'),
+			array('textile_id, textile_number, textile_name, textile_description, textile_price_group', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -53,11 +57,17 @@ class Textile extends CActiveRecord
 		return array(
 			'orders1' => array(self::HAS_MANY, 'Order', 'textile1_textile_id'),
 			'orders2' => array(self::HAS_MANY, 'Order', 'textile2_textile_id'),
+		    'orders3' => array(self::HAS_MANY, 'Order', 'textile3_textile_id'),
+		    'orders4' => array(self::HAS_MANY, 'Order', 'textile4_textile_id'),
+		    'orders5' => array(self::HAS_MANY, 'Order', 'textile5_textile_id'),
 			//'fabric1' => array(self::BELONGS_TO, 'FabricCollection', array('textile_number'=>'fabric_number')),
 			//'fabric2' => array(self::BELONGS_TO, 'FabricCollection', array('textile_number'=>'fabric_number')),
 			//'textileNumber' => array(self::BELONGS_TO, 'FabricCollection', 'textile_number')
 			'fabric1' => array(self::BELONGS_TO, 'FabricCollection', 'textile_number'),
-			'fabric2' => array(self::BELONGS_TO, 'FabricCollection', 'textile_number')
+			'fabric2' => array(self::BELONGS_TO, 'FabricCollection', 'textile_number'),
+		    'fabric3' => array(self::BELONGS_TO, 'FabricCollection', 'textile_number'),
+		    'fabric4' => array(self::BELONGS_TO, 'FabricCollection', 'textile_number'),
+		    'fabric5' => array(self::BELONGS_TO, 'FabricCollection', 'textile_number')
 		);
 	}
 
@@ -70,6 +80,7 @@ class Textile extends CActiveRecord
 			'textile_id' => 'id materiału',
 			'textile_number' => 'numer materiału',
 			'textile_name' => 'nazwa materiału',
+		    'textile_description' => 'opis materiału cz1/cz2',
 			'textile_price_group' => 'grupa cenowa',
 		);
 	}
@@ -95,6 +106,7 @@ class Textile extends CActiveRecord
 		$criteria->compare('textile_id',$this->textile_id);
 		$criteria->compare('textile_number',$this->textile_number,true);
 		$criteria->compare('textile_name',$this->textile_name,true);
+		$criteria->compare('textile_description',$this->textile_description,true);
 		$criteria->compare('textile_price_group',$this->textile_price_group);
 
 		return new CActiveDataProvider($this, array(

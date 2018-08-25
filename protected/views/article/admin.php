@@ -31,6 +31,7 @@ $this->breadcrumbs=array(
 		'price_in_pg5',
 		'price_in_pg6',
 		'price_in_pg7',
+	    /*'model_description',*/
 		array(
 			'class'=>'CButtonColumn',
 		),

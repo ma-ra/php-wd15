@@ -27,6 +27,11 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->label($model,'textile_description'); ?>
+		<?php echo $form->textField($model,'textile_description',array('size'=>60,'maxlength'=>150)); ?>
+	</div>
+	
+	<div class="row">
 		<?php echo $form->label($model,'textile_price_group'); ?>
 		<?php echo $form->textField($model,'textile_price_group'); ?>
 	</div>

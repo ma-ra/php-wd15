@@ -36,6 +36,12 @@
 		<?php echo $form->textField($model,'model_type',array('size'=>60,'maxlength'=>100)); ?>
 		<?php echo $form->error($model,'model_type'); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'model_description'); ?>
+		<?php echo $form->textField($model,'model_description',array('size'=>60,'maxlength'=>450)); ?>
+		<?php echo $form->error($model,'model_description'); ?>
+	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'article_colli'); ?>

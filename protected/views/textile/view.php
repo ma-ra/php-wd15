@@ -24,6 +24,7 @@ $this->menu=array(
 		'textile_id',
 		'textile_number',
 		'textile_name',
+	    'textile_description',
 		'textile_price_group',
 	),
 )); ?>

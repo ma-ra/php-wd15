@@ -8,6 +8,7 @@
  * @property string $article_number
  * @property string $model_name
  * @property string $model_type
+ * @property string $model_description
  * @property integer $article_colli
  * @property string $article_all_textile_amount
  * @property string $article_first_textile_amount
@@ -45,11 +46,12 @@ class Article extends CActiveRecord
 			array('article_colli', 'numerical', 'integerOnly'=>true),
 			array('article_number', 'length', 'max'=>50),
 			array('model_name, model_type', 'length', 'max'=>100),
+		    array('model_description', 'length', 'max'=>450),
 			array('article_all_textile_amount, article_first_textile_amount, article_second_textile_amount, price_in_pg1, price_in_pg2, price_in_pg3, price_in_pg4, price_in_pg5, price_in_pg6, price_in_pg7', 'length', 'max'=>9),
 			array('article_all_textile_amount, article_first_textile_amount, article_second_textile_amount, price_in_pg1, price_in_pg2, price_in_pg3, price_in_pg4, price_in_pg5, price_in_pg6, price_in_pg7', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('article_id, article_number, model_name, model_type, article_colli, article_all_textile_amount, article_first_textile_amount, article_second_textile_amount, price_in_pg1, price_in_pg2, price_in_pg3, price_in_pg4, price_in_pg5, price_in_pg6, price_in_pg7', 'safe', 'on'=>'search'),
+			array('article_id, article_number, model_name, model_type, model_description, article_colli, article_all_textile_amount, article_first_textile_amount, article_second_textile_amount, price_in_pg1, price_in_pg2, price_in_pg3, price_in_pg4, price_in_pg5, price_in_pg6, price_in_pg7', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -75,6 +77,7 @@ class Article extends CActiveRecord
 			'article_number' => 'numer artykułu',
 			'model_name' => 'model',
 			'model_type' => 'typ',
+		    'model_description' => 'opis modelu',
 			'article_colli' => 'colli',
 			'article_all_textile_amount' => 'ilość materiału (m)',
 			'article_first_textile_amount' => 'Deseń 1 - ilość materiału (m)',
@@ -111,6 +114,7 @@ class Article extends CActiveRecord
 		$criteria->compare('article_number',$this->article_number,true);
 		$criteria->compare('model_name',$this->model_name,true);
 		$criteria->compare('model_type',$this->model_type,true);
+		$criteria->compare('model_description',$this->model_description,true);
 		$criteria->compare('article_colli',$this->article_colli);
 		$criteria->compare('article_all_textile_amount',$this->article_all_textile_amount);
 		$criteria->compare('article_first_textile_amount',$this->article_first_textile_amount);

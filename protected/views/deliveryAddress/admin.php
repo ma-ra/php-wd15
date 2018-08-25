@@ -1,15 +1,15 @@
 <?php
-/* @var $this TextileController */
-/* @var $model Textile */
+/* @var $this DeliveryAddressController */
+/* @var $model DeliveryAddress */
 
 $this->breadcrumbs=array(
-	'Textiles'=>array('index'),
+	'Delivery Addresses'=>array('index'),
 	'Manage',
 );
 
 $this->menu=array(
-	array('label'=>'List Textile', 'url'=>array('index')),
-	array('label'=>'Create Textile', 'url'=>array('create')),
+	array('label'=>'List DeliveryAddress', 'url'=>array('index')),
+	array('label'=>'Create DeliveryAddress', 'url'=>array('create')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -18,7 +18,7 @@ $('.search-button').click(function(){
 	return false;
 });
 $('.search-form form').submit(function(){
-	$('#textile-grid').yiiGridView('update', {
+	$('#delivery-address-grid').yiiGridView('update', {
 		data: $(this).serialize()
 	});
 	return false;
@@ -26,7 +26,7 @@ $('.search-form form').submit(function(){
 ");
 ?>
 
-<h1>Manage Textiles</h1>
+<h1>Manage Delivery Addresses</h1>
 
 <p>
 You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
@@ -41,15 +41,19 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 </div><!-- search-form -->
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
-	'id'=>'textile-grid',
+	'id'=>'delivery-address-grid',
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'columns'=>array(
-		'textile_id',
-		'textile_number',
-		'textile_name',
-	    'textile_description',
-		'textile_price_group',
+		'delivery_address_id',
+		'delivery_address_name_1',
+		'delivery_address_name_2',
+		'delivery_address_street',
+		'delivery_addressr_zip_code',
+		'delivery_addressr_city',
+		/*
+		'delivery_addressr_contact',
+		*/
 		array(
 			'class'=>'CButtonColumn',
 		),

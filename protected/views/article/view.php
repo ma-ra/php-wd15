@@ -24,6 +24,7 @@ $this->menu=array(
 		'article_number',
 		'model_name',
 		'model_type',
+	    'model_description',
 		'article_colli',
 		'article_all_textile_amount',
 		'article_first_textile_amount',

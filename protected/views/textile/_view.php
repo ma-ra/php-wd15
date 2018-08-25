@@ -16,6 +16,11 @@
 	<b><?php echo CHtml::encode($data->getAttributeLabel('textile_name')); ?>:</b>
 	<?php echo CHtml::encode($data->textile_name); ?>
 	<br />
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('textile_description')); ?>:</b>
+	<?php echo CHtml::encode($data->textile_description); ?>
+	<br />
+	
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('textile_price_group')); ?>:</b>
 	<?php echo CHtml::encode($data->textile_price_group); ?>

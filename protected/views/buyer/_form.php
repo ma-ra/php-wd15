@@ -42,6 +42,18 @@
 		<?php echo $form->textField($model,'buyer_zip_code',array('size'=>60,'maxlength'=>150)); ?>
 		<?php echo $form->error($model,'buyer_zip_code'); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'buyer_city'); ?>
+		<?php echo $form->textField($model,'buyer_city',array('size'=>60,'maxlength'=>150)); ?>
+		<?php echo $form->error($model,'buyer_city'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'buyer_contact'); ?>
+		<?php echo $form->textField($model,'buyer_contact',array('size'=>60,'maxlength'=>150)); ?>
+		<?php echo $form->error($model,'buyer_contact'); ?>
+	</div>
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
