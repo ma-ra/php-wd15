@@ -48,6 +48,12 @@
 		<?php echo $form->textField($model,'order_reference',array('size'=>60,'maxlength'=>150)); ?>
 		<?php echo $form->error($model,'order_reference'); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'order_EAN_number'); ?>
+		<?php echo $form->textField($model,'order_EAN_number',array('size'=>60,'maxlength'=>150)); ?>
+		<?php echo $form->error($model,'order_EAN_number'); ?>
+	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'order_term'); ?>
@@ -65,6 +71,12 @@
 		<?php echo $form->labelEx($model,'buyer_buyer_id'); ?>
 		<?php echo $form->textField($model,'buyer_buyer_id'); ?>
 		<?php echo $form->error($model,'buyer_buyer_id'); ?>
+	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'delivery_address_delivery_address_id'); ?>
+		<?php echo $form->textField($model,'delivery_address_delivery_address_id'); ?>
+		<?php echo $form->error($model,'delivery_address_delivery_address_id'); ?>
 	</div>
 
 	<div class="row">
@@ -116,6 +128,24 @@
 	</div>
 	
 	<div class="row">
+		<?php echo $form->labelEx($model,'textile3_textile_id'); ?>
+		<?php echo $form->textField($model,'textile3_textile_id'); ?>
+		<?php echo $form->error($model,'textile3_textile_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'textile4_textile_id'); ?>
+		<?php echo $form->textField($model,'textile4_textile_id'); ?>
+		<?php echo $form->error($model,'textile4_textile_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'textile5_textile_id'); ?>
+		<?php echo $form->textField($model,'textile5_textile_id'); ?>
+		<?php echo $form->error($model,'textile5_textile_id'); ?>
+	</div>
+	
+	<div class="row">
 		<?php echo $form->labelEx($model,'order_price'); ?>
 		<?php echo $form->textField($model,'order_price',array('size'=>9,'maxlength'=>9)); ?>
 		<?php echo $form->error($model,'order_price'); ?>
@@ -137,6 +167,24 @@
 		<?php echo $form->labelEx($model,'shopping2_shopping_id'); ?>
 		<?php echo $form->textField($model,'shopping2_shopping_id'); ?>
 		<?php echo $form->error($model,'shopping2_shopping_id'); ?>
+	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'shopping3_shopping_id'); ?>
+		<?php echo $form->textField($model,'shopping3_shopping_id'); ?>
+		<?php echo $form->error($model,'shopping3_shopping_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'shopping4_shopping_id'); ?>
+		<?php echo $form->textField($model,'shopping4_shopping_id'); ?>
+		<?php echo $form->error($model,'shopping4_shopping_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'shopping5_shopping_id'); ?>
+		<?php echo $form->textField($model,'shopping5_shopping_id'); ?>
+		<?php echo $form->error($model,'shopping5_shopping_id'); ?>
 	</div>
 
 	<div class="row">

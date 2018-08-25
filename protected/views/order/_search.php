@@ -40,6 +40,11 @@
 		<?php echo $form->label($model,'order_reference'); ?>
 		<?php echo $form->textField($model,'order_reference',array('size'=>60,'maxlength'=>150)); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->label($model,'order_EAN_number'); ?>
+		<?php echo $form->textField($model,'order_EAN_number',array('size'=>60,'maxlength'=>150)); ?>
+	</div>
 
 	<div class="row">
 		<?php echo $form->label($model,'order_term'); ?>
@@ -54,6 +59,11 @@
 	<div class="row">
 		<?php echo $form->label($model,'buyer_buyer_id'); ?>
 		<?php echo $form->textField($model,'buyer_buyer_id'); ?>
+	</div>
+	
+	<div class="row">
+		<?php echo $form->label($model,'delivery_address_delivery_address_id'); ?>
+		<?php echo $form->textField($model,'delivery_address_delivery_address_id'); ?>
 	</div>
 
 	<div class="row">
@@ -95,6 +105,21 @@
 		<?php echo $form->label($model,'textile2_textile_id'); ?>
 		<?php echo $form->textField($model,'textile2_textile_id'); ?>
 	</div>
+	
+	<div class="row">
+		<?php echo $form->label($model,'textile3_textile_id'); ?>
+		<?php echo $form->textField($model,'textile3_textile_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'textile4_textile_id'); ?>
+		<?php echo $form->textField($model,'textile4_textile_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'textile5_textile_id'); ?>
+		<?php echo $form->textField($model,'textile5_textile_id'); ?>
+	</div>
 
 	<div class="row">
 		<?php echo $form->label($model,'order_price'); ?>
@@ -114,6 +139,21 @@
 	<div class="row">
 		<?php echo $form->label($model,'shopping2_shopping_id'); ?>
 		<?php echo $form->textField($model,'shopping2_shopping_id'); ?>
+	</div>
+	
+	<div class="row">
+		<?php echo $form->label($model,'shopping3_shopping_id'); ?>
+		<?php echo $form->textField($model,'shopping3_shopping_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'shopping4_shopping_id'); ?>
+		<?php echo $form->textField($model,'shopping4_shopping_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'shopping5_shopping_id'); ?>
+		<?php echo $form->textField($model,'shopping5_shopping_id'); ?>
 	</div>
 
 	<div class="row">

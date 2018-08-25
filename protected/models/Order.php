@@ -10,9 +10,11 @@
  * @property string $buyer_order_number
  * @property string $buyer_comments
  * @property string $order_reference
+ * @property string $order_EAN_number
  * @property string $order_term
  * @property integer $article_amount
  * @property integer $buyer_buyer_id
+ * @property integer $delivery_address_delivery_address_id
  * @property integer $broker_broker_id
  * @property integer $manufacturer_manufacturer_id
  * @property integer $leg_leg_id
@@ -21,10 +23,16 @@
  * @property integer $textilpair_price_group
  * @property integer $textile1_textile_id
  * @property integer $textile2_textile_id
+ * @property integer $textile3_textile_id
+ * @property integer $textile4_textile_id
+ * @property integer $textile5_textile_id
  * @property string $order_price
  * @property string $order_total_price
  * @property integer $shopping1_shopping_id
  * @property integer $shopping2_shopping_id
+ * @property integer $shopping3_shopping_id
+ * @property integer $shopping4_shopping_id
+ * @property integer $shopping5_shopping_id
  * @property string $printed_minilabel
  * @property string $printed_shipping_label
  * @property integer $textile_prepared
@@ -43,12 +51,19 @@
  * @property Buyer $buyerBuyer
  * @property Broker $brokerBroker
  * @property Manufacturer $manufacturerManufacturer
+ * @property DeliveryAddress $deliveryAddressDeliveryAddress
  * @property Leg $legLeg
  * @property Article $articleArticle
  * @property Textile $textile1Textile
  * @property Textile $textile2Textile
+ * @property Textile $textile3Textile
+ * @property Textile $textile4Textile
+ * @property Textile $textile5Textile
  * @property Shopping $shopping1Shopping
  * @property Shopping $shopping2Shopping
+ * @property Shopping $shopping3Shopping
+ * @property Shopping $shopping4Shopping
+ * @property Shopping $shopping5Shopping
  */
 class Order extends CActiveRecord
 {
@@ -97,15 +112,15 @@ class Order extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('order_number, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textile1_textile_id', 'required'),
-			array('article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id,  textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, textile_prepared, article_manufactured, article_canceled, checked, shopping1_shopping_id, shopping2_shopping_id, article_prepared_to_export', 'numerical', 'integerOnly'=>true),
+			array('article_amount, buyer_buyer_id, delivery_address_delivery_address_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id,  textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, textile3_textile_id, textile4_textile_id, textile5_textile_id, textile_prepared, article_manufactured, article_canceled, checked, shopping1_shopping_id, shopping2_shopping_id, shopping3_shopping_id, shopping4_shopping_id, shopping5_shopping_id, article_prepared_to_export', 'numerical', 'integerOnly'=>true),
 			array('order_number, buyer_order_number, order_term, article_exported, order_error, article_planed, order_notes', 'length', 'max'=>50),
-			array('buyer_comments, order_reference', 'length', 'max'=>150),
+			array('buyer_comments, order_reference, order_reference, order_EAN_number', 'length', 'max'=>150),
 			array('order_price, order_total_price', 'length', 'max'=>9),
 			array('order_date, order_add_date, order_storno_date, printed_minilabel, printed_shipping_label', 'safe'),
 			array('order_date, buyer_order_number, buyer_comments, order_reference, textil_pair, textilpair_price_group, textile2_textile_id, printed_minilabel, printed_shipping_label, article_exported, article_planed', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_term, article_amount, buyer_buyer_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, printed_minilabel, printed_shipping_label, article_manufactured, article_exported, manufacturerManufacturer_manufacturer_name, brokerBroker_broker_name, buyerBuyer_buyer_name_1, buyerBuyer_buyer_name_2, articleArticle_article_number, articleArticle_model_name, articleArticle_model_type, articleArticle_article_colli, legLeg_leg_type, textiles1_textile_number, textiles1_textile_name, textiles1_textile_price_groupe, textiles2_textile_number, textiles2_textile_name, textiles2_textile_price_group, textile1_textile_id, textile2_textile_id, checked, shopping1_shopping_id, shopping2_shopping_id, article_planed, article_prepared_to_export, shopping1Shopping_shopping_status, shopping2Shopping_shopping_status, order_price, order_total_price, order_storno_date, article_planed, order_notes', 'safe', 'on'=>'search'),
+			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_EAN_number, order_term, article_amount, buyer_buyer_id, delivery_address_delivery_address_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, textile3_textile_id, textile4_textile_id, textile5_textile_id, printed_minilabel, printed_shipping_label, article_manufactured, article_exported, manufacturerManufacturer_manufacturer_name, brokerBroker_broker_name, buyerBuyer_buyer_name_1, buyerBuyer_buyer_name_2, articleArticle_article_number, articleArticle_model_name, articleArticle_model_type, articleArticle_article_colli, legLeg_leg_type, textiles1_textile_number, textiles1_textile_name, textiles1_textile_price_groupe, textiles2_textile_number, textiles2_textile_name, textiles2_textile_price_group, textile1_textile_id, textile2_textile_id, checked, shopping1_shopping_id, shopping2_shopping_id, shopping3_shopping_id, shopping4_shopping_id, shopping5_shopping_id, article_planed, article_prepared_to_export, shopping1Shopping_shopping_status, shopping2Shopping_shopping_status, order_price, order_total_price, order_storno_date, article_planed, order_notes', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -118,14 +133,21 @@ class Order extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'buyerBuyer' => array(self::BELONGS_TO, 'Buyer', 'buyer_buyer_id'),
+		    'deliveryAddressDeliveryAddress' => array(self::BELONGS_TO, 'DeliveryAddress', 'delivery_address_delivery_address_id'),
 			'brokerBroker' => array(self::BELONGS_TO, 'Broker', 'broker_broker_id'),
 			'manufacturerManufacturer' => array(self::BELONGS_TO, 'Manufacturer', 'manufacturer_manufacturer_id'),
 			'legLeg' => array(self::BELONGS_TO, 'Leg', 'leg_leg_id'),
 			'articleArticle' => array(self::BELONGS_TO, 'Article', 'article_article_id'),
 			'textile1Textile' => array(self::BELONGS_TO, 'Textile', 'textile1_textile_id'),
 			'textile2Textile' => array(self::BELONGS_TO, 'Textile', 'textile2_textile_id'),
+		    'textile3Textile' => array(self::BELONGS_TO, 'Textile', 'textile3_textile_id'),
+		    'textile4Textile' => array(self::BELONGS_TO, 'Textile', 'textile4_textile_id'),
+		    'textile5Textile' => array(self::BELONGS_TO, 'Textile', 'textile5_textile_id'),
 			'shopping1Shopping' => array(self::BELONGS_TO, 'Shopping', 'shopping1_shopping_id'),
 			'shopping2Shopping' => array(self::BELONGS_TO, 'Shopping', 'shopping2_shopping_id'),
+		    'shopping3Shopping' => array(self::BELONGS_TO, 'Shopping', 'shopping3_shopping_id'),
+		    'shopping4Shopping' => array(self::BELONGS_TO, 'Shopping', 'shopping4_shopping_id'),
+		    'shopping5Shopping' => array(self::BELONGS_TO, 'Shopping', 'shopping5_shopping_id'),
 		);
 	}
 
@@ -141,9 +163,11 @@ class Order extends CActiveRecord
 			'buyer_order_number' => 'nr. zam. klienta',
 			'buyer_comments' => 'uwagi klienta',
 			'order_reference' => 'referencje',
+		    'order_EAN_number' => 'EAN',
 			'order_term' => 'termin',
 			'article_amount' => 'liczba sztuk',
 			'buyer_buyer_id' => 'id kupującego',
+		    'delivery_address_delivery_address_id' => 'id adresu dostawy',
 			'broker_broker_id' => 'id pośrednika',
 			'manufacturer_manufacturer_id' => 'id producenta',
 			'leg_leg_id' => 'id nogi',
@@ -152,6 +176,9 @@ class Order extends CActiveRecord
 			'textilpair_price_group' => 'grupa cenowa pary desenii',
 			'textile1_textile_id' => 'id materiału 1',
 			'textile2_textile_id' => 'id materiału 2',
+		    'textile3_textile_id' => 'id materiału 3',
+		    'textile4_textile_id' => 'id materiału 4',
+		    'textile5_textile_id' => 'id materiału 5',
 			'order_price' => 'cena jedn.',
 			'order_total_price' => 'cena całości',
 			'printed_minilabel' => 'mini etykieta',
@@ -167,6 +194,9 @@ class Order extends CActiveRecord
 			'checked' => '&nbsp&nbsp&nbsp&nbsp',
 			'shopping1_shopping_id' => 'id zakupów 1',
 			'shopping2_shopping_id' => 'id zakupów 2',
+		    'shopping3_shopping_id' => 'id zakupów 3',
+		    'shopping4_shopping_id' => 'id zakupów 4',
+		    'shopping5_shopping_id' => 'id zakupów 5',
 			'article_planed' => 'zaplanowano na',
 			'article_prepared_to_export' => 'załadowano',
 		);
@@ -196,9 +226,11 @@ class Order extends CActiveRecord
 		$criteria->compare('buyer_order_number',$this->buyer_order_number,true);
 		$criteria->compare('buyer_comments',$this->buyer_comments,true);
 		$criteria->compare('order_reference',$this->order_reference,true);
+		$criteria->compare('order_EAN_number',$this->order_EAN_number,true);
 		$criteria->compare('order_term',$this->order_term,true);
 		$criteria->compare('t.article_amount',$this->article_amount);
 		$criteria->compare('buyer_buyer_id',$this->buyer_buyer_id);
+		$criteria->compare('delivery_address_delivery_address_id',$this->delivery_address_delivery_address_id);
 		$criteria->compare('broker_broker_id',$this->broker_broker_id);
 		$criteria->compare('manufacturer_manufacturer_id',$this->manufacturer_manufacturer_id);
 		$criteria->compare('leg_leg_id',$this->leg_leg_id);
@@ -207,6 +239,9 @@ class Order extends CActiveRecord
 		$criteria->compare('textilpair_price_group',$this->textilpair_price_group);
 		$criteria->compare('textile1_textile_id',$this->textile1_textile_id);
 		$criteria->compare('textile2_textile_id',$this->textile2_textile_id);
+		$criteria->compare('textile3_textile_id',$this->textile3_textile_id);
+		$criteria->compare('textile4_textile_id',$this->textile4_textile_id);
+		$criteria->compare('textile5_textile_id',$this->textile5_textile_id);
 		$criteria->compare('order_price',$this->order_price,true);
 		$criteria->compare('order_total_price',$this->order_total_price,true);
 		if ($this->article_planed == "0") {
@@ -279,6 +314,25 @@ class Order extends CActiveRecord
 		} else {
 			$criteria->compare('shopping2Shopping.shopping_status',$this->shopping2Shopping_shopping_status,true);
 		}
+		if ($this->shopping2Shopping_shopping_status == "w trakcie") {
+		    $criteria->addCondition('shopping2Shopping.shopping_status not like :shopping2Shopping_shopping_status' );
+		    $criteria->params=array_merge($criteria->params,array(':shopping2Shopping_shopping_status'=>'%dostarczono%'));
+		} else if ($this->shopping2Shopping_shopping_status == "0") {
+		    $criteria->addCondition('shopping2Shopping.shopping_status is :shopping2Shopping_shopping_status' );
+		    $criteria->params=array_merge($criteria->params,array(':shopping2Shopping_shopping_status'=>null));
+		} else {
+		    $criteria->compare('shopping2Shopping.shopping_status',$this->shopping2Shopping_shopping_status,true);
+		}
+		if ($this->shopping2Shopping_shopping_status == "w trakcie") {
+		    $criteria->addCondition('shopping2Shopping.shopping_status not like :shopping2Shopping_shopping_status' );
+		    $criteria->params=array_merge($criteria->params,array(':shopping2Shopping_shopping_status'=>'%dostarczono%'));
+		} else if ($this->shopping2Shopping_shopping_status == "0") {
+		    $criteria->addCondition('shopping2Shopping.shopping_status is :shopping2Shopping_shopping_status' );
+		    $criteria->params=array_merge($criteria->params,array(':shopping2Shopping_shopping_status'=>null));
+		} else {
+		    $criteria->compare('shopping2Shopping.shopping_status',$this->shopping2Shopping_shopping_status,true);
+		}
+		
 		
 		//Create a new CSort
 		$sort = new CSort;

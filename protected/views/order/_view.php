@@ -28,6 +28,10 @@
 	<b><?php echo CHtml::encode($data->getAttributeLabel('order_reference')); ?>:</b>
 	<?php echo CHtml::encode($data->order_reference); ?>
 	<br />
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('order_EAN_number')); ?>:</b>
+	<?php echo CHtml::encode($data->order_EAN_number); ?>
+	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('order_term')); ?>:</b>
 	<?php echo CHtml::encode($data->order_term); ?>
@@ -40,6 +44,10 @@
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('buyer_buyer_id')); ?>:</b>
 	<?php echo CHtml::encode($data->buyer_buyer_id); ?>
+	<br />
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('delivery_address_delivery_address_id')); ?>:</b>
+	<?php echo CHtml::encode($data->delivery_address_delivery_address_id); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('broker_broker_id')); ?>:</b>
@@ -73,6 +81,18 @@
 	<b><?php echo CHtml::encode($data->getAttributeLabel('textile2_textile_id')); ?>:</b>
 	<?php echo CHtml::encode($data->textile2_textile_id); ?>
 	<br />
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('textile3_textile_id')); ?>:</b>
+	<?php echo CHtml::encode($data->textile3_textile_id); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('textile4_textile_id')); ?>:</b>
+	<?php echo CHtml::encode($data->textile4_textile_id); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('textile5_textile_id')); ?>:</b>
+	<?php echo CHtml::encode($data->textile5_textile_id); ?>
+	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('order_price')); ?>:</b>
 	<?php echo CHtml::encode($data->order_price); ?>
@@ -88,6 +108,18 @@
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping2_shopping_id')); ?>:</b>
 	<?php echo CHtml::encode($data->shopping2_shopping_id); ?>
+	<br />
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping3_shopping_id')); ?>:</b>
+	<?php echo CHtml::encode($data->shopping3_shopping_id); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping4_shopping_id')); ?>:</b>
+	<?php echo CHtml::encode($data->shopping4_shopping_id); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('shopping5_shopping_id')); ?>:</b>
+	<?php echo CHtml::encode($data->shopping5_shopping_id); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('printed_minilabel')); ?>:</b>
