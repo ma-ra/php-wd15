@@ -72,9 +72,12 @@ class Order extends CActiveRecord
 	public $brokerBroker_broker_name;
 	public $buyerBuyer_buyer_name_1;
 	public $buyerBuyer_buyer_name_2;
+	public $deliveryAddressDeliveryAddress_delivery_address_name_1;
+	public $deliveryAddressDeliveryAddress_delivery_address_name_2;
 	public $articleArticle_article_number;
 	public $articleArticle_model_name;
 	public $articleArticle_model_type;
+	public $articleArticle_model_description;
 	public $articleArticle_article_colli;
 	public $articleArticle_article_all_textile_amount;
 	public $articleArticle_price_in_pg1;
@@ -86,14 +89,18 @@ class Order extends CActiveRecord
 	public $articleArticle_price_in_pg7;
 	public $legLeg_leg_type;
 	public $textiles1_textile_number;
-	public $textiles1_textile_name;
-	public $textiles1_textile_price_groupe;
 	public $textiles2_textile_number;
+	public $textiles3_textile_number;
+	public $textiles4_textile_number;
+	public $textiles5_textile_number;
+	public $textiles1_textile_name;
 	public $textiles2_textile_name;
-	public $textiles2_textile_price_groupe;
 	public $fabrics_fabric_price_group;
 	public $shopping1Shopping_shopping_status;
 	public $shopping2Shopping_shopping_status;
+	public $shopping3Shopping_shopping_status;
+	public $shopping4Shopping_shopping_status;
+	public $shopping5Shopping_shopping_status;
 	
 	/**
 	 * @return string the associated database table name
@@ -120,7 +127,7 @@ class Order extends CActiveRecord
 			array('order_date, buyer_order_number, buyer_comments, order_reference, textil_pair, textilpair_price_group, textile2_textile_id, printed_minilabel, printed_shipping_label, article_exported, article_planed', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_EAN_number, order_term, article_amount, buyer_buyer_id, delivery_address_delivery_address_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, textile3_textile_id, textile4_textile_id, textile5_textile_id, printed_minilabel, printed_shipping_label, article_manufactured, article_exported, manufacturerManufacturer_manufacturer_name, brokerBroker_broker_name, buyerBuyer_buyer_name_1, buyerBuyer_buyer_name_2, articleArticle_article_number, articleArticle_model_name, articleArticle_model_type, articleArticle_article_colli, legLeg_leg_type, textiles1_textile_number, textiles1_textile_name, textiles1_textile_price_groupe, textiles2_textile_number, textiles2_textile_name, textiles2_textile_price_group, textile1_textile_id, textile2_textile_id, checked, shopping1_shopping_id, shopping2_shopping_id, shopping3_shopping_id, shopping4_shopping_id, shopping5_shopping_id, article_planed, article_prepared_to_export, shopping1Shopping_shopping_status, shopping2Shopping_shopping_status, order_price, order_total_price, order_storno_date, article_planed, order_notes', 'safe', 'on'=>'search'),
+			array('order_id, order_number, order_date, buyer_order_number, buyer_comments, order_reference, order_EAN_number, order_term, article_amount, buyer_buyer_id, delivery_address_delivery_address_id, broker_broker_id, manufacturer_manufacturer_id, leg_leg_id, article_article_id, textil_pair, textilpair_price_group, textile1_textile_id, textile2_textile_id, textile3_textile_id, textile4_textile_id, textile5_textile_id, printed_minilabel, printed_shipping_label, article_manufactured, article_exported, manufacturerManufacturer_manufacturer_name, brokerBroker_broker_name, buyerBuyer_buyer_name_1, buyerBuyer_buyer_name_2, deliveryAddressDeliveryAddress_delivery_address_name_1, deliveryAddressDeliveryAddress_delivery_address_name_2, articleArticle_article_number, articleArticle_model_name, articleArticle_model_type, articleArticle_model_description, articleArticle_article_colli, legLeg_leg_type, textiles1_textile_number, textiles1_textile_name, textiles2_textile_number, textiles2_textile_name, textiles3_textile_number, textiles4_textile_number, textiles5_textile_number, textile1_textile_id, textile2_textile_id, checked, shopping1_shopping_id, shopping2_shopping_id, shopping3_shopping_id, shopping4_shopping_id, shopping5_shopping_id, article_planed, article_prepared_to_export, shopping1Shopping_shopping_status, shopping2Shopping_shopping_status, shopping3Shopping_shopping_status, shopping4Shopping_shopping_status, shopping5Shopping_shopping_status, order_price, order_total_price, order_storno_date, article_planed, order_notes', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -278,24 +285,28 @@ class Order extends CActiveRecord
 		$criteria->compare('order_storno_date',$this->order_storno_date,true);
 		$criteria->compare('checked',$this->checked);
 		
-		$criteria->with = array('manufacturerManufacturer', 'brokerBroker', 'buyerBuyer', 'articleArticle', 'legLeg', 'textile1Textile'=>array('with'=>'fabric1', 'together'=>true), 'textile2Textile'=>array('with'=>'fabric2', 'together'=>true), 'shopping1Shopping', 'shopping2Shopping');
+		$criteria->with = array('manufacturerManufacturer', 'brokerBroker', 'buyerBuyer', 'deliveryAddressDeliveryAddress', 'articleArticle', 'legLeg', 'textile1Textile'=>array('with'=>'fabric1', 'together'=>true), 'textile2Textile'=>array('with'=>'fabric2', 'together'=>true), 'shopping1Shopping', 'shopping2Shopping');
 		$criteria->together=true;
 		
 		$criteria->compare('manufacturerManufacturer.manufacturer_name',$this->manufacturerManufacturer_manufacturer_name,true);
 		$criteria->compare('brokerBroker.broker_name',$this->brokerBroker_broker_name,true);
 		$criteria->compare('buyerBuyer.buyer_name_1',$this->buyerBuyer_buyer_name_1,true);
 		$criteria->compare('buyerBuyer.buyer_name_2',$this->buyerBuyer_buyer_name_2,true);
+		$criteria->compare('deliveryAddressDeliveryAddress.delivery_address_name_1',$this->deliveryAddressDeliveryAddress_delivery_address_name_1,true);
+		$criteria->compare('deliveryAddressDeliveryAddress.delivery_address_name_2',$this->deliveryAddressDeliveryAddress_delivery_address_name_2,true);
 		$criteria->compare('articleArticle.article_number',$this->articleArticle_article_number,true);
 		$criteria->compare('articleArticle.model_name',$this->articleArticle_model_name,true);
 		$criteria->compare('articleArticle.model_type',$this->articleArticle_model_type,true);
+		$criteria->compare('articleArticle.model_description',$this->articleArticle_model_description,true);
 		$criteria->compare('articleArticle.article_colli',$this->articleArticle_article_colli,true);
 		$criteria->compare('legLeg.leg_type',$this->legLeg_leg_type,true);
 		$criteria->compare('textile1Textile.textile_number',$this->textiles1_textile_number,true);
-		$criteria->compare('textile1Textile.textile_name',$this->textiles1_textile_name,true);
-		$criteria->compare('textile1Textile.textile_price_group',$this->textiles1_textile_price_groupe,true);
 		$criteria->compare('textile2Textile.textile_number',$this->textiles2_textile_number,true);
+		$criteria->compare('textile3Textile.textile_number',$this->textiles3_textile_number,true);
+		$criteria->compare('textile4Textile.textile_number',$this->textiles4_textile_number,true);
+		$criteria->compare('textile5Textile.textile_number',$this->textiles5_textile_number,true);
+		$criteria->compare('textile1Textile.textile_name',$this->textiles1_textile_name,true);
 		$criteria->compare('textile2Textile.textile_name',$this->textiles2_textile_name,true);
-		$criteria->compare('textile2Textile.textile_price_group',$this->textiles2_textile_price_groupe,true);
 		if ($this->shopping1Shopping_shopping_status == "w trakcie") {
 			$criteria->addCondition('shopping1Shopping.shopping_status not like :shopping1Shopping_shopping_status' );
 			$criteria->params=array_merge($criteria->params,array(':shopping1Shopping_shopping_status'=>'%dostarczono%'));
@@ -314,23 +325,32 @@ class Order extends CActiveRecord
 		} else {
 			$criteria->compare('shopping2Shopping.shopping_status',$this->shopping2Shopping_shopping_status,true);
 		}
-		if ($this->shopping2Shopping_shopping_status == "w trakcie") {
-		    $criteria->addCondition('shopping2Shopping.shopping_status not like :shopping2Shopping_shopping_status' );
-		    $criteria->params=array_merge($criteria->params,array(':shopping2Shopping_shopping_status'=>'%dostarczono%'));
-		} else if ($this->shopping2Shopping_shopping_status == "0") {
-		    $criteria->addCondition('shopping2Shopping.shopping_status is :shopping2Shopping_shopping_status' );
-		    $criteria->params=array_merge($criteria->params,array(':shopping2Shopping_shopping_status'=>null));
+		if ($this->shopping3Shopping_shopping_status == "w trakcie") {
+		    $criteria->addCondition('shopping3Shopping.shopping_status not like :shopping3Shopping_shopping_status' );
+		    $criteria->params=array_merge($criteria->params,array(':shopping3Shopping_shopping_status'=>'%dostarczono%'));
+		} else if ($this->shopping3Shopping_shopping_status == "0") {
+		    $criteria->addCondition('shopping3Shopping.shopping_status is :shopping3Shopping_shopping_status' );
+		    $criteria->params=array_merge($criteria->params,array(':shopping3Shopping_shopping_status'=>null));
 		} else {
-		    $criteria->compare('shopping2Shopping.shopping_status',$this->shopping2Shopping_shopping_status,true);
+		    $criteria->compare('shopping3Shopping.shopping_status',$this->shopping3Shopping_shopping_status,true);
 		}
-		if ($this->shopping2Shopping_shopping_status == "w trakcie") {
-		    $criteria->addCondition('shopping2Shopping.shopping_status not like :shopping2Shopping_shopping_status' );
-		    $criteria->params=array_merge($criteria->params,array(':shopping2Shopping_shopping_status'=>'%dostarczono%'));
-		} else if ($this->shopping2Shopping_shopping_status == "0") {
-		    $criteria->addCondition('shopping2Shopping.shopping_status is :shopping2Shopping_shopping_status' );
-		    $criteria->params=array_merge($criteria->params,array(':shopping2Shopping_shopping_status'=>null));
+		if ($this->shopping4Shopping_shopping_status == "w trakcie") {
+		    $criteria->addCondition('shopping4Shopping.shopping_status not like :shopping4Shopping_shopping_status' );
+		    $criteria->params=array_merge($criteria->params,array(':shopping4Shopping_shopping_status'=>'%dostarczono%'));
+		} else if ($this->shopping4Shopping_shopping_status == "0") {
+		    $criteria->addCondition('shopping4Shopping.shopping_status is :shopping4Shopping_shopping_status' );
+		    $criteria->params=array_merge($criteria->params,array(':shopping4Shopping_shopping_status'=>null));
 		} else {
-		    $criteria->compare('shopping2Shopping.shopping_status',$this->shopping2Shopping_shopping_status,true);
+		    $criteria->compare('shopping4Shopping.shopping_status',$this->shopping4Shopping_shopping_status,true);
+		}
+		if ($this->shopping5Shopping_shopping_status == "w trakcie") {
+		    $criteria->addCondition('shopping5Shopping.shopping_status not like :shopping5Shopping_shopping_status' );
+		    $criteria->params=array_merge($criteria->params,array(':shopping5Shopping_shopping_status'=>'%dostarczono%'));
+		} else if ($this->shopping5Shopping_shopping_status == "0") {
+		    $criteria->addCondition('shopping5Shopping.shopping_status is :shopping5Shopping_shopping_status' );
+		    $criteria->params=array_merge($criteria->params,array(':shopping5Shopping_shopping_status'=>null));
+		} else {
+		    $criteria->compare('shopping5Shopping.shopping_status',$this->shopping5Shopping_shopping_status,true);
 		}
 		
 		
@@ -346,13 +366,17 @@ class Order extends CActiveRecord
 				'articleArticle.article_colli',
 				'legLeg.leg_type',
 				'textile1Textile.textile_number',
-				'textile1Textile.textile_name',
-				'textile1Textile.textile_price_group',
 				'textile2Textile.textile_number',
+    		    'textile3Textile.textile_number',
+    		    'textile4Textile.textile_number',
+    		    'textile5Textile.textile_number',
+				'textile1Textile.textile_name',
 				'textile2Textile.textile_name',
-				'textile2Textile.textile_price_group',
 				'shopping1Shopping.shopping_status',
 				'shopping2Shopping.shopping_status',
+    		    'shopping3Shopping.shopping_status',
+    		    'shopping4Shopping.shopping_status',
+    		    'shopping5Shopping.shopping_status',
 				'*',//Add the * to include all the rest of the fields from the main model
 		);
 		//$sort->multiSort=true;
