@@ -38,21 +38,21 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'delivery_addressr_zip_code'); ?>
-		<?php echo $form->textField($model,'delivery_addressr_zip_code',array('size'=>60,'maxlength'=>150)); ?>
-		<?php echo $form->error($model,'delivery_addressr_zip_code'); ?>
+		<?php echo $form->labelEx($model,'delivery_address_zip_code'); ?>
+		<?php echo $form->textField($model,'delivery_address_zip_code',array('size'=>60,'maxlength'=>150)); ?>
+		<?php echo $form->error($model,'delivery_address_zip_code'); ?>
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'delivery_addressr_city'); ?>
-		<?php echo $form->textField($model,'delivery_addressr_city',array('size'=>60,'maxlength'=>150)); ?>
-		<?php echo $form->error($model,'delivery_addressr_city'); ?>
+		<?php echo $form->labelEx($model,'delivery_address_city'); ?>
+		<?php echo $form->textField($model,'delivery_address_city',array('size'=>60,'maxlength'=>150)); ?>
+		<?php echo $form->error($model,'delivery_address_city'); ?>
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'delivery_addressr_contact'); ?>
-		<?php echo $form->textField($model,'delivery_addressr_contact',array('size'=>60,'maxlength'=>150)); ?>
-		<?php echo $form->error($model,'delivery_addressr_contact'); ?>
+		<?php echo $form->labelEx($model,'delivery_address_contact'); ?>
+		<?php echo $form->textField($model,'delivery_address_contact',array('size'=>60,'maxlength'=>150)); ?>
+		<?php echo $form->error($model,'delivery_address_contact'); ?>
 	</div>
 
 	<div class="row buttons">

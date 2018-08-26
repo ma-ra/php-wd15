@@ -556,92 +556,6 @@ class OrderController extends Controller
 					if ($handle) {
 						while (($buffer = fgets($handle, 4096)) !== false) {
 							$line=explode("^",$buffer);
-							####
-							# Rozpiska kolumn z zaczytywanego pliku (stara wersja)
-							# $line[0] - Lieferant Nr.
-							# $line[1] - Lieferant
-							# $line[2] - Jahr
-							# $line[3] - Best.Nr.
-							# $line[4] - Best.Datum
-							# $line[5] - Lieferanschrift - Name
-							# $line[6] - Lieferanschrift - Name 2
-							# $line[7] - Lieferanschrift - Strasse
-							# $line[8] - Lieferanschrift - PLZ & Ort
-							# $line[9] - Bestellnr./Kunde
-							# $line[10] - Werbung
-							# $line[11] - Art.Nr.
-							# $line[12] - Modelltext
-							# $line[13] - Ausführung
-							# $line[14] - Füße
-							# $line[15] - Stoff Nr.
-							# $line[16] - Stoff Text 1
-							# $line[17] - Stoff Text 2
-							# $line[18] - EK Gruppe
-							# $line[19] - Referenz
-							# $line[20] - Kommission
-							# $line[21] - Termintext
-							# $line[22] - Termin KW
-							# $line[23] - Preis
-							# $line[24] - Rückstand
-							# $line[25] - Betrag
-							# $line[26] - Rabatt/Z. 1
-							# $line[27] - Rabatt/Z. Text 1
-							# $line[28] - Rabatt/Z. 2
-							# $line[29] - Rabatt/Z. Text 2
-							# $line[30] - Rabatt/Z. 3
-							# $line[31] - Rabatt/Z. Text 3
-							# $line[32] - Rabatt/Z. 4
-							# $line[33] - Rabatt/Z. Text 4
-							# $line[34] - Rabatt/Z. 5
-							# $line[35] - Rabatt/Z. Text 5
-							####
-							
-							####
-							# Rozpiska kolumn z zaczytywanego pliku (nowa wersja)
-							# $line[0] - Bestellnr.
-							# $line[1] - Registrierungsdatum
-							# $line[2] - Registriert bei
-							# $line[3] - Bestellstatus
-							# $line[4] - Produktionswoche
-							# $line[5] - Lieferant Nummer
-							# $line[6] - Lieferant Name
-							# $line[7] - Kunde - Name
-							# $line[8] - Kunde - Straße
-							# $line[9] - Kunde - PLZ
-							# $line[10] - Kunde - Stadt
-							# $line[11] - Kundenauftragsnummer
-							# $line[12] - Kunde - Email
-							# $line[13] - Kunde - Telefonnummer
-							# $line[14] - Kunde - Faxnummer
-							# $line[15] - Lieferanschrift - Name
-							# $line[16] - Lieferanschrift - Straße
-							# $line[17] - Lieferanschrift - PLZ
-							# $line[18] - Lieferanschrift - Stadt
-							# $line[19] - Möbel-Status
-							# $line[20] - Position
-							# $line[21] - EAN-Nr.
-							# $line[22] - Art.Nr.
-							# $line[23] - Modelltext
-							# $line[24] - Ausführung
-							# $line[25] - Stoff Nr.
-							# $line[26] - Stoff Text 1
-							# $line[27] - Stoff Text 2
-							# $line[28] - Füße
-							# $line[29] - EK- Termin Woche
-							# $line[30] - Preis
-							# $line[31] - Referenz
-							# $line[32] - Kommission
-							# $line[33] - Versand Woche
-							# $line[34] - Colli
-							# $line[35] - [m3]
-							# $line[36] - [kg]
-							# $line[37] - Tour nr.
-							# $line[38] - Versand Datum
-							# $line[39] - Grund für die Rückgabe
-							# $line[40] - Transport Nummer
-							# $line[41] - Transport Datum
-							# $line[42] - Kommentar
-							####
 							
 							####
 							# Rozpiska kolumn z zaczytywanego pliku (wersja z systemu Reality)
@@ -663,20 +577,28 @@ class OrderController extends Controller
 							# $line[15] - Art. Nr
 							# $line[16] - Modelltext
 							# $line[17] - Ausführung
-							# $line[18] - Stoff Nr.
-							# $line[19] - Stoff Text 1
-							# $line[20] - Stoff Text 2
-							# $line[21] - EK Material Text 1
-							# $line[22] - EK Material Text 2
-							# $line[23] - Fuße
-							# $line[24] - EK Termin KW
-							# $line[25] - Produktionswoche
-							# $line[26] - Colli
-							# $line[27] - Einheitspreis (€)
-							# $line[28] - Werbung
-							# $line[29] - Tour Nummer
-							# $line[30] - Reality Veränderungen
-							# $line[31] - Status
+							# $line[18] - Ausführung 2
+							# $line[19] - Ausführung 3
+							# $line[20] - Ausführung 4
+							# $line[21] - Ausführung 5
+							# $line[22] - Ausführung 6
+							# $line[23] - Ausführung 7
+							# $line[24] - Ausführung 8
+							# $line[25] - Ausführung 9
+							# $line[26] - Stoff Nr.
+							# $line[27] - Stoff Text 1
+							# $line[28] - Stoff Text 2
+							# $line[29] - EK Material Text 1
+							# $line[30] - EK Material Text 2
+							# $line[31] - Fuße
+							# $line[32] - EK Termin KW
+							# $line[33] - Produktionswoche
+							# $line[34] - Colli
+							# $line[35] - Einheitspreis (€)
+							# $line[36] - Werbung
+							# $line[37] - Tour Nummer
+							# $line[38] - Reality Veränderungen
+							# $line[39] - Status
 							####
 							
 							#####
@@ -685,22 +607,32 @@ class OrderController extends Controller
 							$line["order_number"]=$line[0];
 							$line["buyer_name2"]=$line[1];
 							$line["buyer_comments"]=$line[5];
+							$line["buyer_contact"]=$line[6] . " " . $line[7];
 							$line["buyer_name1"]=$line[9];
 							$line["buyer_street"]=$line[10];
 							$line["buyer_zip_code"]=$line[11] . " " . $line[12];
+							$line["buyer_city"]=$line[12];
+							$line["delivery_address_name1"]=$line[9];
+							$line["delivery_address_street"]=$line[10];
+							$line["delivery_address_zip_code"]=$line[11];
+							$line["delivery_address_city"]=$line[12];
 							$line["position"]=$line[13];
+							$line["order_EAN_number"]=$line[14];
 							$line["article_number"]=substr($line[15],0,-1);
 							$line["model_name"]=$line[16];
 							$line["model_type"]=str_replace("–","-",$line[17]);
-							$line["textil_pair"]=$line[18];
-							$line["textile1_name"]=$line[19];
-							$line["textile2_name"]=$line[20];
-							$line["leg_type"]=$line[23];
-							$line["order_term"]=$line[24];
-							$line["article_coli"]=$line[26];
-							$line["order_price"]=str_replace(",", ".", $line[27]);
-							$line["order_reference"]=$line[28];
-							$line["status"]=strtolower(trim($line[31]));
+							$line["model_description"]=str_replace("–","-",$line[18] . " " . $line[19] . " " . $line[20] . " " . $line[21] . " " . $line[22] . " " . $line[23] . " " . $line[24] . " " . $line[25]);
+							$line["textil_pair"]=$line[26];
+							$line["textile1_name"]=$line[27];
+							$line["textile2_name"]=$line[28];
+							$line["textile1_description"]=$line[29];
+							$line["textile2_description"]=$line[30];
+							$line["leg_type"]=$line[31];
+							$line["order_term"]=$line[32];
+							$line["article_coli"]=$line[34];
+							$line["order_price"]=str_replace(",", ".", $line[35]);
+							$line["order_reference"]=$line[36];
+							$line["status"]=strtolower(trim($line[39]));
 							$line["manufacturer_number"]=null;
 							$line["manufacturer_name"]=null;
 								
@@ -731,7 +663,32 @@ class OrderController extends Controller
 							$buyer->buyer_name_2=$line["buyer_name2"];
 							$buyer->buyer_street=$line["buyer_street"];
 							$buyer->buyer_zip_code=$line["buyer_zip_code"];
+							$buyer->buyer_city=$line["buyer_city"];
+							$buyer->buyer_contact=$line["buyer_contact"];
 							$buyer->save();
+							
+							####
+							# DeliveryAddress - update or insert
+							####
+							$deliveryAddress=DeliveryAddress::model()->find(array(
+							    'condition'=>'delivery_address_name_1=:name1 AND delivery_address_street=:street AND delivery_address_zip_code=:zip_code AND delivery_address_city=:city',
+							    'params'=>array(':name1'=>$line["delivery_address_name1"],
+							        ':street'=>$line["delivery_address_street"],
+							        ':zip_code'=>$line["delivery_address_zip_code"],
+							        ':city'=>$line["delivery_address_city"],
+							    ),
+							    # ostatni element
+							    'order' => "delivery_address_id DESC",
+							    'limit' => 1
+							));
+							if (empty($deliveryAddress)) {
+							    $deliveryAddress=new DeliveryAddress('upload');
+							}
+							$deliveryAddress->delivery_address_name_1=$line["delivery_address_name1"];
+							$deliveryAddress->delivery_address_street=$line["delivery_address_street"];
+							$deliveryAddress->delivery_address_zip_code=$line["delivery_address_zip_code"];
+							$deliveryAddress->delivery_address_city=$line["delivery_address_city"];
+							$deliveryAddress->save();
 							
 							####
 							# Broker - update or insert
@@ -819,6 +776,7 @@ class OrderController extends Controller
 								$article->article_colli=$line["article_coli"];
 								$article->model_name=$line["model_name"];
 								$article->model_type=$line["model_type"];
+								$article->model_description=$line["model_description"];
 							}
 							$article->article_number=$line["article_number"];
 							# poprawiamy nazwę/typ modelu na podstawie wzorca - często nazwy w pliku są ucięte
@@ -1066,75 +1024,225 @@ class OrderController extends Controller
 							####
 							
 							###
-							# Pierwszy deseń
+							# First textile
 							###
 							
-							# zebranie informacji o pierwszym deseniu
-							if ($line["textil_pair"]>1990 && $line["textil_pair"]<5500) { #Jeden deseń na zamówieniu
-								$textile_number=$line["textil_pair"];
-							} else { # dwa desenie na zamówieniu
-								preg_match('/([0-9]{4})/i',$line["textile1_name"],$matches);
-								$textile_number=$matches[1];
-							}
-							# grupa cenowa
-							preg_match('/\(? *PG *([0-9]{1})/',$line["textile1_name"],$matches);
-							$textile_price_group=isset($matches[1]) ? $matches[1] : 99 ;
+							# determination of the number of different textile
+							$search=$line["textile1_name"] . " " . $line["textile2_name"];
+							preg_match_all('/([0-9]{4})/i',$search,$matches);
+							$textile_number_array=$matches[0];
 							
-							# textile1 - update or insert
-							$textile=Textile::model()->find(array(
-								'condition'=>'textile_number=:number AND textile_name=:name AND textile_price_group=:group',
-								'params'=>array(':number'=>$textile_number,
-												':name'=>$line["textile1_name"],
-												':group'=>$textile_price_group,
-								),
-								#ostatni element
-								'order' => "textile_id DESC",
-								'limit' => 1
+						    # textile number
+						    # probably one textile; number from textil_pair
+							if (count($textile_number_array)==0 OR count($textile_number_array)==1) {
+							    # textile number
+							    $textile_number=$line["textil_pair"];
+							    if(count($textile_number_array)==1 AND $textile_number_array[0] != $textile_number) {
+							        throw new Exception('niezgodnoć numeru "numer pary-numer odczytany z nazwy" (' . $textile_number_array[0] . ' =! ' . $textile_number . ')', 5);
+							    }
+							# more than one textile    
+							} elseif (count($textile_number_array)>=2) {
+							    if(!isset($textile_number_array[0])) {
+							        throw new Exception('nie udało się pobrać numeru pierwszego materiału.', 5);
+							    }
+							    $textile_number=$textile_number_array[0];
+							}
+							# is textile_number in fabric_collection table
+							$fabric=FabricCollection::model()->find(array(
+							    'condition'=>'fabric_number=:number',
+							    'params'=>array(':number'=>$textile_number),
+							    # last element
+							    'order' => "fabric_id DESC",
+							    'limit' => 1
 							));
-							if (empty($textile)) {
-								$textile=new Textile('upload');
+							if (empty($fabric)) {
+							    throw new Exception('brak materiału: ' . $textile_number . ' w systemie. <br>Nazwa: ' . $line["textile1_name"] . " " . $line["textile2_name"] . " (" . $line["textile1_description"] . " " . $line["textile2_description"] . ")", 5);
 							}
-							$textile->textile_number=isset($textile_number) ? $textile_number : "-" ;
-							$textile->textile_price_group=isset($textile_price_group) ? $textile_price_group : 99 ;
-							$textile->textile_name=$line["textile1_name"];
-							$textile->save();
+							
+						    # price group
+						    preg_match('/\(? *PG *([0-9]{1})/',$line["textile1_name"],$matches);
+						    $textile_price_group=isset($matches[1]) ? $matches[1] : 99 ;
+						    
+						    # textile1 - update or insert
+						    $textile=Textile::model()->find(array(
+						        'condition'=>'textile_number=:number AND textile_name=:name AND textile_description=:description AND textile_price_group=:group',
+						        'params'=>array(':number'=>$textile_number,
+						            ':name'=>$line["textile1_name"],
+						            ':description'=>$line["textile1_description"],
+						            ':group'=>$textile_price_group,
+						        ),
+						        #ostatni element
+						        'order' => "textile_id DESC",
+						        'limit' => 1
+						    ));
+						    if (empty($textile)) {
+						        $textile=new Textile('upload');
+						    }
+						    $textile->textile_number=isset($textile_number) ? $textile_number : 99 ;
+						    $textile->textile_name=$line["textile1_name"];
+						    $textile->textile_description=$line["textile1_description"];
+						    $textile->textile_price_group=isset($textile_price_group) ? $textile_price_group : 99 ;
+						    $textile->save();
 							
 							###
-							# Drugi deseń
+							# Second textile
 							###
-							$secTextileError=null;
-							if ($line["textil_pair"]<=1990 || $line["textil_pair"]>=5500) {
-								# grupa cenowa
+						    if (count($textile_number_array)>=2) {
+						        # textile number
+						        if(!isset($textile_number_array[1])) {
+						            throw new Exception('nie udało się pobrać numeru drugiego materiału.', 5);
+						        }
+						        $textile_number=$textile_number_array[1];
+								
+								# is textile_number in fabric_collection table
+								$fabric=FabricCollection::model()->find(array(
+								    'condition'=>'fabric_number=:number',
+								    'params'=>array(':number'=>$textile_number),
+								    # last element
+								    'order' => "fabric_id DESC",
+								    'limit' => 1
+								));
+								if (empty($fabric)) {
+								    throw new Exception('brak materiału: ' . $textile_number . ' w systemie. <br>Nazwa: ' . $line["textile1_name"] . " " . $line["textile2_name"] . " (" . $line["textile1_description"] . " " . $line["textile2_description"] . ")", 5);
+								}
+								
+								# price group
 								//D.4105:Microf. mittelbraun(PG9
 								preg_match('/\(? *PG *([0-9]{1})/',$line["textile2_name"],$matches);
 								$textile_price_group=isset($matches[1]) ? $matches[1] : 99 ;
-								# numer mat
-								preg_match('/([0-9]{4})/i',$line["textile2_name"],$matches);
+								
 								# textile2 - update or insert
 								$textile2=Textile::model()->find(array(
-									'condition'=>'textile_number=:number AND textile_name=:name AND textile_price_group=:group',
-									'params'=>array(':number'=>$matches[1],
+									'condition'=>'textile_number=:number AND textile_name=:name AND textile_description=:description AND textile_price_group=:group',
+									'params'=>array(':number'=>$textile_number,
 									':name'=>$line["textile2_name"],
+								    ':description'=>$line["textile2_description"],
 									':group'=>$textile_price_group,
 									),
-									# ostatni element
+									# last element
 									'order' => "textile_id DESC",
 									'limit' => 1
 								));
 								if (empty($textile2)) {
 									$textile2=new Textile('upload');
 								}
-								$textile2->textile_number=isset($matches[1]) ? $matches[1] : "-" ;
+								$textile2->textile_number=$textile_number;
 								$textile2->textile_name=$line["textile2_name"];
+								$textile2->textile_description=$line["textile2_description"];
 								$textile2->textile_price_group=isset($textile_price_group) ? $textile_price_group : 99 ;
 								$textile2->save();
-							} else {
-								# zgłoś błąd, jeżeli numer pary jest >1990 || < 5500, a pojawi sie drugi deseń
-								$test=rtrim(preg_match('/([0-9]{4})/i',$line["textile2_name"],$matches));
-								if (!empty($test)) {
-									$secTextileError="sec-textile";
-								}
-							}
+							} 
+							
+							###
+							# Third textile
+							###
+							if (count($textile_number_array)>=3) {
+							    # textile number
+							    if(!isset($textile_number_array[2])) {
+							        throw new Exception('nie udało się pobrać numeru drugiego materiału.', 5);
+							    }
+							    $textile_number=$textile_number_array[2];
+							    
+							    # is textile_number in fabric_collection table
+							    $fabric=FabricCollection::model()->find(array(
+							        'condition'=>'fabric_number=:number',
+							        'params'=>array(':number'=>$textile_number),
+							        # last element
+							        'order' => "fabric_id DESC",
+							        'limit' => 1
+							    ));
+							    if (empty($fabric)) {
+							        throw new Exception('brak materiału: ' . $textile_number . ' w systemie. <br>Nazwa: ' . $line["textile1_name"] . " " . $line["textile2_name"] . " (" . $line["textile1_description"] . " " . $line["textile2_description"] . ")", 5);
+							    }
+							    
+							    # textile3 - update or insert
+							    $textile3=Textile::model()->find(array(
+							        'condition'=>'textile_number=:number',
+							        'params'=>array(':number'=>$textile_number),
+							        # last element
+							        'order' => "textile_id DESC",
+							        'limit' => 1
+							    ));
+							    if (empty($textile3)) {
+							        $textile3=new Textile('upload');
+							    }
+							    $textile3->textile_number=$textile_number;
+							    $textile3->save();
+							} 
+							
+							###
+							# Fourth textile
+							###
+							if (count($textile_number_array)>=4) {
+							    # textile number
+							    if(!isset($textile_number_array[3])) {
+							        throw new Exception('nie udało się pobrać numeru trzeciego materiału.', 5);
+							    }
+							    $textile_number=$textile_number_array[3];
+							    
+							    # is textile_number in fabric_collection table
+							    $fabric=FabricCollection::model()->find(array(
+							        'condition'=>'fabric_number=:number',
+							        'params'=>array(':number'=>$textile_number),
+							        # last element
+							        'order' => "fabric_id DESC",
+							        'limit' => 1
+							    ));
+							    if (empty($fabric)) {
+							        throw new Exception('brak materiału: ' . $textile_number . ' w systemie. <br>Nazwa: ' . $line["textile1_name"] . " " . $line["textile2_name"] . " (" . $line["textile1_description"] . " " . $line["textile2_description"] . ")", 5);
+							    }
+							    
+							    # textile4 - update or insert
+							    $textile4=Textile::model()->find(array(
+							        'condition'=>'textile_number=:number',
+							        'params'=>array(':number'=>$textile_number),
+							        # last element
+							        'order' => "textile_id DESC",
+							        'limit' => 1
+							    ));
+							    if (empty($textile4)) {
+							        $textile4=new Textile('upload');
+							    }
+							    $textile4->textile_number=$textile_number;
+							    $textile4->save();
+							} 
+							
+							###
+							# Fifth textile
+							###
+							if (count($textile_number_array)>=5) {
+							    # textile number
+							    if(!isset($textile_number_array[4])) {
+							        throw new Exception('nie udało się pobrać numeru drugiego materiału.', 5);
+							    }
+							    $textile_number=$textile_number_array[4];
+							    
+							    # is textile_number in fabric_collection table
+							    $fabric=FabricCollection::model()->find(array(
+							        'condition'=>'fabric_number=:number',
+							        'params'=>array(':number'=>$textile_number),
+							        # last element
+							        'order' => "fabric_id DESC",
+							        'limit' => 1
+							    ));
+							    if (empty($fabric)) {
+							        throw new Exception('brak materiału: ' . $textile_number . ' w systemie. <br>Nazwa: ' . $line["textile1_name"] . " " . $line["textile2_name"] . " (" . $line["textile1_description"] . " " . $line["textile2_description"] . ")", 5);
+							    }
+							    
+							    # textile5 - update or insert
+							    $textile5=Textile::model()->find(array(
+							        'condition'=>'textile_number=:number',
+							        'params'=>array(':number'=>$textile_number),
+							        # last element
+							        'order' => "textile_id DESC",
+							        'limit' => 1
+							    ));
+							    if (empty($textile5)) {
+							        $textile5=new Textile('upload');
+							    }
+							    $textile5->textile_number=$textile_number;
+							    $textile5->save();
+							} 
 							
 							####
 							# Order - update or insert
@@ -1173,6 +1281,7 @@ class OrderController extends Controller
 							$order->order_date=$order->order_add_date;
 							$order->order_number=$line["order_number"];
 							$order->order_reference=$line["order_reference"];
+							$order->order_EAN_number=$line["order_EAN_number"];
 							
 							preg_match('/([0-9]+)\/([0-9]+)/',$line["order_term"],$matches);
 							$week=min($matches[1], $matches[2]);
@@ -1210,22 +1319,46 @@ class OrderController extends Controller
 								$buyerError=null;
 							}
 							$order->buyer_buyer_id=$buyer->buyer_id;
+							$order->delivery_address_delivery_address_id=$deliveryAddress->delivery_address_id;
 							
 							###
 							# Wiązanie Order z odpowiednimi materiałami, oraz pobranie informacji o nich
 							###
 							
-							#Jeżeli mamy dwa desenie							
-							if ($line["textil_pair"]<=1990 || $line["textil_pair"]>=5500) {
-								$order->textil_pair=$line["textil_pair"];
+							# pierwszy deseń zawsze występuje
+							$order->textile1_textile_id=$textile->textile_id;
+							
+							#Jeżeli mamy dwa desenie
+							if (count($textile_number_array)>=2) {
 								$order->textile2_textile_id=$textile2->textile_id;
+							    # parę zapisujemy dopiero powyżej 2 desenii
+    							$order->textil_pair=$line["textil_pair"];
 								# Uśredniamy grupę cenową
 								$order->textilpair_price_group=round(($textile->textile_price_group+$textile2->textile_price_group)/2);
 							} else {
 								$order->textile2_textile_id=null;
 							}
-							# pierwszy deseń zawsze występuje
-							$order->textile1_textile_id=$textile->textile_id;
+							
+							#Jeżeli mamy trzy desenie
+							if (count($textile_number_array)>=3) {
+							    $order->textile3_textile_id=$textile3->textile_id;
+							} else {
+							    $order->textile3_textile_id=null;
+							}
+							
+							#Jeżeli mamy czteryy desenie
+							if (count($textile_number_array)>=4) {
+							    $order->textile4_textile_id=$textile4->textile_id;
+							} else {
+							    $order->textile4_textile_id=null;
+							}
+							
+							#Jeżeli mamy pięć deseni
+							if (count($textile_number_array)>=5) {
+							    $order->textile5_textile_id=$textile5->textile_id;
+							} else {
+							    $order->textile5_textile_id=null;
+							}
 							
 							###
 							# Dodatkowe operacje
@@ -1246,16 +1379,6 @@ class OrderController extends Controller
 								$error=explode("|", $order->order_error);
 								if (!in_array("exported", $error)) {
 									array_push ( $error , "exported");
-								}
-								$error=implode("|", $error);
-								$order->order_error=$error;
-							}
-							
-							# oznacz błąd typu "sec-textile" wykryty w sekcji "Textile - update or insert"
-							if (isset($secTextileError)) {
-								$error=explode("|", $order->order_error);
-								if (!in_array($secTextileError, $error)) {
-									array_push ( $error , $secTextileError);
 								}
 								$error=implode("|", $error);
 								$order->order_error=$error;
@@ -1322,8 +1445,8 @@ class OrderController extends Controller
 					Yii::app()->user->setFlash('4success','Zamówienia wgrane bez krytycznych błędów. Drobne błędy zostały naniesione w kolumnie błąd.');
 				} catch(Exception $e) {
 					$transaction->rollBack();
-					Yii::app()->user->setFlash('4error','Nie udało się wgrać zamówień.');
-					echo "<pre>"; var_dump($e); echo "</pre>";
+					Yii::app()->user->setFlash('4error','Nie udało się wgrać zamówień: ' . $e->getMessage());
+					#echo "<pre>"; var_dump($e); echo "</pre>";
 				}
 				
 				# wyszukaj potencjalne storna
@@ -1396,6 +1519,7 @@ class OrderController extends Controller
 		$model->unsetAttributes();  // clear any default values
 		$model->article_exported=0;
 		$model->article_canceled=0;
+		$model->order_add_date='>=2018';
 		if(isset($_GET['Order']))
 			$model->attributes=$_GET['Order'];
 

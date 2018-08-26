@@ -61,7 +61,7 @@ class Buyer extends CActiveRecord
 		return array(
 			'buyer_id' => 'id klienta',
 			'buyer_name_1' => 'nazwa adresu dostawy*',
-			'buyer_name_2' => 'nazwa kupującego',
+			'buyer_name_2' => 'nazwa 2 kupującego',
 			'buyer_street' => 'ulica',
 			'buyer_zip_code' => 'kod pocztowy',
 		    'buyer_city' => 'miasto',

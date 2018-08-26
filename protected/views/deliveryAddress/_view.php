@@ -21,16 +21,16 @@
 	<?php echo CHtml::encode($data->delivery_address_street); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('delivery_addressr_zip_code')); ?>:</b>
-	<?php echo CHtml::encode($data->delivery_addressr_zip_code); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('delivery_address_zip_code')); ?>:</b>
+	<?php echo CHtml::encode($data->delivery_address_zip_code); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('delivery_addressr_city')); ?>:</b>
-	<?php echo CHtml::encode($data->delivery_addressr_city); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('delivery_address_city')); ?>:</b>
+	<?php echo CHtml::encode($data->delivery_address_city); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('delivery_addressr_contact')); ?>:</b>
-	<?php echo CHtml::encode($data->delivery_addressr_contact); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('delivery_address_contact')); ?>:</b>
+	<?php echo CHtml::encode($data->delivery_address_contact); ?>
 	<br />
 
 

@@ -8,9 +8,9 @@
  * @property string $delivery_address_name_1
  * @property string $delivery_address_name_2
  * @property string $delivery_address_street
- * @property string $delivery_addressr_zip_code
- * @property string $delivery_addressr_city
- * @property string $delivery_addressr_contact
+ * @property string $delivery_address_zip_code
+ * @property string $delivery_address_city
+ * @property string $delivery_address_contact
  *
  * The followings are the available model relations:
  * @property Order[] $orders
@@ -33,11 +33,11 @@ class DeliveryAddress extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('delivery_address_name_1, delivery_address_street, delivery_addressr_zip_code, delivery_addressr_city', 'required'),
-			array('delivery_address_name_1, delivery_address_name_2, delivery_address_street, delivery_addressr_zip_code, delivery_addressr_city, delivery_addressr_contact', 'length', 'max'=>150),
+			array('delivery_address_name_1, delivery_address_street, delivery_address_zip_code, delivery_address_city', 'required'),
+			array('delivery_address_name_1, delivery_address_name_2, delivery_address_street, delivery_address_zip_code, delivery_address_city, delivery_address_contact', 'length', 'max'=>150),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('delivery_address_id, delivery_address_name_1, delivery_address_name_2, delivery_address_street, delivery_addressr_zip_code, delivery_addressr_city, delivery_addressr_contact', 'safe', 'on'=>'search'),
+			array('delivery_address_id, delivery_address_name_1, delivery_address_name_2, delivery_address_street, delivery_address_zip_code, delivery_address_city, delivery_address_contact', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -63,9 +63,9 @@ class DeliveryAddress extends CActiveRecord
 			'delivery_address_name_1' => 'nazwa adresu dostawy',
 			'delivery_address_name_2' => 'nazwa 2 adresu dostawy',
 			'delivery_address_street' => 'ulica adresu dostawy',
-			'delivery_addressr_zip_code' => 'kod adresu dostawy',
-			'delivery_addressr_city' => 'miasto adresu dostawy',
-			'delivery_addressr_contact' => 'kontakt adresu dostawy',
+			'delivery_address_zip_code' => 'kod adresu dostawy',
+			'delivery_address_city' => 'miasto adresu dostawy',
+			'delivery_address_contact' => 'kontakt adresu dostawy',
 		);
 	}
 
@@ -91,9 +91,9 @@ class DeliveryAddress extends CActiveRecord
 		$criteria->compare('delivery_address_name_1',$this->delivery_address_name_1,true);
 		$criteria->compare('delivery_address_name_2',$this->delivery_address_name_2,true);
 		$criteria->compare('delivery_address_street',$this->delivery_address_street,true);
-		$criteria->compare('delivery_addressr_zip_code',$this->delivery_addressr_zip_code,true);
-		$criteria->compare('delivery_addressr_city',$this->delivery_addressr_city,true);
-		$criteria->compare('delivery_addressr_contact',$this->delivery_addressr_contact,true);
+		$criteria->compare('delivery_address_zip_code',$this->delivery_address_zip_code,true);
+		$criteria->compare('delivery_address_city',$this->delivery_address_city,true);
+		$criteria->compare('delivery_address_contact',$this->delivery_address_contact,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

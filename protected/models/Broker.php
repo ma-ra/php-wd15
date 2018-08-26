@@ -55,7 +55,7 @@ class Broker extends CActiveRecord
 	{
 		return array(
 			'broker_id' => 'id pośrednika',
-			'broker_name' => 'nazwa',
+			'broker_name' => 'pośrednik',
 		);
 	}
 

@@ -167,7 +167,7 @@ class Order extends CActiveRecord
 			'order_id' => 'id',
 			'order_number' => 'nr',
 			'order_date' => 'data zamówienia',
-			'buyer_order_number' => 'nr. zam. klienta',
+			'buyer_order_number' => 'pozycja',
 			'buyer_comments' => 'uwagi klienta',
 			'order_reference' => 'referencje',
 		    'order_EAN_number' => 'EAN',
@@ -285,7 +285,21 @@ class Order extends CActiveRecord
 		$criteria->compare('order_storno_date',$this->order_storno_date,true);
 		$criteria->compare('checked',$this->checked);
 		
-		$criteria->with = array('manufacturerManufacturer', 'brokerBroker', 'buyerBuyer', 'deliveryAddressDeliveryAddress', 'articleArticle', 'legLeg', 'textile1Textile'=>array('with'=>'fabric1', 'together'=>true), 'textile2Textile'=>array('with'=>'fabric2', 'together'=>true), 'shopping1Shopping', 'shopping2Shopping');
+		$criteria->with = array(
+		    'manufacturerManufacturer', 
+		    'brokerBroker', 
+		    'buyerBuyer', 
+		    'deliveryAddressDeliveryAddress', 
+		    'articleArticle', 
+		    'legLeg', 
+		    'textile1Textile'=>array('with'=>'fabric1', 'together'=>true), 
+		    'textile2Textile'=>array('with'=>'fabric2', 'together'=>true),
+		    'textile3Textile'=>array('with'=>'fabric3', 'together'=>true),
+		    'textile4Textile'=>array('with'=>'fabric4', 'together'=>true), 
+		    'textile5Textile'=>array('with'=>'fabric5', 'together'=>true),
+		    'shopping1Shopping', 
+		    'shopping2Shopping'
+		);
 		$criteria->together=true;
 		
 		$criteria->compare('manufacturerManufacturer.manufacturer_name',$this->manufacturerManufacturer_manufacturer_name,true);
@@ -307,6 +321,7 @@ class Order extends CActiveRecord
 		$criteria->compare('textile5Textile.textile_number',$this->textiles5_textile_number,true);
 		$criteria->compare('textile1Textile.textile_name',$this->textiles1_textile_name,true);
 		$criteria->compare('textile2Textile.textile_name',$this->textiles2_textile_name,true);
+		
 		if ($this->shopping1Shopping_shopping_status == "w trakcie") {
 			$criteria->addCondition('shopping1Shopping.shopping_status not like :shopping1Shopping_shopping_status' );
 			$criteria->params=array_merge($criteria->params,array(':shopping1Shopping_shopping_status'=>'%dostarczono%'));

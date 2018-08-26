@@ -25,8 +25,8 @@ $this->menu=array(
 		'delivery_address_name_1',
 		'delivery_address_name_2',
 		'delivery_address_street',
-		'delivery_addressr_zip_code',
-		'delivery_addressr_city',
-		'delivery_addressr_contact',
+		'delivery_address_zip_code',
+		'delivery_address_city',
+		'delivery_address_contact',
 	),
 )); ?>
