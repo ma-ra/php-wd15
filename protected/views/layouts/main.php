@@ -51,7 +51,7 @@
 		Copyright &copy; <?php echo date('Y'); ?> by Marek Ramotowski for Wyrwał Daniel.<br/>
 		All Rights Reserved.<br/>
 		<?php echo Yii::powered(); ?></br>
-		version: 2017-11-06 10:18:00
+		version: 2018-08-26 21:51:00
 	</div><!-- footer -->
 
 </div><!-- page -->

@@ -1519,7 +1519,7 @@ class OrderController extends Controller
 		$model->unsetAttributes();  // clear any default values
 		$model->article_exported=0;
 		$model->article_canceled=0;
-		$model->order_add_date='>=2018';
+		$model->order_add_date='>=2018-03';
 		if(isset($_GET['Order']))
 			$model->attributes=$_GET['Order'];
 

@@ -135,10 +135,12 @@ echo "</pre>"; */
 		echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_article_number</td>";
 		echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_model_name</td>";
 		echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_model_type</td>";
-			echo "<td style=\"border: 1px solid black;\">$Order->textiles1_textile_number</td>";
-			echo "<td style=\"border: 1px solid black;\">$Order->textiles2_textile_number</td>";
-			echo "<td style=\"border: 1px solid black;\">$Order->textiles1_textile_price_groupe</td>";
-			echo "<td style=\"border: 1px solid black;\">$Order->textiles2_textile_price_groupe</td>";
+		echo "<td style=\"border: 1px solid black;\">$Order->textiles1_textile_number</td>";
+		echo "<td style=\"border: 1px solid black;\">$Order->textiles2_textile_number</td>";
+			/* echo "<td style=\"border: 1px solid black;\">$Order->textiles1_textile_price_groupe</td>";
+			echo "<td style=\"border: 1px solid black;\">$Order->textiles2_textile_price_groupe</td>"; */
+		echo "<td style=\"border: 1px solid black;\"> </td>";
+		echo "<td style=\"border: 1px solid black;\"> </td>";
 		echo "<td style=\"border: 1px solid black;\">$Order->fabrics_fabric_price_group</td>";
 		echo "<td style=\"border: 1px solid black;\">$Order->articleArticle_article_all_textile_amount</td>";
 		# wybranym osobą pokazujemy ceny
